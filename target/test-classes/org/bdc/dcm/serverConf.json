@@ -1,0 +1,46 @@
+{
+  "serverConf": [
+    {
+      "name": "TestTcpClient",
+      "serverType": 0,
+      "dataType": 1,
+      "host": "192.168.1.40",
+      "serverPort": 8082,
+      "clientPort": 0,
+      "initSendingData": "",
+      "delaySendingTime": 0,
+      "loopInitSendingDataInterval": 0,
+      "selfMac": "",
+      "dataLevel": 1,
+      "filterMacs": ["0000000000000000"]
+    },
+    {
+      "name": "TestTcpServer",
+      "serverType": 1,
+      "dataType": 1,
+      "host": "192.168.1.40",
+      "serverPort": 8081,
+      "clientPort": 0,
+      "initSendingData": "",
+      "delaySendingTime": 0,
+      "loopInitSendingDataInterval": 5,
+      "selfMac": "",
+      "dataLevel": 0,
+      "filterMacs": ["0000000000000000"]
+    },
+    {
+      "name": "TestUdpConnect",
+      "serverType": 2,
+      "dataType": 0,
+      "host": "",
+      "serverPort": 8081,
+      "clientPort": 0,
+      "initSendingData": "00000000",
+      "delaySendingTime": 3000,
+      "loopInitSendingDataInterval": 10000,
+      "selfMac": "00000000",
+      "dataLevel": 1,
+      "filterMacs": ["0000000000000000"]
+    }
+  ]
+}

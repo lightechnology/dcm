@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- root>
+        <level value="INFO" />
+        <appender-ref ref="CONS" />
+    </root -->
+
+    <logger name="org.bdc.dcm.netty.coder" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="ASYNC_DATA" />
+    </logger>
+
+    <logger name="org.bdc.dcm.netty.handler" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="ASYNC_HDLE" />
+    </logger>
+
+    <logger name="org.bdc.dcm.netty.channel" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="ASYNC_EFMT" />
+    </logger>
+
+	<appender name="CONS" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-d{yyyy-MM-dd HH:mm:ss.ms} %5.5p]{%10.10t:%5.5r - %15.15C(%10.10F:%5.5L)} %m%n" />
+		</layout>
+	</appender>
+
+    <appender name="ASYNC_DATA" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="2048" />
+        <appender-ref ref="DATA" />
+    </appender>
+
+    <appender name="ASYNC_HDLE" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="1024" />
+        <appender-ref ref="HDLE" />
+    </appender>
+
+    <appender name="ASYNC_EFMT" class="org.apache.log4j.AsyncAppender">
+        <param name="BufferSize" value="1024" />
+        <appender-ref ref="EFMT" />
+    </appender>
+
+	<appender name="DATA" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${web.dir.root}/logs/dcm/data.log" />
+		<param name="Threshold" value="INFO" />
+		<param name="ImmediateFlush" value="true" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="50MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-d{yyyy-MM-dd HH:mm:ss.ms} %5.5p]{%10.10t:%5.5r - %15.15C(%10.10F:%5.5L)} %m%n" />
+		</layout>
+		<param name="BufferedIO" value="true" />
+		<param name="BufferSize" value="65536" />
+	</appender>
+
+	<appender name="HDLE" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${web.dir.root}/logs/dcm/handler.log" />
+		<param name="Threshold" value="INFO" />
+		<param name="ImmediateFlush" value="true" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="50MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-d{yyyy-MM-dd HH:mm:ss.ms} %5.5p]{%10.10t:%5.5r - %15.15C(%10.10F:%5.5L)} %m%n" />
+		</layout>
+		<param name="BufferedIO" value="true" />
+		<param name="BufferSize" value="8192" />
+	</appender>
+
+	<appender name="EFMT" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${web.dir.root}/logs/dcm/efficiency.log" />
+		<param name="Threshold" value="INFO" />
+		<param name="ImmediateFlush" value="true" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="50MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-d{yyyy-MM-dd HH:mm:ss.ms} %5.5p]{%10.10t:%5.5r - %15.15C(%10.10F:%5.5L)} %m%n" />
+		</layout>
+		<param name="BufferedIO" value="true" />
+		<param name="BufferSize" value="8192" />
+	</appender>
+
+</log4j:configuration>

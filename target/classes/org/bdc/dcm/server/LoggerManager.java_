@@ -1,0 +1,162 @@
+package org.bdc.dcm.server;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.util.tools.ComParam;
+import com.util.tools.Public;
+
+public class LoggerManager implements Runnable {
+    
+    public final static Logger logger = LoggerFactory.getLogger(LoggerManager.class);
+
+    private Lock lock;
+    private Condition condition;
+    private Queue<Log> logQueue;
+    private AtomicInteger deep;
+
+    private Thread thread;
+    private Thread monitorThread;
+
+    private static final LoggerManager loggerManager = new LoggerManager();
+
+    private LoggerManager() {
+        this.lock = new ReentrantLock();
+        this.condition = lock.newCondition();
+        this.logQueue = new ConcurrentLinkedQueue<Log>();
+        this.deep = new AtomicInteger(0);
+
+        this.thread = new Thread(this);
+        this.monitorThread = new Thread(new Monitor());
+        this.monitorThread.setDaemon(true);
+        this.thread.start();
+        this.monitorThread.start();
+    }
+
+    public static LoggerManager getInstance() {
+        return loggerManager;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            while (logQueue.isEmpty())
+                try {
+                    lock.lock();
+                    condition.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    lock.unlock();
+                }
+            while (!logQueue.isEmpty()) {
+                Log log = logQueue.poll();
+                Logger logger = log.logger;
+                String msg = log.msg;
+                int level = log.level;
+                deep.getAndDecrement();
+                if (-1 < level && null != logger && null != msg && 0 < msg.length()) {
+                    if (0 == level && logger.isInfoEnabled()) {
+                        logger.info(msg);
+                    } else if (1 == level && logger.isWarnEnabled()) {
+                        logger.warn(msg);
+                    } else if (2 == level && logger.isErrorEnabled()) {
+                        logger.error(msg);
+                    } else if (3 == level && logger.isDebugEnabled()) {
+                        logger.debug(msg);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void logInfo(final Logger logger, final String msg) {
+        Log log = new Log(logger, msg, null, 0);
+        logQueue.offer(log);
+        deep.getAndIncrement();
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void logWarn(final Logger logger, final String msg) {
+        Log log = new Log(logger, msg, null, 1);
+        logQueue.offer(log);
+        deep.getAndIncrement();
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void logError(final Logger logger, final String msg, final Throwable t) {
+        Log log = new Log(logger, msg, t, 2);
+        logQueue.offer(log);
+        deep.getAndIncrement();
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void logDebug(final Logger logger, final String msg) {
+        Log log = new Log(logger, msg, null, 3);
+        logQueue.offer(log);
+        deep.getAndIncrement();
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    class Monitor implements Runnable {
+        
+        final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        @Override
+        public void run() {
+            while (true) {
+                if (logger.isWarnEnabled())
+                    logger.warn("LoggerManager Log deep: {}", deep.get());
+                else {
+                    StringBuilder sb = new StringBuilder(
+                            "LoggerManager Log deep: ").append(deep.get());
+                    Public.p(sb.toString());
+                }
+                Public.sleepWithOutInterrupted(ComParam.ONEMIN);
+            }
+        }
+        
+    }
+
+    class Log {
+
+        public final Logger logger;
+        public final String msg;
+        public final Throwable t;
+        public final int level;
+
+        public Log(final Logger logger, final String msg, final Throwable t, final int level) {
+            this.logger = logger;
+            this.msg = msg;
+            this.t= t;
+            this.level = level;
+        }
+    }
+}

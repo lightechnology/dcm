@@ -1,0 +1,507 @@
+{
+  "dataTabConf": [
+    {
+      "id": 101,
+      "name": "taddr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 102,
+      "name": "addr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 103,
+      "name": "mac",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 104,
+      "name": "paddr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 105,
+      "name": "pmac",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 106,
+      "name": "dtype",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 107,
+      "name": "uaddr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 108,
+      "name": "rssi",
+      "form": "-int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 109,
+      "name": "lqi",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 110,
+      "name": "addr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 111,
+      "name": "eaddr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 112,
+      "name": "guid",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 113,
+      "name": "permi",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 114,
+      "name": "sreset",
+      "form": "",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 115,
+      "name": "reset",
+      "form": "",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 116,
+      "name": "upanid",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 117,
+      "name": "uchnid",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 118,
+      "name": "panid",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 119,
+      "name": "chnid",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 120,
+      "name": "name",
+      "form": "char",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 121,
+      "name": "temperature",
+      "form": "float",
+      "units": "℃",
+      "dataLevel": 0
+    },
+    {
+      "id": 122,
+      "name": "humidity",
+      "form": "float",
+      "units": "%",
+      "dataLevel": 0
+    },
+    {
+      "id": 123,
+      "name": "light",
+      "form": "float",
+      "units": "%",
+      "dataLevel": 0
+    },
+    {
+      "id": 124,
+      "name": "effele",
+      "form": "float",
+      "units": "mA",
+      "dataLevel": 0
+    },
+    {
+      "id": 125,
+      "name": "eleamp",
+      "form": "float",
+      "units": "mA",
+      "dataLevel": 0
+    },
+    {
+      "id": 126,
+      "name": "effvol",
+      "form": "float",
+      "units": "V",
+      "dataLevel": 0
+    },
+    {
+      "id": 127,
+      "name": "volamp",
+      "form": "float",
+      "units": "V",
+      "dataLevel": 0
+    },
+    {
+      "id": 128,
+      "name": "flow",
+      "form": "float",
+      "units": "cm³",
+      "dataLevel": 0
+    },
+    {
+      "id": 129,
+      "name": "height",
+      "form": "float",
+      "units": "dm",
+      "dataLevel": 0
+    },
+    {
+      "id": 130,
+      "name": "soilhum",
+      "form": "float",
+      "units": "%",
+      "dataLevel": 0
+    },
+    {
+      "id": 253,
+      "name": "sos",
+      "form": "char",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 252,
+      "name": "arssis",
+      "form": "rsdata",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 131,
+      "name": "bmac",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 132,
+      "name": "udpt",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 133,
+      "name": "ip",
+      "form": "ip",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 134,
+      "name": "mask",
+      "form": "ip",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 135,
+      "name": "gate",
+      "form": "ip",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 136,
+      "name": "tip",
+      "form": "ip",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 137,
+      "name": "port",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 138,
+      "name": "msg",
+      "form": "unicode",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 100,
+      "name": "pinstatus",
+      "form": "piodata",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 139,
+      "name": "baudrate",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 140,
+      "name": "heartrate",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 141,
+      "name": "walkstep",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 156,
+      "name": "sleeptime",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 157,
+      "name": "depsleeptime",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 144,
+      "name": "time",
+      "form": "intime",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 145,
+      "name": "puton",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 146,
+      "name": "pattern",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 147,
+      "name": "realsentinterval",
+      "form": "int",
+      "units": "s",
+      "dataLevel": 0
+    },
+    {
+      "id": 148,
+      "name": "realreadinterval",
+      "form": "int",
+      "units": "s",
+      "dataLevel": 0
+    },
+    {
+      "id": 149,
+      "name": "sentareadinterval",
+      "form": "int",
+      "units": "m",
+      "dataLevel": 0
+    },
+    {
+      "id": 150,
+      "name": "batterypercent",
+      "form": "int",
+      "units": "%",
+      "dataLevel": 0
+    },
+    {
+      "id": 99,
+      "name": "inadc",
+      "form": "paddata",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 151,
+      "name": "iswork",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 152,
+      "name": "istrouble",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 153,
+      "name": "testsignal",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 154,
+      "name": "msgtime",
+      "form": "intime",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 155,
+      "name": "confinfo",
+      "form": "unicode",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 159,
+      "name": "untrancode",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 158,
+      "name": "msgaff",
+      "form": "int",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 160,
+      "name": "wpower",
+      "form": "int",
+      "units": "m/s",
+      "dataLevel": 0
+    },
+    {
+      "id": 98,
+      "name": "mac",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 161,
+      "name": "luet",
+      "form": "float",
+      "units": "h",
+      "dataLevel": 0
+    },
+    {
+      "id": 162,
+      "name": "lep",
+      "form": "float",
+      "units": "kW/h",
+      "dataLevel": 0
+    },
+    {
+      "id": 163,
+      "name": "auet",
+      "form": "float",
+      "units": "h",
+      "dataLevel": 0
+    },
+    {
+      "id": 164,
+      "name": "auep",
+      "form": "float",
+      "units": "kW/h",
+      "dataLevel": 0
+    },
+    {
+      "id": 165,
+      "name": "power",
+      "form": "float",
+      "units": "W",
+      "dataLevel": 0
+    },
+    {
+      "id": 166,
+      "name": "pcos",
+      "form": "float",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 167,
+      "name": "tripstatus",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 168,
+      "name": "relaystatus",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 169,
+      "name": "PWMList",
+      "form": "byte",
+      "units": "%"
+    }
+  ]
+}
