@@ -1,7 +1,5 @@
 package org.bdc.dcm.netty.handler;
 
-import java.util.Iterator;
-
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.channel.ChannelManager;
 import org.bdc.dcm.vo.DataPack;
@@ -13,15 +11,11 @@ import com.util.tools.ComParam;
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.concurrent.GlobalEventExecutor;
 
 /**
  * 主要处理解析好的数据是否可接收和转发，还有就时记录数据来源和接口关系，以保证下发数据能找到正确的接口
@@ -29,8 +23,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class DataHandler extends SimpleChannelInboundHandler<DataPack> {
 	
 	final static Logger logger = LoggerFactory.getLogger(DataHandler.class);
-    
-    public static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	
 	private NettyBoot nettyBoot;
 	private ChannelManager channelManager;
@@ -44,8 +36,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> {
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 		super.channelActive(ctx);
-		//channelManager.setChannel(ctx, ctx.channel().remoteAddress(), nettyBoot.getServer().getSelfMac());
-		channelGroup.add(ctx.channel());
+		channelManager.setChannel(ctx, ctx.channel().remoteAddress(), nettyBoot.getServer().getSelfMac());
 		if (logger.isInfoEnabled()) {
 		    logger.info("remoteAddress: {} connected", ctx.channel().remoteAddress());
 		}
@@ -60,8 +51,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> {
 	@Override
 	public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
-        //channelManager.rmvChannel(ctx);
-		channelGroup.remove(ctx.channel());
+        channelManager.rmvChannel(ctx);
 		if (logger.isInfoEnabled()) {
 		    logger.info("remoteAddress: {} disconnected", ctx.channel().remoteAddress());
 		}
@@ -70,20 +60,16 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> {
     @Override
 	protected void messageReceived(ChannelHandlerContext ctx, DataPack msg)
 			throws Exception {
-	    /*if (null != initSdata) {
+	    if (null != initSdata) {
 	        initSdata.setRun(false);
+	        initSdata = null;
+	        pollReading(msg);
+	    } else {
+            Long cur = System.currentTimeMillis();
+            channelManager.setMaxInCost(cur - msg.getTimestamp());
+            msg.setTimestamp(cur);
+            channelManager.messagePublish(ctx, msg);
 	    }
-        Long cur = System.currentTimeMillis();
-        channelManager.setMaxInCost(cur - msg.getTimestamp());
-        msg.setTimestamp(cur);
-        //channelManager.messagePublish(ctx, msg);
-        Iterator<Channel> iter = channelGroup.iterator();
-        while (iter.hasNext()) {
-            Channel ch = iter.next();
-            if (!ch.id().asShortText().equals(ctx.channel().id().asShortText()) && ch.isWritable()) {
-                ch.writeAndFlush(msg);
-            }
-        }*/
 	}
 
     @Override
@@ -164,4 +150,6 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> {
         
     }
     
+    public void pollReading(DataPack msg) {
+    }
 }
