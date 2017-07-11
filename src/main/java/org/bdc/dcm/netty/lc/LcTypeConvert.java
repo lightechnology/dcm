@@ -12,18 +12,21 @@ public class LcTypeConvert{
 
 	private static Logger logger = LoggerFactory.getLogger(LcTypeConvert.class);
 	
-	private final static int DATATYPE_REMAININGTIMELONG = 0;
-	private final static int DATATYPE_REMAININGELECTRICITY = 1;
-	private final static int DATATYPE_TOTALTIME = 2;
-	private final static int DATATYPE_TOTALACTIVEPOWER = 3;
-	private final static int DATATYPE_U = 4;
-	private final static int DATATYPE_I = 5;
-	private final static int DATATYPE_P = 6;
-	private final static int DATATYPE_COS$ = 7;
-	private final static int DATATYPE_JDQTIAOZA = 8;
-	private final static int DATATYPE_TEMPERATURE = 9;
-	private final static int DATATYPE_JDQSTATE = 10;
-	private final static int DATATYPE_POWEROFFUNLOCK = 11;
+	public final static int DATATYPE_REMAININGTIMELONG = 1;
+	public final static int DATATYPE_REMAININGELECTRICITY = 2;
+	public final static int DATATYPE_TOTALTIME = 3;
+	public final static int DATATYPE_TOTALACTIVEPOWER = 4;
+	public final static int DATATYPE_U = 5;
+	public final static int DATATYPE_I = 6;
+	public final static int DATATYPE_P = 7;
+	public final static int DATATYPE_COS$ = 8;
+	public final static int DATATYPE_JDQTIAOZA = 9;
+	public final static int DATATYPE_TEMPERATURE = 10;
+	public final static int DATATYPE_JDQSTATE = 11;
+	public final static int JDQ_Control = 12;
+	public final static int DATATYPE_TEMPERATURE_WARM = 13;
+	public final static int DATATYPE_SURPLUS_POWER= 14;
+	public final static int DATATYPE_SURPLUS_TIME= 15;
 	public static int convertTypeStr2TypeId(String type) {
 		if ("remainTimeLong".equals(type)) {
 			return DATATYPE_REMAININGTIMELONG;
@@ -58,8 +61,17 @@ public class LcTypeConvert{
 		if ("JDQ_state".equals(type)) {
 			return DATATYPE_JDQSTATE;
 		}
-		if ("powerOffUnlock".equals(type)) {
-			return DATATYPE_POWEROFFUNLOCK;
+		if ("JDQ_control".equals(type)) {
+			return JDQ_Control;
+		}
+		if("temperature_warm".equals(type)){
+			return DATATYPE_TEMPERATURE_WARM;
+		}
+		if("surplus_power".equals(type)){
+			return DATATYPE_SURPLUS_POWER;
+		}
+		if("surplus_time".equals(type)){
+			return DATATYPE_SURPLUS_TIME;
 		}
 		return -1;
 	}
@@ -68,33 +80,15 @@ public class LcTypeConvert{
 		byte[] bs = null,tmp,crc;
 		boolean isOpen;
 		switch (convertTypeStr2TypeId(type)) {
+			case DATATYPE_SURPLUS_POWER:
+				return doubleByteCtr(val, modbusAddr,3200,(byte)0x22);
+			case DATATYPE_SURPLUS_TIME:
+				return doubleByteCtr(val, modbusAddr,10,(byte)0x29);
+			case DATATYPE_TEMPERATURE_WARM:
+				return temperature(val, modbusAddr,(byte)01);
 			//温度 0 关机 22-30 则控制
 			case DATATYPE_TEMPERATURE:
-				int temperature = (Integer) val;
-				//01 10 00 37 00 01 02 00 00 A2 17 57 
-				bs = new byte[11];
-				tmp = new byte[9];
-				tmp[0] = modbusAddr;
-				tmp[1] = (byte)0x10;//功能码
-				tmp[2] = 00;
-				tmp[3] = (byte)0x37;
-				tmp[4] = 00;
-				tmp[5] = 01;
-				tmp[6] = 02;
-				if(temperature == 0){
-					tmp[7] = 0;
-					tmp[8] = 0;//关闭标志位
-				}else{
-					tmp[7] = Public.int2Bytes(temperature, 1)[0];
-					tmp[8] = 03;//制冷标志位
-				}
-				crc = Public.crc16_A001(tmp);
-				for(int i=0;i<tmp.length;i++)
-					bs[i] = tmp[i];
-				bs[9] = crc[1];
-				bs[10] = crc[0];
-				return bs;
-				
+				return temperature(val, modbusAddr,(byte)03);
 			//继电器状态	
 			case DATATYPE_JDQSTATE:
 				isOpen = (boolean) val;
@@ -113,8 +107,8 @@ public class LcTypeConvert{
 				bs[7] = crc[0];
 				return bs;
 			//断电解锁	
-			case DATATYPE_POWEROFFUNLOCK:
-				isOpen = (boolean) val;
+			case JDQ_Control:
+				byte[] ctrCmd = (byte[]) val;
 				bs = new byte[11];
 				tmp = new byte[9];
 				tmp[0] = modbusAddr;
@@ -124,8 +118,8 @@ public class LcTypeConvert{
 				tmp[4] = 00;
 				tmp[5] = 01;
 				tmp[6] = 02;
-				tmp[7] = isOpen?(byte)0x01:(byte)0x00;
-				tmp[8] = 00;
+				tmp[7] = ctrCmd[0];
+				tmp[8] = (byte) (ctrCmd[1] & (byte)0xf3);//剩余电量和时间 都是清零设置
 				crc = Public.crc16_A001(tmp);
 				for(int i=0;i<tmp.length;i++)
 					bs[i] = tmp[i];
@@ -135,6 +129,80 @@ public class LcTypeConvert{
 			default:
 				return bs;
 		}
+	}
+	/**
+	 * 两字节寄存器 控制
+	 * @param val
+	 * @param modbusAddr
+	 * @param 值偏移计算
+	 * @param 寄存器基地址
+	 * @return
+	 */
+	private static byte[] doubleByteCtr(Object val, byte modbusAddr,int offset,byte regBaseAddr) {
+		byte[] bs;
+		byte[] tmp;
+		byte[] crc;
+		int power = (Integer) val;
+		bs = new byte[13];
+		tmp = new byte[11];
+		//01 10 00 22 00 02 04
+		tmp[0] = modbusAddr;
+		tmp[1] = (byte)0x10;
+		tmp[2] = 0;
+		tmp[3] = regBaseAddr;
+		tmp[4] = 0;
+		tmp[5] = 2;//寄存器长度
+		tmp[6] = 4;//寄存器值长度
+		byte[] bytes = Public.int2Bytes(power * offset, 4);
+		reverse(bytes);
+		tmp[7] = bytes[0];
+		tmp[8] = bytes[1];
+		tmp[9] = bytes[2];
+		tmp[10] = bytes[3];
+		crc = Public.crc16_A001(tmp);
+		for(int i=0;i<tmp.length;i++)
+			bs[i] = tmp[i];
+		bs[11] = crc[1];
+		bs[12] = crc[0];
+		return bs;
+	}
+	
+	
+	/**
+	 * 
+	 * @param val
+	 * @param modbusAddr
+	 * @param flag 03制冷 01 制热
+	 * @return
+	 */
+	private static byte[] temperature(Object val, byte modbusAddr,byte flag) {
+		byte[] bs;
+		byte[] tmp;
+		byte[] crc;
+		int temperature = (Integer) val;
+		//01 10 00 37 00 01 02 00 00 A2 17 57 
+		bs = new byte[11];
+		tmp = new byte[9];
+		tmp[0] = modbusAddr;
+		tmp[1] = (byte)0x10;//功能码
+		tmp[2] = 00;
+		tmp[3] = (byte)0x37;
+		tmp[4] = 00;
+		tmp[5] = 01;
+		tmp[6] = 02;
+		if(temperature == 0){
+			tmp[7] = 0;
+			tmp[8] = 0;//关闭标志位
+		}else{
+			tmp[7] = Public.int2Bytes(temperature, 1)[0];
+			tmp[8] = flag;//制冷,制热标志位
+		}
+		crc = Public.crc16_A001(tmp);
+		for(int i=0;i<tmp.length;i++)
+			bs[i] = tmp[i];
+		bs[9] = crc[1];
+		bs[10] = crc[0];
+		return bs;
 	}
 	public static Object convertByteBuf2TypeValue(String type, ByteBuf in) {
 		byte[] data;
@@ -253,5 +321,4 @@ public class LcTypeConvert{
 			bs[bs.length - 1 - i] = tmp;
 		}
 	}
-
 }
