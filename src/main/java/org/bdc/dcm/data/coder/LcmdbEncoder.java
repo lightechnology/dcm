@@ -21,8 +21,6 @@ import com.util.tools.Public;
 
 public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 	private final DataTabConf dataTabConf;
 
 	public LcmdbEncoder() {
@@ -50,8 +48,6 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		//取值
 		String indentity = msg.getMac();
 		
-		logger.info("------------indentity:{}",indentity);
-		
 		byte[] indentityBytes = Public.hexString2bytes(indentity);
 	
 		//最后一位是modbus地址
@@ -59,7 +55,6 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		
 		//真正的mac地址 (除去2位modbus地址 和 1个空格)
 		String mac = indentity.substring(0, indentity.length() - 3 );
-		logger.info("解析出addr:{},mac:{},源包：{}",Public.byte2hex_ex(modbusAddr),mac,indentity);
 		byte[] reg = null,modbusPack = null;
 		
 		//用户控制命令 key迭代器
@@ -84,7 +79,6 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		}
 		//找不到对应的控制命令解析器
 		if(modbusPack == null ) {
-			logger.error("找不到对应的控制命令解析器");
 			return null;
 		};
 		
@@ -93,7 +87,6 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		byte[] fixPackHeader = new byte[]{(byte)0xfe,(byte)0xA5};
 		byte[] packHeader = new byte[]{01,00,(byte)0x16};//第2个字节就是包长度初始化为0
 		byte packLen = Public.int2Bytes((1 + macBytes.length + 1 + modbusPack.length), 1)[0];
-		logger.info("send packLen:{}",packLen);
 		packHeader[packLenOffset] = packLen;
 		
 		src.writeBytes(fixPackHeader);
@@ -111,9 +104,7 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		
 		for(byte b:modbusPack)
 			sum+=b&0xff;
-		
-		logger.debug("out：{} {} {} {} {} ",Public.byte2hex(fixPackHeader),Public.byte2hex(packHeader),Public.byte2hex(macBytes),0,modbusPack);
-		
+
 		//crc校验和
 		src.writeByte((byte)(sum & 0xff));
 		return src;

@@ -6,7 +6,6 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import org.bdc.dcm.conf.ComConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,6 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             		sum+=(data[i] & 0xff);
             	}
             	byte calcSum = (byte)(sum & 0xff);
-            	logger.info("calcSum:{},crcSum:{},packLen:{}",calcSum,crcSum,packLen);
             	if(crcSum == calcSum){
             		in.resetReaderIndex();
             		//两字节头 +1 字节类型 + 1字节长度 +1 字节校验和
@@ -46,7 +44,6 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             		frame.markReaderIndex();
             		frame.readBytes(frameBytes);
             		//防止单独设置时 返回的数据
-            		System.out.println("-----------"+packLen);
         			if(packLen == 45 || packLen == 9){//只解轮训状态的包
 	            		logger.info("解码包：frame:{}",Public.byte2hex(frameBytes));
 	            		frame.resetReaderIndex();
