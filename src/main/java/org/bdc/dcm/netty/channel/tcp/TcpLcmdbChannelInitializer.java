@@ -8,6 +8,7 @@ import org.bdc.dcm.netty.coder.tcp.TcpLcmdbDecoder;
 import org.bdc.dcm.netty.coder.tcp.TcpLcmdbEncoder;
 import org.bdc.dcm.netty.framer.LcmdbFrameDecoder;
 import org.bdc.dcm.netty.handler.DataHandler;
+import org.bdc.dcm.netty.handler.LcmdbDataHandler;
 
 public class TcpLcmdbChannelInitializer extends AbstractChannelInitializer<SocketChannel> {
 
@@ -18,7 +19,7 @@ public class TcpLcmdbChannelInitializer extends AbstractChannelInitializer<Socke
 		pipeline.addLast("framer", new LcmdbFrameDecoder());
 		pipeline.addLast("decoder", new TcpLcmdbDecoder(getNettyBoot()));
 		pipeline.addLast("encoder", new TcpLcmdbEncoder(getNettyBoot()));
-        pipeline.addLast("dataHandler", new DataHandler(getNettyBoot()));
+        pipeline.addLast("dataHandler", new LcmdbDataHandler(getNettyBoot()));
 	}
 
 }

@@ -11,6 +11,8 @@ import java.util.Set;
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.intf.ServerConf;
+import org.bdc.dcm.netty.lq.LqRepository;
+import org.bdc.dcm.netty.lq.config.InitPack;
 import org.bdc.dcm.server.ServerManager;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
@@ -46,6 +48,18 @@ public class ExampleService implements DataTabConf, ServerConf {
         initDataTabConf();
     }
 
+    public void initLqConf(){
+		LqRepository repository = LqRepository.build();
+		InitPack pack = new InitPack();
+		pack.setMac("D8B04CBDD147");
+		byte[] addrs = new byte[20];
+		
+		for(byte i=0;i<20;i++) addrs[i] = i;
+		
+		pack.setDeviceAddrs(addrs);
+		repository.addOne(pack);
+	}
+    
     @SuppressWarnings("unchecked")
     public void initServerConf() {
         Map<String, Object> serverConfMap = getDataServerConfMap(getClass()
@@ -133,6 +147,7 @@ public class ExampleService implements DataTabConf, ServerConf {
     public static void main(String[] args) throws IOException, TemplateException {
         IntfConf.setDataTabConf(ExampleService.getInstance());
         IntfConf.setServerConf(ExampleService.getInstance());
+        ExampleService.getInstance().initLqConf();
         new ServerManager();
     }
 
