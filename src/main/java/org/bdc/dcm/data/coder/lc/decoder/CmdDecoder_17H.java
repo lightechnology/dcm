@@ -11,8 +11,6 @@ import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
@@ -27,17 +25,7 @@ import io.netty.buffer.ByteBuf;
  */
 public class CmdDecoder_17H implements CommandTypeCtr {
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 	private static final int macLen = 8;
-	/**
-	 * 第一字节：地址码 
-	 * 第二字节：功能码
-	 * 第三字节：modbus数据长度
-	 */
-	private static final int modbusHeaderLen = 3;
-	
-	//private int modbusDataLenOffset = macLen + modbusHeaderLen;
 	
 	private final DataTabConf dataTabConf;
 	
@@ -75,7 +63,6 @@ public class CmdDecoder_17H implements CommandTypeCtr {
 		byte[] modebus = new byte[3 + modbusDataLen + 2];
 		//刚好抵消 序号的位置
 		in.readBytes(modebus);
-		logger.info("解码：mac:{},addr1:{},addr2:{}",Public.byte2hex(mac),Public.byte2hex_ex(modebus[0]),Public.byte2hex_ex(modbusHeader[0]));
 		in.resetReaderIndex();
 		//------------------modebus 数据+crc------------------------------------------------------
 		in.readBytes(3);//偏移 地址 + 功能码 + 长度标识

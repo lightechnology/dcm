@@ -9,15 +9,11 @@ import org.bdc.dcm.data.coder.lc.CommandTypeCtr;
 import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.vo.DataPack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
 
 public class LcmdbDecoder implements DataDecoder<ByteBuf> {
-	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private final DataTabConf dataTabConf;
 	

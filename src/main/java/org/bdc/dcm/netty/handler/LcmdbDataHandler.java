@@ -4,8 +4,6 @@ import org.bdc.dcm.lc.LcFunTest;
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.lc.LcLoopCheckStateThread;
 import org.bdc.dcm.vo.DataPack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 import io.netty.channel.ChannelHandlerContext;
@@ -13,8 +11,6 @@ import io.netty.channel.ChannelPromise;
 
 public class LcmdbDataHandler  extends DataHandler {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 	private LcLoopCheckStateThread loopThread = new LcLoopCheckStateThread();
  
 	public LcmdbDataHandler(NettyBoot nettyBoot) {

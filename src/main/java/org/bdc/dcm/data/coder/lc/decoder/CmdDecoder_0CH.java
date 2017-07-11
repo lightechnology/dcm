@@ -18,7 +18,6 @@ public class CmdDecoder_0CH implements CommandTypeCtr{
 		ByteBuf in = param.getPack();
 		DataPack dataPack = null;
 		int len = 8;
-		System.out.println("----------------------"+in.readableBytes());
 		if(in.readableBytes() == len){//验证通过
 			byte[] by = new byte[len];
 			in.readBytes(by);
