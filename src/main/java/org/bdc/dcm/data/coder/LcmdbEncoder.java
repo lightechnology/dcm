@@ -14,8 +14,6 @@ import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.netty.lc.LcTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
