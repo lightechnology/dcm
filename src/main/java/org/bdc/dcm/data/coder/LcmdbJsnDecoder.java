@@ -1,10 +1,8 @@
 package org.bdc.dcm.data.coder;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,11 +12,14 @@ import java.util.Map.Entry;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
+import org.bdc.dcm.data.coder.intf.DataEncoder;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
+import org.bdc.dcm.vo.e.DataPackType;
+import org.bdc.dcm.vo.e.Datalevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,18 +27,19 @@ import com.util.tools.Public;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public class JmjsnDecoder implements DataDecoder<String> {
+public class LcmdbJsnDecoder implements DataDecoder<String> {
 
-	final static Logger logger = LoggerFactory.getLogger(DataDecoder.class);
+	final static Logger logger = LoggerFactory.getLogger(LcmdbJsnDecoder.class);
 	
 	private NettyBoot nettyBoot;
+	
 	private final DataTabConf dataTabConf;
 	
-	public JmjsnDecoder(NettyBoot nettyBoot) {
+	public LcmdbJsnDecoder(NettyBoot nettyBoot) {
 		this.nettyBoot = nettyBoot;
 		this.dataTabConf = IntfConf.getDataTabConf();
 	}
-
+	
 	@Override
 	public DataPack data2Package(ChannelHandlerContext ctx, String msg) {
 		Server server = nettyBoot.getServer();
@@ -62,26 +64,21 @@ public class JmjsnDecoder implements DataDecoder<String> {
 		if ("".equals(key)) return null;
 		if (!verifyParamter(jsonStr, verifyCode, key)) return null;
 		try {
-			//ObjectMapper objectMapper = new ObjectMapper();
-			//objectMapper.readValue(jsonStr, valueType);
-			//jsArray.
-			//json.get("mac");
-			
-			
-//			String mac = Public.objToStr(json.get("device"));
-//			int kind = Public.objToInt(json.get("kind"));
-//			if (!"".equals(mac) && 0 < kind) {
-//				//Map<Integer, DataTab> dataTabMap = getDataTabConf(kind);
-//				DataPack dataPack = new DataPack();
-//				dataPack.setMac(mac);
-//				dataPack.setOnlineStatus(1);
-//				dataPack.setDatalevel(Datalevel.NORMAL);
-//				dataPack.setDataPackType(DataPackType.Info);
-//				/*Iterator<Entry<String, Object>> ite = json.entrySet().iterator();
-//				while (ite.hasNext()) {
-//					Entry<String, Object> entry = ite.next();
-//				}*/
-//			}
+			Map<String, Object> json = Public.str2Map(jsonStr);
+			String mac = Public.objToStr(json.get("device"));
+			int kind = Public.objToInt(json.get("kind"));
+			if (!"".equals(mac) && 0 < kind) {
+				//Map<Integer, DataTab> dataTabMap = getDataTabConf(kind);
+				DataPack dataPack = new DataPack();
+				dataPack.setMac(mac);
+				dataPack.setOnlineStatus(1);
+				dataPack.setDatalevel(Datalevel.NORMAL);
+				dataPack.setDataPackType(DataPackType.Info);
+				/*Iterator<Entry<String, Object>> ite = json.entrySet().iterator();
+				while (ite.hasNext()) {
+					Entry<String, Object> entry = ite.next();
+				}*/
+			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -90,7 +87,6 @@ public class JmjsnDecoder implements DataDecoder<String> {
 		}
 		return null;
 	}
-	
 	protected boolean verifyParamter(String jsonStr, String verifyCode,
 			String key) {
 		Date now = new Date();
@@ -105,7 +101,6 @@ public class JmjsnDecoder implements DataDecoder<String> {
 		}
 		return false;
 	}
-	
 	protected String[] md5Paramter(String jsonStr, String key, Date date) {
 		String datetime = new SimpleDateFormat("yyyyMMddHHmm").format(date);
 		datetime = datetime.substring(0, datetime.length() - 1) + "0";
@@ -120,13 +115,12 @@ public class JmjsnDecoder implements DataDecoder<String> {
 		}
 		return null;
 	}
-	
-	protected Map<Integer, DataTab> getDataTabConf(int kind) {
-		List<DataTab> dataTabs = dataTabConf.getDataTabConf("jm");
+	protected Map<Integer, DataTab> getDataTabConf(int id) {
+		List<DataTab> dataTabs = dataTabConf.getDataTabConf("Lc");
 		Map<Integer, DataTab> dataTabMap = new HashMap<Integer, DataTab>();
 		for (int i = 0; i < dataTabs.size(); i++) {
 			DataTab dataTab = dataTabs.get(i);
-			if (kind == dataTab.getKind()) {
+			if (id == dataTab.getId()) {
 				dataTabMap.put(dataTab.getId(), dataTab);
 			}
 		}
