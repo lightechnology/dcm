@@ -46,8 +46,6 @@ public class ExampleService implements DataTabConf, ServerConf {
         initDataTabConf();
     }
 
-    
-    
     @SuppressWarnings("unchecked")
     public void initServerConf() {
         Map<String, Object> serverConfMap = getDataServerConfMap(getClass()
