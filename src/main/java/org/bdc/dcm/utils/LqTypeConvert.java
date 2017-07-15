@@ -10,7 +10,7 @@ public class LqTypeConvert extends CommTypeConvert{
 	private static Logger logger = LoggerFactory.getLogger(LqTypeConvert.class); 
 	
 	@Override
-	protected void initTypeTokey() throws Exception{
+	protected void initRegTokey() throws Exception{
 		
 		for(int i=0;i<13;i++){
 			typeToBackConvert.put(i, numberToBoolean);

@@ -5,6 +5,9 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.util.tools.Public;
+
+
 
 public class LcTypeConvert extends CommTypeConvert{
 
@@ -21,7 +24,7 @@ public class LcTypeConvert extends CommTypeConvert{
 
 	
 	@Override
-	protected void initTypeTokey() throws Exception{
+	protected void initRegTokey() throws Exception{
 		
 		typeToBackConvert.put(128, d10);
 		typeToBackConvert.put(130, d3200);
