@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
+import java.util.Map;
+
 import org.bdc.dcm.data.coder.comm.DataDecoderAdapter;
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.e.DataType;
@@ -24,7 +26,7 @@ public class LcmdbDecoder extends DataDecoderAdapter{
 	}
 
 	@Override
-	public void knownProtocol(ChannelHandlerContext ctx, List<DataModel> dataModelList) {
+	public void knownProtocol(ChannelHandlerContext ctx, Map<String,DataModel> mapk) {
 		
 	}
 	

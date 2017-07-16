@@ -1,7 +1,9 @@
 package org.bdc.dcm.data.coder.comm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
@@ -45,19 +47,25 @@ public abstract class DataDecoderAdapter implements DataDecoder<ByteBuf> {
 	// 通过DataTypeConf接口获取解码规则
 	@Override
 	public DataPack data2Package(ChannelHandlerContext ctx, ByteBuf msg) {
-		List<DataModel> dataModelList = new ArrayList<>();
+		Map<String,DataModel> map = new HashMap<>();
 		//整包配置
 		for(DataTab tab:packConf){
 			if(!CommTypeConvert.getTypeToMethodInRW().containsKey(tab.getForm())){
 				customProtocol(ctx,msg);
 			}else{
 				Object o = convert.read(tab, msg);
-				DataModel dataModel = (DataModel) tab;
+				DataModel dataModel = new DataModel();
 				dataModel.setVal(o);
-				dataModelList.add(dataModel);
+				dataModel.setForm(tab.getForm());
+				dataModel.setId(tab.getId());
+				dataModel.setKind(tab.getKind());
+				dataModel.setName(tab.getName());
+				dataModel.setOname(tab.getOname());
+				dataModel.setUnits(tab.getUnits());
+				map.put(dataModel.getId()+"", dataModel);
 			}
 		}
-		knownProtocol(ctx,dataModelList);
+		knownProtocol(ctx,map);
 		return null;
 	}
 	/**
@@ -69,7 +77,7 @@ public abstract class DataDecoderAdapter implements DataDecoder<ByteBuf> {
 	/**
 	 * 
 	 * @param ctx
-	 * @param dataModelList 被接触出来的东西
+	 * @param map 被接触出来的东西
 	 */
-	public abstract void knownProtocol(ChannelHandlerContext ctx, List<DataModel> dataModelList);
+	public abstract void knownProtocol(ChannelHandlerContext ctx, Map<String,DataModel> mapk);
 }
