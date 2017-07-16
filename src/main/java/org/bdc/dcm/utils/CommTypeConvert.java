@@ -220,13 +220,16 @@ public abstract class CommTypeConvert {
 			default :return null;
 		}
 	};
+	public static Class<?> writeParmMapToBaseType(Object o){
+		return writeParmMapToBaseType.apply(o);
+	}
 	/**
 	 * 获取包装类型的基本类型 netty 转解
 	 * 如果需要 可以复写
 	 * @param o
 	 * @return
 	 */
-	Function<Object,Class<?>> writeParmMapToBaseType = (o)->{
+	public static Function<Object,Class<?>> writeParmMapToBaseType = (o)->{
 		switch(o.getClass().getSimpleName()){
 			case "Integer":
 			case "Character":

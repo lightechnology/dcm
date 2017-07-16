@@ -3,7 +3,6 @@ package org.bdc.dcm.utils;
 import java.lang.reflect.Method;
 import org.junit.Test;
 import junit.framework.TestCase;
-import static  org.bdc.dcm.utils.CommTypeConvert.writeParmMapToBaseType;
 
 public class CommTypeConvertTest extends TestCase {
 
@@ -32,9 +31,9 @@ public class CommTypeConvertTest extends TestCase {
 		
 	}
 	public  boolean test2(Object o) throws NoSuchMethodException, SecurityException{
-		Method m  = CommTypeConvertTest.class.getMethod("write", writeParmMapToBaseType(o));
+		Method m  = CommTypeConvertTest.class.getMethod("write", CommTypeConvert.writeParmMapToBaseType(o));
 		System.out.println("传入的参数："+o.getClass().getSimpleName()+",使用的方法："+m.getName()+"["+m.getParameterTypes()[0]+"]");
-		return writeParmMapToBaseType(o).equals(m.getParameterTypes()[0]);
+		return CommTypeConvert.writeParmMapToBaseType(o).equals(m.getParameterTypes()[0]);
 	}
 
 	public static byte[] int2Bytes(int iSource, int iArrayLen) {
