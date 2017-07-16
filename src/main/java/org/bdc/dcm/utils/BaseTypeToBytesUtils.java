@@ -1,5 +1,7 @@
 package org.bdc.dcm.utils;
 
+import java.nio.charset.Charset;
+
 /**
  * 基本类型转字节数组工具
  * @author 李哲弘
@@ -7,101 +9,119 @@ package org.bdc.dcm.utils;
  */
 public class BaseTypeToBytesUtils {
 
-
-	public static byte[] byteToBytes(byte b) {
+	//-----------------序列化------------------------------------
+	public static byte[] getBytes(byte b) {
 		return new byte[] { b };
 	}
 
-	/**
-	 * 将一个char字符转换位字节数组（2个字节），b[0]存储高位字符，大端
-	 * 
-	 * @param c
-	 *            字符（java char 2个字节）
-	 * @return 代表字符的字节数组
-	 */
-	public static byte[] charToBytes(char c) {
-		byte[] b = new byte[8];
-		b[0] = (byte) (c >>> 8);
-		b[1] = (byte) c;
-		return b;
-	}
-
-	/**
-	 * 将一个双精度浮点数转换位字节数组（8个字节），b[0]存储高位字符，大端
-	 * 
-	 * @param d
-	 *            双精度浮点数
-	 * @return 代表双精度浮点数的字节数组
-	 */
-	public static byte[] doubleToBytes(double d) {
-		return longToBytes(Double.doubleToLongBits(d));
-	}
-
-	/**
-	 * 将一个浮点数转换为字节数组（4个字节），b[0]存储高位字符，大端
-	 * 
-	 * @param f
-	 *            浮点数
-	 * @return 代表浮点数的字节数组
-	 */
-	public static byte[] floatToBytes(float f) {
-		return intToBytes(Float.floatToIntBits(f));
-	}
-
-	/**
-	 * 将一个整数转换位字节数组(4个字节)，b[0]存储高位字符，大端
-	 * 
-	 * @param i
-	 *            整数
-	 * @return 代表整数的字节数组
-	 */
-	public static byte[] intToBytes(int i) {
-		byte[] b = new byte[4];
-		b[0] = (byte) (i >>> 24);
-		b[1] = (byte) (i >>> 16);
-		b[2] = (byte) (i >>> 8);
-		b[3] = (byte) i;
-		return b;
-	}
-
-	/**
-	 * 将一个长整数转换位字节数组(8个字节)，b[0]存储高位字符，大端
-	 * 
-	 * @param l
-	 *            长整数
-	 * @return 代表长整数的字节数组
-	 */
-	public static byte[] longToBytes(long l) {
-		byte[] b = new byte[8];
-		b[0] = (byte) (l >>> 56);
-		b[1] = (byte) (l >>> 48);
-		b[2] = (byte) (l >>> 40);
-		b[3] = (byte) (l >>> 32);
-		b[4] = (byte) (l >>> 24);
-		b[5] = (byte) (l >>> 16);
-		b[6] = (byte) (l >>> 8);
-		b[7] = (byte) (l);
-		return b;
-	}
-
-	/**
-	 * short到字节数组的转换.
-	 */
-	public static byte[] shortToBytes(short number) {
-		int temp = number;
-		byte[] b = new byte[2];
-		for (int i = 0; i < b.length; i++) {
-			b[i] = new Integer(temp & 0xff).byteValue();// 将最低位保存在最低位
-			temp = temp >> 8;// 向右移8位
-		}
-		return b;
-	}
-	/**
-	 * boolean到字节数组的转换
-	 * @param b
-	 * @return
-	 */
-	public static byte[] booleanToBytes(boolean b){
+	
+	public static byte[] getBytes(short data)  
+    {  
+        byte[] bytes = new byte[2];  
+        bytes[0] = (byte) (data & 0xff);  
+        bytes[1] = (byte) ((data & 0xff00) >> 8);  
+        return bytes;  
+    }  
+  
+    public static byte[] getBytes(char data)  
+    {  
+        byte[] bytes = new byte[2];  
+        bytes[0] = (byte) (data);  
+        bytes[1] = (byte) (data >> 8);  
+        return bytes;  
+    }  
+  
+    public static byte[] getBytes(int data)  
+    {  
+        byte[] bytes = new byte[4];  
+        bytes[0] = (byte) (data & 0xff);  
+        bytes[1] = (byte) ((data & 0xff00) >> 8);  
+        bytes[2] = (byte) ((data & 0xff0000) >> 16);  
+        bytes[3] = (byte) ((data & 0xff000000) >> 24);  
+        return bytes;  
+    }  
+  
+    public static byte[] getBytes(long data)  
+    {  
+        byte[] bytes = new byte[8];  
+        bytes[0] = (byte) (data & 0xff);  
+        bytes[1] = (byte) ((data >> 8) & 0xff);  
+        bytes[2] = (byte) ((data >> 16) & 0xff);  
+        bytes[3] = (byte) ((data >> 24) & 0xff);  
+        bytes[4] = (byte) ((data >> 32) & 0xff);  
+        bytes[5] = (byte) ((data >> 40) & 0xff);  
+        bytes[6] = (byte) ((data >> 48) & 0xff);  
+        bytes[7] = (byte) ((data >> 56) & 0xff);  
+        return bytes;  
+    }  
+  
+    public static byte[] getBytes(float data)  
+    {  
+        int intBits = Float.floatToIntBits(data);  
+        return getBytes(intBits);  
+    }  
+  
+    public static byte[] getBytes(double data)  
+    {  
+        long intBits = Double.doubleToLongBits(data);  
+        return getBytes(intBits);  
+    }  
+  
+    public static byte[] getBytes(String data, String charsetName)  
+    {  
+        Charset charset = Charset.forName(charsetName);  
+        return data.getBytes(charset);  
+    }  
+  
+    public static byte[] getBytes(String data)  
+    {  
+        return getBytes(data, "GBK");  
+    }  
+	public static byte[] getBytes(boolean b){
 		return new byte[]{b?(byte) 0x01:(byte)0x00};
 	}
+	//------------------反序列化----------------------------
+    public static short getShort(byte[] bytes)  
+    {  
+        return (short) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));  
+    }  
+  
+    public static char getChar(byte[] bytes)  
+    {  
+        return (char) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));  
+    }  
+  
+    public static int getInt(byte[] bytes)  
+    {  
+        return (0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)) | (0xff0000 & (bytes[2] << 16)) | (0xff000000 & (bytes[3] << 24));  
+    }  
+     
+    public static long getLong(byte[] bytes)  
+    {  
+        return(0xffL & (long)bytes[0]) | (0xff00L & ((long)bytes[1] << 8)) | (0xff0000L & ((long)bytes[2] << 16)) | (0xff000000L & ((long)bytes[3] << 24))  
+         | (0xff00000000L & ((long)bytes[4] << 32)) | (0xff0000000000L & ((long)bytes[5] << 40)) | (0xff000000000000L & ((long)bytes[6] << 48)) | (0xff00000000000000L & ((long)bytes[7] << 56));  
+    }  
+  
+    public static float getFloat(byte[] bytes)  
+    {  
+        return Float.intBitsToFloat(getInt(bytes));  
+    }  
+  
+    public static double getDouble(byte[] bytes)  
+    {  
+        long l = getLong(bytes);   
+        return Double.longBitsToDouble(l);  
+    }  
+  
+    public static String getString(byte[] bytes, String charsetName)  
+    {  
+        return new String(bytes, Charset.forName(charsetName));  
+    }  
+  
+    public static String getString(byte[] bytes)  
+    {  
+        return getString(bytes, "GBK");  
+    }  
+	
+
 }

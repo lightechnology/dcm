@@ -14,22 +14,34 @@ import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 
-public  class ModbusProtocol {
+public  class ModbusProtocol<T extends CommTypeConvert> {
 	
 	/**
 	 * 寄存器地址
 	 */
 	private final List<Integer> regAddrs;
 	
-	private CommTypeConvert convert ;
+	private final T convert ;
 
 	private BaseTypeToBytesUtils baseTypeToBytesUtils;
 	
-	public ModbusProtocol(CommTypeConvert convert,List<DataTab> regTable) {
+	public ModbusProtocol(T convert,List<DataTab> regTable) {
 		super();
 		this.convert = convert;
 		this.regAddrs = regTable.stream().map(item->item.getId()).collect(Collectors.toList());
 	}
+	
+	
+	public List<Integer> getRegAddrs() {
+		return regAddrs;
+	}
+
+
+	public T getConvert() {
+		return convert;
+	}
+
+
 	/**
 	 * 协议验证
 	 * @param modbusAddr
@@ -62,8 +74,8 @@ public  class ModbusProtocol {
 		writeRegTable.set(0, new DataModel(modbusAddr, "byte"));
 		writeRegTable.set(1, new DataModel(code.getCode(),"byte"));
 		
-		byte[] regFirstAddr = BaseTypeToBytesUtils.intToBytes(writeRegTable.get(0).getId());
-		byte[] regLen = BaseTypeToBytesUtils.intToBytes(writeRegTable.size());
+		byte[] regFirstAddr = BaseTypeToBytesUtils.getBytes(writeRegTable.get(0).getId());
+		byte[] regLen = BaseTypeToBytesUtils.getBytes(writeRegTable.size());
 		
 		writeRegTable.set(2, new DataModel(regFirstAddr[0], "byte"));
 		writeRegTable.set(3, new DataModel(regFirstAddr[1], "byte"));
@@ -77,9 +89,8 @@ public  class ModbusProtocol {
 		ByteArrayOutputStream io = new ByteArrayOutputStream();
 		for(DataModel model:writeRegTable){
 			Object val = model.getVal();
-			String simpleName = convert.paramMapToBaseTypeSimpleName(val);
 			Class<?> clazz = convert.paramMapToBaseClass(val);
-			Method m = baseTypeToBytesUtils.getClass().getMethod(simpleName+"ToBytes", clazz);
+			Method m = baseTypeToBytesUtils.getClass().getMethod("getBytes", clazz);
 			byte[] bytes = (byte[])m.invoke(baseTypeToBytesUtils, val);
 			//TODO 查看需不需要数组翻转
 			io.write(bytes);	
@@ -115,8 +126,5 @@ public  class ModbusProtocol {
 		writeRegTable.set(4, new DataModel(regLen[0], "byte"));
 		writeRegTable.set(5, new DataModel(regLen[1], "byte"));
 		writeRegTable = writeRegTable.subList(0, 5);//不需要数据位
-	}
-	public static void main(String[] args) {
-		System.out.println(Public.byte2hex(BaseTypeToBytesUtils.intToBytes(200)));
 	}
 }

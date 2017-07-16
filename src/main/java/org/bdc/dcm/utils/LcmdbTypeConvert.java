@@ -9,10 +9,10 @@ import com.util.tools.Public;
 
 
 
-public class LcTypeConvert extends CommTypeConvert{
+public class LcmdbTypeConvert extends CommTypeConvert{
 
 	
-	private static Logger logger = LoggerFactory.getLogger(LcTypeConvert.class); 
+	private static Logger logger = LoggerFactory.getLogger(LcmdbTypeConvert.class); 
 	
 	private final static int DATATYPE_TEMPERATURE = 10;
 	private final static int DATATYPE_JDQSTATE = 11;

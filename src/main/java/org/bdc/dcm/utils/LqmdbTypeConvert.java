@@ -3,11 +3,11 @@ package org.bdc.dcm.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LqTypeConvert extends CommTypeConvert{
+public class LqmdbTypeConvert extends CommTypeConvert{
 
-	private final static LqTypeConvert convert = new LqTypeConvert();
+	private final static LqmdbTypeConvert convert = new LqmdbTypeConvert();
 	
-	private static Logger logger = LoggerFactory.getLogger(LqTypeConvert.class); 
+	private static Logger logger = LoggerFactory.getLogger(LqmdbTypeConvert.class); 
 	
 	@Override
 	protected void initRegTokey() throws Exception{

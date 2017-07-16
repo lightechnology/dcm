@@ -3,24 +3,29 @@ package org.bdc.dcm.data.coder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import org.bdc.dcm.conf.IntfConf;
-import org.bdc.dcm.data.coder.intf.DataDecoder;
-import org.bdc.dcm.intf.DataTabConf;
-import org.bdc.dcm.vo.DataPack;
+import java.util.List;
+import org.bdc.dcm.data.coder.comm.DataDecoderAdapter;
+import org.bdc.dcm.vo.DataModel;
+import org.bdc.dcm.vo.e.DataType;
 
-public class LcmdbDecoder implements DataDecoder<ByteBuf> {
-	
-	private final DataTabConf dataTabConf;
 
-	public LcmdbDecoder() {
-		this.dataTabConf = IntfConf.getDataTabConf();
+public class LcmdbDecoder extends DataDecoderAdapter{
+
+	private DataType dataType;
+
+	public LcmdbDecoder(DataType dataType) {
+		super(dataType);
+		this.dataType = dataType;
 	}
-	
-	// 通过DataTypeConf接口获取解码规则
+
 	@Override
-	public DataPack data2Package(ChannelHandlerContext ctx, ByteBuf msg) {
-	    // 待编写解码部分的代码
-		return null;
+	public void customProtocol(ChannelHandlerContext ctx, ByteBuf msg) {
+		
+	}
+
+	@Override
+	public void knownProtocol(ChannelHandlerContext ctx, List<DataModel> dataModelList) {
+		
 	}
 	
 }

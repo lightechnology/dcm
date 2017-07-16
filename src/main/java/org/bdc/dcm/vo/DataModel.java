@@ -13,6 +13,14 @@ public class DataModel extends DataTab{
 		return val;
 	}
 
+	public void setVal(Object val) {
+		this.val = val;
+	}
+
+	public DataModel() {
+		super();
+	}
+
 	public DataModel(Object val,String form) {
 		super();
 		this.val = val;
