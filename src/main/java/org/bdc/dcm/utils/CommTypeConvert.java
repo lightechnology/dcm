@@ -1,12 +1,12 @@
 package org.bdc.dcm.utils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,12 +184,49 @@ public abstract class CommTypeConvert {
 		};
 	}
 	/**
-	 * 获取包装类型的基本类型 netty 转解
+	 * 通用 包装类 得到 基本类型simpleName
 	 * @param o
 	 * @return
 	 */
-	public static Class<?> writeParmMapToBaseType(Object o){
-		
+	public String paramMapToBaseTypeSimpleName(Object o){
+		switch(o.getClass().getSimpleName()){
+			case "Integer":return "int";
+			case "Character": return "char";
+			case "Byte":return "byte";
+			case "Short":return "short";
+			case "Boolean":return "boolean";
+			case "Long":return "long";
+			case "Float":return "float";
+			case "Double":return "double";
+		default :return null;
+	}
+	}
+	/**
+	 * 获取包装类型的基本类型simpleName
+	 * 如果需要 可以复写
+	 * @param o
+	 * @return
+	 */
+	public Class<?> paramMapToBaseClass(Object o){
+		switch(o.getClass().getSimpleName()){
+			case "Integer":return int.class;
+			case "Character":return char.class;
+			case "Byte":return byte.class;
+			case "Short":return short.class;
+			case "Boolean":return boolean.class;
+			case "Long":return long.class;
+			case "Float":return float.class;
+			case "Double":return double.class;
+			default :return null;
+		}
+	};
+	/**
+	 * 获取包装类型的基本类型 netty 转解
+	 * 如果需要 可以复写
+	 * @param o
+	 * @return
+	 */
+	Function<Object,Class<?>> writeParmMapToBaseType = (o)->{
 		switch(o.getClass().getSimpleName()){
 			case "Integer":
 			case "Character":
@@ -201,52 +238,63 @@ public abstract class CommTypeConvert {
 			case "Double":return double.class;
 			default :return null;
 		}
-	}
+	};
+	
 	/**
 	 * 通用连续地址内容写
-	 * @param tabs 这里请填入一组功能下连续地址的datatab
+	 * @param dataModelList 这里请填入一组功能下连续地址的datatab
 	 * @param out
 	 * @param addr
 	 * @param func
 	 * @param val
 	 * @return
 	 */
-	public ByteBuf write(List<DataTab> tabs,ByteBuf out,Object val){
+	public ByteBuf write(List<DataModel> dataModelList,ByteBuf out){
 		ByteBuf buf = null;
-		for(DataTab tab:tabs){
-			ByteBuf tmp = write(tab, out, val);
+		for(DataModel tab:dataModelList){
+			ByteBuf tmp = write(tab, out);
 			if(tmp != null)
 				buf = tmp;
 		}
 		return buf;
 	} 
-	/**
-	 * 通用单地址内容写
-	 * @param tab 这里请填入一组功能下连续地址的datatab
-	 * @param out
-	 * @param val
-	 * @return
-	 */
-	public ByteBuf write(DataTab tab,ByteBuf out,Object val){
+	
+	private ByteBuf wirte(DataModel dataModel,ByteBuf out,Function<Object,Class<?>> fun){
 		try {
 			final int writeMethodIndex = 1;
-			Method[] m = typeToMethodInRW.get(tab.getForm());
+			Method[] m = typeToMethodInRW.get(dataModel.getForm());
 			if(m != null && m[writeMethodIndex] != null){
+				Object val = dataModel.getVal();
 				int count = m[writeMethodIndex].getParameterCount();
 				if(count == 1){
 					Class<?> clazz = m[writeMethodIndex].getParameterTypes()[0];
 					//用户传入参数的类型  与 用户定义的方法数据类型
-					if(writeParmMapToBaseType(val).equals(clazz) ){
+					if(fun.apply(val).equals(clazz) ){
 						return (ByteBuf)m[writeMethodIndex].invoke(out, val);
 					}
 				}
-				ByteBuf o = (ByteBuf) m[1].invoke(out, val);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return out;
 	}
+	/**
+	 * 通用单地址内容写
+	 * @param dataModel 这里请填入一组功能下连续地址的datatab
+	 * @param out
+	 * @param val
+	 * @return
+	 */
+	public ByteBuf write(DataModel dataModel,ByteBuf out){
+		return wirte(dataModel,out,writeParmMapToBaseType);
+	}
+	/**
+	 * 依据配置读内容
+	 * @param tab
+	 * @param in
+	 * @return
+	 */
 	public Object read(DataTab tab, ByteBuf in) {
 
 		in.markReaderIndex();
@@ -276,7 +324,10 @@ public abstract class CommTypeConvert {
 			bs[bs.length - 1 - i] = tmp;
 		}
 	}
-
+	/**
+	 * 寄存器转换后算法
+	 * @throws Exception
+	 */
 	protected abstract void initRegTokey() throws Exception;
 	
 }
