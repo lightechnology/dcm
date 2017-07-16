@@ -6,12 +6,13 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import org.bdc.dcm.conf.ComConf;
-
-import com.util.tools.Public;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
             List<Object> out) throws Exception {
@@ -21,52 +22,34 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             in.markReaderIndex();
             // 判断是否是FE A5开头
             if ((byte) 0xFE == in.readByte() && (byte) 0xA5 == in.readByte()) {
-                // 判断够不够取数据包长度标识
-                if (1 < in.readableBytes()) {
-                    int dt = in.readInt();
-                    int ln = in.readInt();
-                    if (ln < in.readableBytes()) {
-                        byte ebyte = (byte) (dt + ln);
-                        byte[] dl = new byte[ln - 10];
-                        for (int i = 0; i < ln; i++) {
-                            byte b = in.readByte();
-                            ebyte += b;
-                            if (9 < i)
-                                dl[i - 10] = b;
-                        }
-                        // 数据包校验和、数据CRC校验
-                        if (ebyte == in.readByte()
-                                && 0 == Public.bytes2Int(Public.crc16_A001(dl))) {
-                            in.resetReaderIndex();
-                            ByteBuf frame = ctx.alloc().buffer(5 + ln);
-                            frame.writeBytes(in, in.readerIndex(), 5 + ln);
-                            in.readerIndex(in.readerIndex() + 5 + ln);
-                            out.add(frame);
-                        }
-                        // 校验不过，跳过头部字节往后判断
-                        else {
-                            in.resetReaderIndex();
-                            in.readByte();
-                            in.readByte();
-                        }
-                    }
-                    // 如果长度超出预设的，认为错误数据，跳过
-                    else if (ln > Public.objToInt(ComConf.getInstance().DATAPACK_MAXLENGTH)) {
-                        in.resetReaderIndex();
-                        in.readByte();
-                        in.readByte();
-                    }
-                    // 长度不够，回到数据起始位置，这里不用写return，继续运行下去就是“return false”这句
-                    else {
-                        in.resetReaderIndex();
-                        break;
-                    }
-                }
-                // 长度不够，回到数据起始位置，这里不用写return，继续运行下去就是“return false”这句
-                else {
-                    in.resetReaderIndex();
-                    break;
-                }
+            	byte type = in.readByte();
+            	int packLen = in.readByte() & 0xff;
+            	byte[] data = new byte[packLen];
+            	in.readBytes(data);
+            	byte crcSum = in.readByte();
+            	//不包涵两个头部信息
+            	int sum = (type&0xff) + packLen;
+            	
+            	for(int i=0;i<data.length;i++){
+            		sum+=(data[i] & 0xff);
+            	}
+            	byte calcSum = (byte)(sum & 0xff);
+            	if(crcSum == calcSum){
+            		in.resetReaderIndex();
+            		//两字节头 +1 字节类型 + 1字节长度 +1 字节校验和
+            		ByteBuf frame = in.readBytes(4+packLen+1);
+            		byte[] frameBytes = new byte[frame.readableBytes()];
+            		frame.markReaderIndex();
+            		frame.readBytes(frameBytes);
+            		//防止单独设置时 返回的数据
+        			//if(packLen == 45 || packLen == 9){//只解轮训状态的包
+	            		frame.resetReaderIndex();
+	            		out.add(frame);
+        			//}
+            	}  
+            }else{
+            	in.resetReaderIndex();
+            	in.readableBytes();
             }
         }
     }
