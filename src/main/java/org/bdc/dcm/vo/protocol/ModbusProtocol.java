@@ -1,12 +1,7 @@
 package org.bdc.dcm.vo.protocol;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +9,8 @@ import org.bdc.dcm.utils.BaseTypeToBytesUtils;
 import org.bdc.dcm.utils.CommTypeConvert;
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataTab;
+
+import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +30,13 @@ public  class ModbusProtocol {
 		this.convert = convert;
 		this.regAddrs = regTable.stream().map(item->item.getId()).collect(Collectors.toList());
 	}
-	
+	/**
+	 * 协议验证
+	 * @param modbusAddr
+	 * @param code
+	 * @param dataModelList
+	 * @return
+	 */
 	protected boolean validateProtocol(byte modbusAddr,ModbusFunCode code,List<DataModel> dataModelList){
 		if(modbusAddr < 1 || code ==null || dataModelList ==null ) return false;
 		else return true;
@@ -112,5 +115,8 @@ public  class ModbusProtocol {
 		writeRegTable.set(4, new DataModel(regLen[0], "byte"));
 		writeRegTable.set(5, new DataModel(regLen[1], "byte"));
 		writeRegTable = writeRegTable.subList(0, 5);//不需要数据位
+	}
+	public static void main(String[] args) {
+		System.out.println(Public.byte2hex(BaseTypeToBytesUtils.intToBytes(200)));
 	}
 }
