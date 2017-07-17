@@ -1,0 +1,60 @@
+{
+  "dataTabConf": [
+    {
+      "id": 1,
+      "name": "header",
+      "form": "short",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 2,
+      "name": "type",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 3,
+      "name": "len",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 4,
+      "name": "command",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 6,
+      "name": "mac",
+      "form": "long",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 7,
+      "name": "order",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 8,
+      "name": "modbus",
+      "form": "modbus",
+      "units": "",
+      "dataLevel": 0
+    },
+    {
+      "id": 9,
+      "name": "crcSum",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    }
+  ]
+}

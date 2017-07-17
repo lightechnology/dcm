@@ -8,6 +8,8 @@ import java.util.function.Function;
 
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataTab;
+import org.bdc.dcm.vo.FunIndentity;
+import org.bdc.dcm.vo.e.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,136 +54,101 @@ public abstract class CommTypeConvert {
 
 	/**
 	 * 执行方法后的后续处理
-	 */
-	protected Map<Integer, Function<Number, ?>> typeToBackConvert = new HashMap<>();
-
-	/**
+	 * 
+	 * key 寄存器地址
+	 * val 内部进行需要的计算
 	 * 用于类型找到对应的bytebuf执行的方法 肯定返回数字类型 Number
-	 */
-	protected static Map<String, Method[]> typeToMethodInRW = new HashMap<>();
-
-	protected Function<Number, Double> d10 = null;
-	protected Function<Number, Double> d100 = null;
-	protected Function<Number, Double> d1000 = null;
-	protected Function<Number, Double> d3200 = null;
-	protected Function<Number, Boolean> numberToBoolean = null;
-
-	protected Function<Number, Double> t10 = null;
-	protected Function<Number, Double> t100 = null;
-	protected Function<Number, Double> t1000 = null;
-	protected Function<Number, Double> t3200 = null;
+	 * 运行时调用
+	*/
+	protected Map<FunIndentity, Function<byte[], byte[]>> typeToBackConvert = new HashMap<>();
+	private static Map<String, Method[]> typeToMethodInRW = new HashMap<>();
 
 	protected CommTypeConvert() {
 		try {
-			initFun();
 			initTypeToMethod();
-			initRegTokey();
+			this.typeToBackConvert.putAll(getTypeToBackConvert());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * 类初始化调用 在读后进行数据转换的接接口
+	 * @return
+	 */
+	public abstract Map<FunIndentity, Function<byte[], byte[]>> getTypeToBackConvert();
+	
 	private void initTypeToMethod() throws Exception {
 
 		Class<AbstractByteBuf> clazz = AbstractByteBuf.class;
 		typeToMethodInRW.put("boolean", new Method[] { 
-			clazz.getDeclaredMethod("readBoolean"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeBoolean", boolean.class) 
 		});
 		
 		typeToMethodInRW.put("byte", new Method[] { 
-			clazz.getDeclaredMethod("readByte"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeByte",int.class) 
 		});
 		
 		typeToMethodInRW.put("uByte", new Method[] { 
-			clazz.getDeclaredMethod("readUnsignedByte"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeByte",int.class)  
 		});
 		
 		typeToMethodInRW.put("short", new Method[] { 
-			clazz.getDeclaredMethod("readShort"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeshort",int.class)  
 		});
 		
 		typeToMethodInRW.put("uShort", new Method[] { 
-			clazz.getDeclaredMethod("readUnsignedShort"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeshort",int.class)  
 		});
 		
 		typeToMethodInRW.put("medium", new Method[] { 
-			clazz.getDeclaredMethod("readMedium"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeMedium",int.class)  
 		});
 		
 		typeToMethodInRW.put("uMedium", new Method[] { 
-			clazz.getDeclaredMethod("readUnsignedMedium"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeMedium",int.class)  
 		});
 		
 		typeToMethodInRW.put("int", new Method[] { 
-			clazz.getDeclaredMethod("readInt"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeInt",int.class)  
 		});
 		
 		typeToMethodInRW.put("uInt", new Method[] { 
-			clazz.getDeclaredMethod("readUnsignedInt"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeInt",int.class)  
 		});
 		
 		typeToMethodInRW.put("long", new Method[] { 
-			clazz.getDeclaredMethod("readLong"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeLong",long.class)  
 		});
 		
 		typeToMethodInRW.put("char", new Method[] { 
-			clazz.getDeclaredMethod("readChar"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeChar",int.class)  
 		});
 		
 		typeToMethodInRW.put("float", new Method[] { 
-			clazz.getDeclaredMethod("readFloat"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeFloat",float.class)  
 		});
 		
 		typeToMethodInRW.put("double", new Method[] { 
-			clazz.getDeclaredMethod("readDouble"),
+			clazz.getDeclaredMethod("readBytes"),
 			clazz.getDeclaredMethod("writeDouble",double.class)  
 		});
+		//继承
+		typeToMethodInRW.put("crcSum16",typeToMethodInRW.get("byte"));
+		
 	}
 
-	/**
-	 * 初始化功能代码
-	 */
-	private void initFun() {
-		d10 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() / 10);
-		};
-		d100 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() / 100);
-		};
-		d1000 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() / 1000);
-		};
-		d3200 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() / 3200);
-		};
-		numberToBoolean = (obj) -> {
-			return obj.doubleValue() > 0;
-		};
-		t10 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() * 10);
-		};
-		t100 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() * 100);
-		};
-		t1000 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() * 1000);
-		};
-		t3200 = (obj) -> {
-			return Double.valueOf(obj.doubleValue() * 3200);
-		};
-	}
 	/**
 	 * 通用 包装类 得到 基本类型simpleName
 	 * @param o
@@ -291,29 +258,34 @@ public abstract class CommTypeConvert {
 	public ByteBuf write(DataModel dataModel,ByteBuf out){
 		return wirte(dataModel,out,writeParmMapToBaseType);
 	}
+	
+	public byte[] read(DataTab tab, ByteBuf in){
+		int readWriteIndex = 0;//readBytes
+		try {
+			Method[] m = typeToMethodInRW.get(tab.getForm());
+			if (m != null && m[readWriteIndex] != null) {
+				return  (byte[])m[readWriteIndex].invoke(in);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * 依据配置读内容
 	 * @param tab
 	 * @param in
 	 * @return
 	 */
-	public Object read(DataTab tab, ByteBuf in) {
-
-		in.markReaderIndex();
-
-		try {
-			Method[] m = typeToMethodInRW.get(tab.getForm());
-			if (m != null && m[0] != null) {
-				Number obj = (Number) m[0].invoke(in, null);
-				Function<Number, ?> fun = typeToBackConvert.get(tab.getName());
-				if (fun != null) {
-					return fun.apply(obj);
-				}
-				return obj.doubleValue();
+	public byte[] readAndConvert(DataTab tab,DataType dataType ,ByteBuf in) {
+		byte[] result = read(tab,in);
+		if(result != null){
+			Function<byte[], byte[]> fun = typeToBackConvert.get(new FunIndentity(dataType, tab.getId()));
+			if (fun != null) {
+				return fun.apply(result);
 			}
-			return null;
-		} catch (Exception e) {
-			e.printStackTrace();
+			return result;
 		}
 		return null;
 	}
@@ -326,14 +298,16 @@ public abstract class CommTypeConvert {
 			bs[bs.length - 1 - i] = tmp;
 		}
 	}
-	/**
-	 * 寄存器转换后算法
-	 * @throws Exception
-	 */
-	protected abstract void initRegTokey() throws Exception;
 
 	public static Map<String, Method[]> getTypeToMethodInRW() {
 		return typeToMethodInRW;
 	}
-	
+	protected byte[] divide(byte[] bs,int i){
+		int o = BaseTypeToBytesUtils.getInt(bs);
+		return BaseTypeToBytesUtils.getBytes(o/i);
+	}
+	protected byte[] time(byte[] bs,int i){
+		int o = BaseTypeToBytesUtils.getInt(bs);
+		return BaseTypeToBytesUtils.getBytes(o/i);
+	}
 }

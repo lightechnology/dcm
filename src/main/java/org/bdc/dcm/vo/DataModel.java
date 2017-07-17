@@ -27,5 +27,14 @@ public class DataModel extends DataTab{
 		setForm(form);
 	}
 
+	public static DataModel mapBy(DataTab tab,Object val){
+		DataModel dataModel = new DataModel(val,tab.getForm());
+		dataModel.setId(tab.getId());
+		dataModel.setKind(tab.getKind());
+		dataModel.setName(tab.getName());
+		dataModel.setOname(tab.getOname());
+		dataModel.setUnits(tab.getUnits());
+		return dataModel;
+	}
 	
 }

@@ -1,12 +1,16 @@
 package org.bdc.dcm.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.bdc.dcm.vo.FunIndentity;
+import org.bdc.dcm.vo.e.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
-
+import org.bdc.dcm.utils.BaseTypeToBytesUtils;
 
 
 public class LcmdbTypeConvert extends CommTypeConvert{
@@ -21,30 +25,31 @@ public class LcmdbTypeConvert extends CommTypeConvert{
 	private final static int DATATYPE_SURPLUS_POWER= 14;
 	private final static int DATATYPE_SURPLUS_TIME= 15;
 	
-
-	
 	@Override
-	protected void initRegTokey() throws Exception{
-		
-		typeToBackConvert.put(128, d10);
-		typeToBackConvert.put(130, d3200);
-		typeToBackConvert.put(132, d10);
-		typeToBackConvert.put(134, d3200);
-		typeToBackConvert.put(136, d100);
-		typeToBackConvert.put(137, d1000);
-		typeToBackConvert.put(138, null);
-		typeToBackConvert.put(139, d1000);
-		typeToBackConvert.put(140, new Function<Number, Integer>() {
-
-			@Override
-			public Integer apply(Number i) {
-				return i.intValue() & 0xff;
-			}
-			
+	public Map<FunIndentity, Function<byte[], byte[]>> getTypeToBackConvert(){
+		Map<FunIndentity, Function<byte[], byte[]>> map = new HashMap<>();
+		map.put(new FunIndentity(DataType.Lcmdb, 128), (bs)->{
+			return divide(bs, 10);
 		});
-		typeToBackConvert.put(141, d10);
-		//只有一路继电器
-		typeToBackConvert.put(142, numberToBoolean);
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 3200);
+		});
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 10);
+		});
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 3200);
+		});
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 100);
+		});
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 1000);
+		});
+		map.put(new FunIndentity(DataType.Lcmdb, 130), (bs)->{
+			return divide(bs, 1000);
+		});
+		return map;
 	}
 	
 	public int convertTypeStr2TypeId(String type) {
@@ -192,6 +197,5 @@ public class LcmdbTypeConvert extends CommTypeConvert{
 		bs[10] = crc[0];
 		return bs;
 	}
-	
 
 }

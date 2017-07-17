@@ -122,6 +122,8 @@ public class BaseTypeToBytesUtils {
     {  
         return getString(bytes, "GBK");  
     }  
-	
+    public static boolean getBoolean(byte[] bytes){
+    	return getInt(bytes) > 0;
+    }
 
 }

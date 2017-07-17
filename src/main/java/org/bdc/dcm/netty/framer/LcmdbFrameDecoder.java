@@ -5,15 +5,16 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-    @Override
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
             List<Object> out) throws Exception {
         // 有足够数据时
@@ -53,5 +54,4 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             }
         }
     }
-
 }
