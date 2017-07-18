@@ -81,67 +81,67 @@ public abstract class CommTypeConvert {
 
 		Class<AbstractByteBuf> clazz = AbstractByteBuf.class;
 		typeToMethodInRW.put("boolean", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeBoolean", boolean.class) 
 		});
 		
 		typeToMethodInRW.put("byte", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeByte",int.class) 
 		});
 		
 		typeToMethodInRW.put("uByte", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeByte",int.class)  
 		});
 		
 		typeToMethodInRW.put("short", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
-			clazz.getDeclaredMethod("writeshort",int.class)  
+			clazz.getDeclaredMethod("readBytes",int.class),
+			clazz.getDeclaredMethod("writeShort",int.class)  
 		});
 		
 		typeToMethodInRW.put("uShort", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
-			clazz.getDeclaredMethod("writeshort",int.class)  
+			clazz.getDeclaredMethod("readBytes",int.class),
+			clazz.getDeclaredMethod("writeShort",int.class)  
 		});
 		
 		typeToMethodInRW.put("medium", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeMedium",int.class)  
 		});
 		
 		typeToMethodInRW.put("uMedium", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeMedium",int.class)  
 		});
 		
 		typeToMethodInRW.put("int", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeInt",int.class)  
 		});
 		
 		typeToMethodInRW.put("uInt", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeInt",int.class)  
 		});
 		
 		typeToMethodInRW.put("long", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeLong",long.class)  
 		});
 		
 		typeToMethodInRW.put("char", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeChar",int.class)  
 		});
 		
 		typeToMethodInRW.put("float", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeFloat",float.class)  
 		});
 		
 		typeToMethodInRW.put("double", new Method[] { 
-			clazz.getDeclaredMethod("readBytes"),
+			clazz.getDeclaredMethod("readBytes",int.class),
 			clazz.getDeclaredMethod("writeDouble",double.class)  
 		});
 		//继承
@@ -264,7 +264,7 @@ public abstract class CommTypeConvert {
 		try {
 			Method[] m = typeToMethodInRW.get(tab.getForm());
 			if (m != null && m[readWriteIndex] != null) {
-				return  (byte[])m[readWriteIndex].invoke(in);
+				return  (byte[])m[readWriteIndex].invoke(in/*,*/);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

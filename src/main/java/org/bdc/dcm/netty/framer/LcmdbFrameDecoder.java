@@ -5,16 +5,22 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
+
+import org.bdc.dcm.utils.PublicUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.util.tools.Public;
 
 
 public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 
+	private int sendNum = 0;
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
+	//从type 开始到校验码之前的所有字节累加
     protected void decode(ChannelHandlerContext ctx, ByteBuf in,
             List<Object> out) throws Exception {
         // 有足够数据时
@@ -22,14 +28,20 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             // 标记当前位置，以便reset
             in.markReaderIndex();
             // 判断是否是FE A5开头
-            int sum = 0;
-            int curCrcSum = 0;
+           
             if ((byte) 0xFE == in.readByte() && (byte) 0xA5 == in.readByte()) {
-	            sum = in.readByte()&0xff;
-	            curCrcSum = in.readByte() & 0xff;
-	            while(curCrcSum != sum && 1 < in.readableBytes()){
-	            	sum += curCrcSum;
-	            	curCrcSum = in.readByte() & 0xff;
+            	int runNum = PublicUtils.crcCheckSum(in);
+	            if(runNum > 0){//校验和通过
+	            	in.resetReaderIndex();
+	            	byte[] bs = new byte[2+runNum+1];
+	            	in.readBytes(bs);
+	            	logger.error("成功：{},发送次数：{}",Public.byte2hex(bs),sendNum);
+	            	bs = null;
+	            	//out.add(frame);
+	            	ByteBuf buf = ctx.alloc().buffer();
+	            	buf.writeBytes(Public.hexString2bytes("FE A5 01 12 16 00 12 4B 00 0A DC 89 5B 00 01 03 00 80 00 0F 04 26 0D"));
+	            	sendNum++;
+	            	ctx.writeAndFlush(buf);
 	            }
             }
             
