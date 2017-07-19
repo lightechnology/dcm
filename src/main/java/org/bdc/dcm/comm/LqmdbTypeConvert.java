@@ -1,4 +1,4 @@
-package org.bdc.dcm.utils;
+package org.bdc.dcm.comm;
 
 import java.util.Map;
 import java.util.function.Function;

@@ -1,4 +1,4 @@
-package org.bdc.dcm.utils;
+package org.bdc.dcm.comm;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
-import org.bdc.dcm.utils.BaseTypeToBytesUtils;
 
 
 public class LcmdbTypeConvert extends CommTypeConvert{

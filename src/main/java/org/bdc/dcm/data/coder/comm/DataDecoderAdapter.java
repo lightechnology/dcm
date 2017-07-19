@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bdc.dcm.comm.CommTypeConvert;
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
-import org.bdc.dcm.utils.CommTypeConvert;
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
@@ -30,7 +30,7 @@ public abstract class DataDecoderAdapter implements DataDecoder<ByteBuf>{
 	public DataDecoderAdapter(DataType dataType) {
 		try {
 			this.regTable = IntfConf.getDataTabConf().getDataTabConf(dataType.name());
-			this.convert = (CommTypeConvert)Class.forName("org.bdc.dcm.utils."+dataType.name()+"TypeConvert").newInstance();
+			this.convert = (CommTypeConvert)Class.forName("org.bdc.dcm.comm."+dataType.name()+"TypeConvert").newInstance();
 			this.dataType = dataType;
 		} catch (Exception e) {
 			e.printStackTrace();

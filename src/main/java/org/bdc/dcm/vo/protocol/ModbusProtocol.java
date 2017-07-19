@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bdc.dcm.utils.BaseTypeToBytesUtils;
-import org.bdc.dcm.utils.CommTypeConvert;
+import org.bdc.dcm.comm.BaseTypeToBytesUtils;
+import org.bdc.dcm.comm.CommTypeConvert;
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataTab;
 

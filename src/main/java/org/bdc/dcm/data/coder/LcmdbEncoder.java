@@ -6,9 +6,9 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.List;
 import java.util.Map;
 
+import org.bdc.dcm.comm.LcmdbTypeConvert;
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataEncoder;
-import org.bdc.dcm.utils.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.e.DataType;

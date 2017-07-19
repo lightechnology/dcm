@@ -1,4 +1,4 @@
-package org.bdc.dcm.utils;
+package org.bdc.dcm.comm;
 
 import java.nio.charset.Charset;
 

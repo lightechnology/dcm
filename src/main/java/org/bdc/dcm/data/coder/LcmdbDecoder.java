@@ -5,8 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Map;
 
+import org.bdc.dcm.comm.BaseTypeToBytesUtils;
 import org.bdc.dcm.data.coder.comm.DataDecoderAdapter;
-import org.bdc.dcm.utils.BaseTypeToBytesUtils;
 import org.bdc.dcm.vo.DataModel;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataType;
