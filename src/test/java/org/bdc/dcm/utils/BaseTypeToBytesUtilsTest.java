@@ -2,7 +2,7 @@ package org.bdc.dcm.utils;
 
 import static org.junit.Assert.*;
 
-
+import org.bdc.dcm.comm.BaseTypeToBytesUtils;
 import org.junit.Test;
 
 import com.util.tools.Public;

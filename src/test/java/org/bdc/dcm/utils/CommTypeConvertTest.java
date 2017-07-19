@@ -1,6 +1,8 @@
 package org.bdc.dcm.utils;
 
 import java.lang.reflect.Method;
+
+import org.bdc.dcm.comm.CommTypeConvert;
 import org.junit.Test;
 import junit.framework.TestCase;
 
