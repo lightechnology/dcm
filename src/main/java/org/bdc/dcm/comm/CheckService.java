@@ -28,7 +28,7 @@ public class CheckService {
         	if(checksum == sum){
         		ByteBuf buf = in.resetReaderIndex().readBytes(readLen+1);
         		for(CheckInterceptor cb:cbs){
-        			if(!cb.checkSum(buf.alloc().buffer(buf.readableBytes()).writeBytes(buf))){
+        			if(!cb.invoke(buf.alloc().buffer(buf.readableBytes()).writeBytes(buf))){
         				return false;//只要在一系列callback有一个出错 那么检验不通过
         			}
         		}

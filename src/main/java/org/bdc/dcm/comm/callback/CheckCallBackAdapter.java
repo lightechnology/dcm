@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 public class CheckCallBackAdapter implements CheckInterceptor {
 
 	@Override
-	public boolean checkSum(ByteBuf in) {
+	public boolean invoke(ByteBuf in) {
 		return false;
 	}
 

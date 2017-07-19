@@ -8,5 +8,5 @@ public interface CheckInterceptor {
 	 * @param in
 	 * @return
 	 */
-	public boolean checkSum(ByteBuf in);
+	public boolean invoke(ByteBuf in);
 }

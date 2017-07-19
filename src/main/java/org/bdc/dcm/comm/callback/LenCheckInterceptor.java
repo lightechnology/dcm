@@ -43,7 +43,7 @@ public class LenCheckInterceptor implements CheckInterceptor {
 	 * @param in 
 	 */
 	@Override
-	public boolean checkSum(ByteBuf in) {
+	public boolean invoke(ByteBuf in) {
 		byte [] lenBytes = new byte[lenFieldLen];
 		in.getBytes(lenFirstByteOffset, lenBytes);
 		int lenVal = Public.bytes2Int(lenBytes);
