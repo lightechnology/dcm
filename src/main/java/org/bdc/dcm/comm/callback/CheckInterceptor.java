@@ -9,4 +9,6 @@ public interface CheckInterceptor {
 	 * @return
 	 */
 	public boolean invoke(ByteBuf in);
+	
+	public ByteBuf getByteBuf(ByteBuf in);
 }

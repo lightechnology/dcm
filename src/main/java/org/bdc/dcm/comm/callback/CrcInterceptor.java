@@ -16,4 +16,10 @@ public class CrcInterceptor implements CheckInterceptor {
 		return false;
 	}
 
+	@Override
+	public ByteBuf getByteBuf(ByteBuf in) {
+		//TODO请写
+		return null;
+	}
+
 }

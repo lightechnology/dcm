@@ -49,5 +49,9 @@ public class LenCheckInterceptor implements CheckInterceptor {
 		int lenVal = Public.bytes2Int(lenBytes);
 		return lenVal  == in.readableBytes() - lastLen - lenFieldLen - lenFirstByteOffset;
 	}
+	@Override
+	public ByteBuf getByteBuf(ByteBuf in) {
+		return in.alloc().buffer(in.readableBytes()).writeBytes(in);
+	}
 
 }
