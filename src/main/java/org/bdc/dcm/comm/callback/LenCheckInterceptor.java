@@ -8,50 +8,39 @@ import com.util.tools.Public;
 import io.netty.buffer.ByteBuf;
 
 public class LenCheckInterceptor implements CheckInterceptor {
-	
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	private int lenFirstByteOffset = 0;
-	
+
 	private int lastLen = 0;
-	
+
 	private int lenFieldLen;
-	/**
-	 * 
-	 * @param lenFirstByteOffset 长度首字节偏移量 
-	 * @param lenFieldLen 长度标识的字节长度
-	 * @param lastLen 忽略的最后字节数
-	 */
-	public LenCheckInterceptor(int lenFirstByteOffset,int lenFieldLen,int lastLen) {
+
+	
+
+
+	public LenCheckInterceptor(int lenFirstByteOffset, int lastLen, int lenFieldLen) {
+		super();
 		this.lenFirstByteOffset = lenFirstByteOffset;
 		this.lastLen = lastLen;
 		this.lenFieldLen = lenFieldLen;
 	}
-	/**
-	 * 默认长度标识为1个字节
-	 * @param lenFirstByteOffset 长度首字节偏移量 
-	 * @param lastLen 忽略的最后字节数
-	 */
+
 	public LenCheckInterceptor(int lenFirstByteOffset, int lastLen) {
 		super();
 		this.lenFirstByteOffset = lenFirstByteOffset;
 		this.lastLen = lastLen;
 		this.lenFieldLen = 1;
 	}
-
 	/**
-	 * @param in 
+	 * @param in
 	 */
 	@Override
 	public boolean invoke(ByteBuf in) {
-		byte [] lenBytes = new byte[lenFieldLen];
-		in.getBytes(lenFirstByteOffset, lenBytes);
+		byte[] lenBytes = new byte[lenFieldLen];
+		in.getBytes(in.readerIndex() + lenFirstByteOffset, lenBytes);
 		int lenVal = Public.bytes2Int(lenBytes);
-		return lenVal  == in.readableBytes() - lastLen - lenFieldLen - lenFirstByteOffset;
+		return lenVal == in.readableBytes() - lastLen - lenFieldLen - lenFirstByteOffset;
 	}
-	@Override
-	public ByteBuf getByteBuf(ByteBuf in) {
-		return in.alloc().buffer(in.readableBytes()).writeBytes(in);
-	}
-
 }

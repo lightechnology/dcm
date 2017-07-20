@@ -15,11 +15,4 @@ public class CrcInterceptor implements CheckInterceptor {
 		//TODO 继续写逻辑
 		return false;
 	}
-
-	@Override
-	public ByteBuf getByteBuf(ByteBuf in) {
-		//TODO请写
-		return null;
-	}
-
 }
