@@ -22,7 +22,4 @@ public class TcpLcmdbChannelInitializer extends AbstractChannelInitializer<Socke
         pipeline.addLast("dataHandler", new DataHandler(getNettyBoot()));
 	}
 
-	public static void main(String[] args) {
-		
-	}
 }
