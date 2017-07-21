@@ -3,6 +3,8 @@ package org.bdc.dcm.comm.callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.util.tools.Public;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -13,28 +15,21 @@ import io.netty.buffer.ByteBuf;
 public class checkSumInterceptor implements ZoneInterceptor {
 
 	private static Logger logger = LoggerFactory.getLogger(checkSumInterceptor.class);
-	private int readIndex;
 	public boolean invoke(ByteBuf in) {
 		int checksum = 0;
-		int fullLen = 0;
-		fullLen = in.readableBytes();
-		for (int readLen = 0,sum = in.getByte(in.readerIndex()+readLen++) & 0xff; readLen < fullLen;) {
-			checksum = in.getByte(in.readerIndex()+readLen) & 0xff;
-			readLen++;
+		int fullLen = in.readableBytes();
+		//自行维护readerIndex
+		for (int sum = in.readByte() & 0xff; in.isReadable();) {
+			checksum = in.readByte() & 0xff;
 			if (checksum == sum){
-				logger.error("checkSum：{},sum:{},readLen:{}",checksum,sum,readLen);
-				readIndex = readLen;//补充最后一个checksum的读
+				logger.info("校验和通过的数据-------：系统数据总长度：{},系统读索引：{},当前正确数据长度：{}",fullLen,in.readerIndex());
 				return true;
+			}else{// 当前计算的校验和还不到
+				sum = (sum + checksum) & 0xff;
 			}
-			// 当前计算的校验和还不到
-			sum = (sum + checksum) & 0xff;
 		}
 		// 读完了都找不到校验和
 		return false;
 	}
 
-	@Override
-	public int readIndex() {
-		return readIndex;
-	}
 }

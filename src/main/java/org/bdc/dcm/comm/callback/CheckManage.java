@@ -12,27 +12,23 @@ import io.netty.buffer.ByteBuf;
 public class CheckManage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	private List<CheckInterceptor> interceptors = new ArrayList<>();
 
 	public void addInterceptor(CheckInterceptor interceptor) {
 		interceptors.add(interceptor);
 	}
-	public synchronized boolean check(ByteBuf in) {
+	public ByteBuf check(ByteBuf in) {
 		in.markReaderIndex();
-		int readIndexSum = 0;
-		for(CheckInterceptor interceptor:interceptors){
+		for(int i=0;i<interceptors.size();i++){
+			CheckInterceptor interceptor = interceptors.get(i);
 			if(!interceptor.invoke(in)) {
-				in.resetReaderIndex();
-	        	in.readByte();
-				return false;
-			}else{
-				if(interceptor instanceof ZoneInterceptor){
-					ZoneInterceptor zone = (ZoneInterceptor) interceptor;
-					readIndexSum+=zone.readIndex();
-				}
+	        	logger.error("xxxx,系统读索引:{},系统内容总长度:{},对应不通过拦截器{}",in.readerIndex(),in.readableBytes(),interceptor);
+	        	in.readByte();//拦截器中没有影响 bytebuf的数据读索引
+	        	return null;
 			}
 		}
-		in = in.readBytes(readIndexSum);
-		return true;
+		in.resetReaderIndex();
+		return in;
 	}
 }

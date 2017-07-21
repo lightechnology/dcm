@@ -7,9 +7,6 @@ package org.bdc.dcm.comm.callback;
  *
  */
 public interface ZoneInterceptor extends CheckInterceptor {
-	/**
-	 * 生成读下标
-	 * @return
-	 */
-	public int readIndex();
+
+	
 }
