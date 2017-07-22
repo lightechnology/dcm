@@ -33,10 +33,10 @@ public class WindowFixCheckInterceptorImpl implements WindowFixCheckInterceptor 
 	
 	@Override
 	public boolean invoke(ByteBuf in) {
-		if(srcIndex > in.readerIndex())return false;
+		int fullLen = in.readableBytes();
+		if(srcIndex > fullLen)return false;
 		width = in.getByte(srcIndex)&0xff;
-		int readerIndex = in.readerIndex();
-		boolean flag = width ==  readerIndex  - srcIndex -lenFieldLen;
+		boolean flag = width ==  (fullLen+in.readerIndex() - 1)  - srcIndex -lenFieldLen;
 		if(!flag) {
 			logger.error("长度出错");
 		}

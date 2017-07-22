@@ -28,7 +28,7 @@ public class FixBytesCheckInterceptor implements CheckInterceptor {
 	@Override
 	public boolean invoke(ByteBuf in) {
 		byte[] dst = new byte[bytes.length];
-		if(!in.isReadable()) return false;
+		if(!in.isReadable() && in.readableBytes() < bytes.length) return false;
 		in.readBytes(dst);
 		boolean flag = Arrays.equals(dst, bytes);
 		if(!flag) {

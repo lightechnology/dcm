@@ -36,9 +36,13 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 	 * 如果缓冲区有值 那么会轮训这个方法
 	 */
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-	//checkManage.check(in,out);
-		if(in.isReadable()) {
-			logger.error("readerIndex:{},长度：{},一个字节内容：{}",in.readerIndex(),in.readableBytes(),Public.byte2hex_ex(in.readByte()));
+		ByteBuf buf = checkManage.check(in,out);
+		if(buf.isReadable()) {
+			buf.markReaderIndex();
+			byte[] bs = new byte[buf.readableBytes() - buf.readerIndex()];
+			buf.getBytes(buf.readerIndex(),bs);
+			logger.info("通过数据：{}",Public.byte2hex(bs));
+			out.add(buf);
 		}
 	}
 }

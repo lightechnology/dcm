@@ -14,5 +14,5 @@ public interface CheckInterceptor {
 	 * @return
 	 */
 	public boolean invoke(ByteBuf in);
-	
+
 }

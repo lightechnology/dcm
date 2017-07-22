@@ -7,29 +7,41 @@ import org.slf4j.LoggerFactory;
 import io.netty.buffer.ByteBuf;
 
 /**
- * 读bytebuf到校验和满足的位置
+ * 校验和可能重复
  * @author Administrator
  *
  */
 public class checkSumInterceptor implements SaveLastIndexInterceptor {
 
 	private static Logger logger = LoggerFactory.getLogger(checkSumInterceptor.class);
+	/**
+	 * 为了防止校验出错 也有可能算出来就是0 但是绝对不是-1
+	 */
+	private int sum = -1;
+	
 	public boolean invoke(ByteBuf in) {
 		int checksum = 0;
-		int fullLen = in.readableBytes();
+		
 		if(in.readableBytes() < 2) return false;
+		
+		if(sum == -1)
+			sum = in.readByte()& 0xff;
+			
 		//自行维护readerIndex
-		for (int sum= in.readByte() & 0xff; in.isReadable();) {
+		for (; in.isReadable();) {
 			checksum = in.readByte() & 0xff;
-			if (checksum == sum){
-				logger.info("校验和通过的数据-------：系统数据总长度：{},系统读索引：{},当前正确数据长度：{}",fullLen,in.readerIndex());
+			if (checksum == sum) {
+				
 				return true;
-			}else{// 当前计算的校验和还不到
+			}else// 当前计算的校验和还不到
 				sum = (sum + checksum) & 0xff;
-			}
 		}
 		// 读完了都找不到校验和
 		return false;
+	}
+
+	public void clearSum() {
+		this.sum = -1;
 	}
 	
 }
