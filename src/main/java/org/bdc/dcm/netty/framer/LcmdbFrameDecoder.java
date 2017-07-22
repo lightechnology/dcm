@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bdc.dcm.comm.callback.CheckManage;
 import org.bdc.dcm.comm.callback.FixBytesCheckInterceptor;
-import org.bdc.dcm.comm.callback.LenCheckInterceptor;
+import org.bdc.dcm.comm.callback.WindowFixCheckInterceptorImpl;
 import org.bdc.dcm.comm.callback.checkSumInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,30 +20,25 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	// 组合的方式 减少依赖
-	private CheckManage manage;
+	private CheckManage checkManage;
 
 	public LcmdbFrameDecoder() {
 		super();
-		manage = new CheckManage();
-		manage.addInterceptor(new FixBytesCheckInterceptor(new byte[] { (byte) 0xfe, (byte) 0xa5 }));
-		manage.addInterceptor(new checkSumInterceptor());
-		manage.addInterceptor(new LenCheckInterceptor(3, 1));
+		checkManage = new CheckManage();
+		checkManage.addInterceptor(new FixBytesCheckInterceptor(new byte[] { (byte) 0xfe, (byte) 0xa5 }));
+		checkManage.addInterceptor(new WindowFixCheckInterceptorImpl(3, 1));
+		checkManage.addInterceptor(new checkSumInterceptor());
+		
 	}
 
 	@Override
-	// 从type 开始到校验码之前的所有字节累加
+	/**
+	 * 如果缓冲区有值 那么会轮训这个方法
+	 */
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-
-		// 标记当前位置，以便reset
-		ByteBuf buf = manage.check(in);
-		if (buf != null) {
-			byte[] tmpBytes = new byte[buf.readableBytes()];
-			buf.readBytes(tmpBytes);
-			out.add(buf);
-			logger.error("----------------------------------------------------------校验过的：{},可读长度:：{}----------------------------------------------------------", Public.byte2hex(tmpBytes),in.readableBytes());
-		}else {
-        	in.readBytes(in.readableBytes());
+	//checkManage.check(in,out);
+		if(in.isReadable()) {
+			logger.error("readerIndex:{},长度：{},一个字节内容：{}",in.readerIndex(),in.readableBytes(),Public.byte2hex_ex(in.readByte()));
 		}
-
 	}
 }

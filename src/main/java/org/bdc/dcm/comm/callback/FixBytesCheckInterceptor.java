@@ -13,7 +13,7 @@ import io.netty.buffer.ByteBuf;
  * @author Administrator
  *
  */
-public class FixBytesCheckInterceptor implements ZoneInterceptor {
+public class FixBytesCheckInterceptor implements CheckInterceptor {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,10 +28,12 @@ public class FixBytesCheckInterceptor implements ZoneInterceptor {
 	@Override
 	public boolean invoke(ByteBuf in) {
 		byte[] dst = new byte[bytes.length];
+		if(!in.isReadable()) return false;
 		in.readBytes(dst);
 		boolean flag = Arrays.equals(dst, bytes);
-		if(!flag)
+		if(!flag) {
 			logger.error("当前解析的头：{},用户需求头：{}",Public.byte2hex(dst),Public.byte2hex(bytes));
+		}
 		return flag;
 	}
 
