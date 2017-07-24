@@ -3,7 +3,9 @@ package org.bdc.dcm.netty.coder;
 import java.util.List;
 import java.util.Set;
 
+import org.bdc.dcm.data.coder.http.DataHttpDecoder;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
+import org.bdc.dcm.data.coder.intf.DatasDecoder;
 import org.bdc.dcm.data.log.intf.Coder4Log;
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.channel.ChannelManager;
@@ -41,19 +43,40 @@ public class DecoderUtilTools<I> {
 	}
 
 	public void decode(ChannelHandlerContext ctx, I msg, List<Object> out) {
-		long start1 = 0L, end1 = 0L, start2 = 0L, end2 = 0L, end3 = 0L;
-		start1 = System.currentTimeMillis();
-		DataPack dataPack = decoder.data2Package(ctx, msg);
-		end1 = System.currentTimeMillis();
-		if (null != dataPack && messageReceivedFilter(dataPack)) {
-			dataPack.setTimestamp(start1);
-			start2 = System.currentTimeMillis();
-			coder4Log.log(msg, dataPack);
-			end2 = System.currentTimeMillis();
-			out.add(dataPack);
-			end3 = System.currentTimeMillis();
-			channelManager.codeEffWarnLog(start1, end1, start2, end2, end3, end3, 0);
+		
+		if(decoder instanceof DatasDecoder) {
+			List<DataPack> dataPacks = ((DatasDecoder<I>) decoder).datas2Package(ctx, msg);
+			for(int i=0;i<dataPacks.size();i++) {
+				long start1 = 0L, end1 = 0L, start2 = 0L, end2 = 0L, end3 = 0L;
+				start1 = System.currentTimeMillis();
+				DataPack dataPack = dataPacks.get(i);
+				end1 = System.currentTimeMillis();
+				if (null != dataPack && messageReceivedFilter(dataPack)) {
+					dataPack.setTimestamp(start1);
+					start2 = System.currentTimeMillis();
+					coder4Log.log(msg, dataPack);
+					end2 = System.currentTimeMillis();
+					out.add(dataPack);
+					end3 = System.currentTimeMillis();
+					channelManager.codeEffWarnLog(start1, end1, start2, end2, end3, end3, 0);
+				}
+			}
+		}else{
+			long start1 = 0L, end1 = 0L, start2 = 0L, end2 = 0L, end3 = 0L;
+			start1 = System.currentTimeMillis();
+			DataPack dataPack = decoder.data2Package(ctx, msg);
+			end1 = System.currentTimeMillis();
+			if (null != dataPack && messageReceivedFilter(dataPack)) {
+				dataPack.setTimestamp(start1);
+				start2 = System.currentTimeMillis();
+				coder4Log.log(msg, dataPack);
+				end2 = System.currentTimeMillis();
+				out.add(dataPack);
+				end3 = System.currentTimeMillis();
+				channelManager.codeEffWarnLog(start1, end1, start2, end2, end3, end3, 0);
+			}
 		}
+		
 	}
 	
 }

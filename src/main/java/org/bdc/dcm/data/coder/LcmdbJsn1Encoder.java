@@ -7,21 +7,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
-public class LcmdbJsnEncoder implements DataEncoder<String> {
+
+public class LcmdbJsn1Encoder implements DataEncoder<String>  {
 
 	final static Logger logger = LoggerFactory.getLogger(LcmdbJsnEncoder.class);
 
 	private NettyBoot nettyBoot;
 
-	public LcmdbJsnEncoder(NettyBoot nettyBoot) {
+	public LcmdbJsn1Encoder(NettyBoot nettyBoot) {
 		this.nettyBoot = nettyBoot;
 	}
-	/**
-	 * paramterStr keys :[tk,json,token,verifyCode]
-	 */
 	@Override
 	public String package2Data(ChannelHandlerContext ctx, DataPack msg) {
-		return "OK";
+		return "cp=1";
 	}
 
 }

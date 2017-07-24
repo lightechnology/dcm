@@ -45,11 +45,11 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             		frame.markReaderIndex();
             		frame.readBytes(frameBytes);
             		//防止单独设置时 返回的数据
-        			if(packLen == 45 || packLen == 9){//只解轮训状态的包
+        			//if(packLen == 45 || packLen == 9){//只解轮训状态的包
 	            		logger.info("解码包：frame:{}",Public.byte2hex(frameBytes));
 	            		frame.resetReaderIndex();
 	            		out.add(frame);
-        			}
+        			//}
             	}  
             }else{
             	in.resetReaderIndex();

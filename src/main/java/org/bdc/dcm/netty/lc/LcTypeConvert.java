@@ -26,10 +26,11 @@ public class LcTypeConvert{
 	public final static int DATATYPE_JDQSTATE = 141;
 	public final static int JDQ_Control = 142;
 	//----------------写---------------------------------
-	public final static int DATATYPE_TEMPERATURE_WARM = -1;
-	public final static int DATATYPE_TEMPERATURE_COLD = -2;
-	public final static int DATATYPE_SURPLUS_POWER= -3;
-	public final static int DATATYPE_SURPLUS_TIME= -4;
+	public final static int DATATYPE_DEFAULTFAIL = -1;
+	public final static int DATATYPE_TEMPERATURE_WARM = -2;
+	public final static int DATATYPE_TEMPERATURE_COLD = -3;
+	public final static int DATATYPE_SURPLUS_POWER= -4;
+	public final static int DATATYPE_SURPLUS_TIME= -5;
 	public static int convertTypeStr2TypeId(String type) {
 		if ("remainTimeLong".equals(type)) {
 			return DATATYPE_REMAININGTIMELONG;

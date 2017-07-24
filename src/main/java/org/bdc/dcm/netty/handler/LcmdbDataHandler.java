@@ -25,8 +25,9 @@ public class LcmdbDataHandler  extends DataHandler {
 			loopThread.setMac(msg.getMac());
 			new Thread(loopThread).start();
 		}else{//第二笔数据来
+			logger.info("{}",msg);
 			//TODO --------测试代码
-			LcFunTest.go(ctx, msg);
+			//LcFunTest.go(ctx, msg);
 		}
 	}
 	

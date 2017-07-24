@@ -9,8 +9,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 
 import org.bdc.dcm.data.coder.http.factory.HttpResponseFactory;
 import org.bdc.dcm.netty.channel.AbstractChannelInitializer;
-import org.bdc.dcm.netty.coder.http.HttpJmjsnDecoder;
-import org.bdc.dcm.netty.coder.http.HttpJmjsnEncoder;
 import org.bdc.dcm.netty.coder.http.HttpLcmdJsnDecoder;
 import org.bdc.dcm.netty.coder.http.HttpLcmdJsnEncoder;
 import org.bdc.dcm.netty.handler.DataHandler;
