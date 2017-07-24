@@ -42,7 +42,7 @@ public class CheckManage {
 			}else {//通过每个拦截器
 				if(interceptor instanceof checkSumInterceptor) {
 					int len = in.readerIndex() - firstReaderIndex ;
-					if( windowSize > 0 && len < windowSize) {//不在窗口中
+					if( windowSize > 0 && len > windowSize) {//不在窗口中
 						logger.error("经过interceptor:{},计算的长度:{},与期望的窗口宽度：{}不匹配",interceptor,len,windowSize);
 						lastInterceptorIndex = i;
 						return in.alloc().buffer();
