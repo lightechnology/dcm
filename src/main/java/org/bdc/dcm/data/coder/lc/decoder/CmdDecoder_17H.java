@@ -38,11 +38,6 @@ public class CmdDecoder_17H implements CommandTypeCtr {
 		List<DataTab> dataTabList = dataTabConf.getDataTabConf("Lc");
 		
 		ByteBuf in = param.getPack();
-		//为了日志
-		in.markReaderIndex();
-		byte[] packByte = new byte[in.readableBytes()];
-		in.readBytes(packByte);
-		in.resetReaderIndex();
 		
 		byte[] mac = new byte[macLen];
 		in.readBytes(mac);
@@ -70,7 +65,7 @@ public class CmdDecoder_17H implements CommandTypeCtr {
 	
 		DataPack datePack = LcComonUtils.getInitDataPack(Public.byte2hex(mac) + " " +Public.byte2hex_ex(modbusHeader[0]));
 		Map<String, Object> data = new HashMap<String, Object>();
-		for(int i=0;i<modbusDataLen/2;i++){
+		for(int i=128;i<(modbusDataLen/2 + 128);i++){
 			List<Object> val = LcComonUtils.decodeValue(i, modbusDataBuf, dataTabList);
 			Object o = val.get(1);
 			if(o != null)

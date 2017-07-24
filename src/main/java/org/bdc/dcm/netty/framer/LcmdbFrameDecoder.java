@@ -26,6 +26,7 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             if ((byte) 0xFE == in.readByte() && (byte) 0xA5 == in.readByte()) {
             	byte type = in.readByte();
             	int packLen = in.readByte() & 0xff;
+            	if(in.readableBytes() < packLen) break;//防止长度溢出
             	byte[] data = new byte[packLen];
             	in.readBytes(data);
             	byte crcSum = in.readByte();

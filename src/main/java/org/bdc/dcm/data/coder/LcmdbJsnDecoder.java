@@ -3,6 +3,7 @@ package org.bdc.dcm.data.coder;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,13 +14,16 @@ import java.util.Map.Entry;
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
 import org.bdc.dcm.data.coder.intf.DataEncoder;
+import org.bdc.dcm.data.coder.lc.util.LcComonUtils;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.netty.NettyBoot;
+import org.bdc.dcm.netty.lc.LcTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
 import org.bdc.dcm.vo.e.DataPackType;
 import org.bdc.dcm.vo.e.Datalevel;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,44 +44,65 @@ public class LcmdbJsnDecoder implements DataDecoder<String> {
 		this.dataTabConf = IntfConf.getDataTabConf();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public DataPack data2Package(ChannelHandlerContext ctx, String msg) {
-		Server server = nettyBoot.getServer();
-		Map<String, String> sdkInfo = server.getSdkUserInfo();
+//		Server server = nettyBoot.getServer();
+//		Map<String, String> sdkInfo = server.getSdkUserInfo();
 		Map<String, Object> paramterMap = Public.getParamsFromURL(msg);
-		String jsonStr = Public.objToStr(paramterMap.get("json"));
-		String token = Public.objToStr(paramterMap.get("token"));
-		String verifyCode = Public.objToStr(paramterMap.get("verifyCode"));
-		String key = "";
-		if (!"".equals(token)) {
-			if (null != sdkInfo) {
-				Iterator<Entry<String, String>> ite = sdkInfo.entrySet().iterator();
-				while (ite.hasNext()) {
-					Entry<String, String> entry = ite.next();
-					if (token.equals(entry.getKey())) {
-						key = entry.getValue();
-						break;
+		String jsonStr = Public.objToStr(msg);
+//		String token = Public.objToStr(paramterMap.get("token"));
+//		String verifyCode = Public.objToStr(paramterMap.get("verifyCode"));
+//		String key = "";
+//		if (!"".equals(token)) {
+//			if (null != sdkInfo) {
+//				Iterator<Entry<String, String>> ite = sdkInfo.entrySet().iterator();
+//				while (ite.hasNext()) {
+//					Entry<String, String> entry = ite.next();
+//					if (token.equals(entry.getKey())) {
+//						key = entry.getValue();
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		if ("".equals(key)) return null;
+//		if (!verifyParamter(jsonStr, verifyCode, key)) return null;
+		List<DataPack> dataPackList = new ArrayList<>();
+		try {
+			JSONObject json = Public.str2Json(jsonStr);
+			List<String> macList = (List<String>) json.get("mac");
+			for(int i=0;i<macList.size();i++) {
+				String mac = macList.get(i);
+				// 开关状态 on-开 off-关
+				int powerStatus = -1;
+				if(json.containsKey("power_status")) {
+					String status = json.get("power_status")+"";
+					switch(status) {
+						case "off":powerStatus = 0;
+						case "on":powerStatus = 1;
 					}
 				}
-			}
-		}
-		if ("".equals(key)) return null;
-		if (!verifyParamter(jsonStr, verifyCode, key)) return null;
-		try {
-			Map<String, Object> json = Public.str2Map(jsonStr);
-			String mac = Public.objToStr(json.get("device"));
-			int kind = Public.objToInt(json.get("kind"));
-			if (!"".equals(mac) && 0 < kind) {
-				//Map<Integer, DataTab> dataTabMap = getDataTabConf(kind);
-				DataPack dataPack = new DataPack();
-				dataPack.setMac(mac);
-				dataPack.setOnlineStatus(1);
-				dataPack.setDatalevel(Datalevel.NORMAL);
-				dataPack.setDataPackType(DataPackType.Info);
-				/*Iterator<Entry<String, Object>> ite = json.entrySet().iterator();
-				while (ite.hasNext()) {
-					Entry<String, Object> entry = ite.next();
-				}*/
+				// 温度调节 带℃单位
+				int temperature = -1;
+				if(json.containsKey("setting_temperature"))
+					temperature = Integer.valueOf(json.get("setting_temperature")+"");
+				// 模式 cool-制冷 warm-制暖
+				int temperatureCtr = -1;
+				logger.info("mac:{},开关状态:{},温度调节:{},模式 cool:{}",mac,powerStatus,temperature,temperatureCtr);
+				
+				DataPack dataPack = LcComonUtils.getInitDataPack(mac);
+				Map<String, Object> data = new HashMap<>();
+				if(powerStatus == 0) {
+					data.put(LcTypeConvert.DATATYPE_TEMPERATURE_COLD+"", 0);
+				}else if(temperatureCtr == LcTypeConvert.DATATYPE_TEMPERATURE_COLD) {
+					data.put(LcTypeConvert.DATATYPE_TEMPERATURE_COLD+"", temperature);
+				}else if(temperatureCtr == LcTypeConvert.DATATYPE_TEMPERATURE_WARM) {
+					data.put(LcTypeConvert.DATATYPE_TEMPERATURE_WARM+"", temperature);
+				}
+				
+				dataPack.setData(data);
+				dataPackList.add(dataPack);
 			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {

@@ -12,21 +12,24 @@ public class LcTypeConvert{
 
 	private static Logger logger = LoggerFactory.getLogger(LcTypeConvert.class);
 	
-	public final static int DATATYPE_REMAININGTIMELONG = 1;
-	public final static int DATATYPE_REMAININGELECTRICITY = 2;
-	public final static int DATATYPE_TOTALTIME = 3;
-	public final static int DATATYPE_TOTALACTIVEPOWER = 4;
-	public final static int DATATYPE_U = 5;
-	public final static int DATATYPE_I = 6;
-	public final static int DATATYPE_P = 7;
-	public final static int DATATYPE_COS$ = 8;
-	public final static int DATATYPE_JDQTIAOZA = 9;
-	public final static int DATATYPE_TEMPERATURE = 10;
-	public final static int DATATYPE_JDQSTATE = 11;
-	public final static int JDQ_Control = 12;
-	public final static int DATATYPE_TEMPERATURE_WARM = 13;
-	public final static int DATATYPE_SURPLUS_POWER= 14;
-	public final static int DATATYPE_SURPLUS_TIME= 15;
+	//----------------读---------------------------------
+	public final static int DATATYPE_REMAININGTIMELONG = 128;
+	public final static int DATATYPE_REMAININGELECTRICITY = 130;
+	public final static int DATATYPE_TOTALTIME = 132;
+	public final static int DATATYPE_TOTALACTIVEPOWER = 134;
+	public final static int DATATYPE_U = 135;
+	public final static int DATATYPE_I = 136;
+	public final static int DATATYPE_P = 137;
+	public final static int DATATYPE_COS$ = 138;
+	public final static int DATATYPE_JDQTIAOZA = 139;
+	public final static int DATATYPE_TEMPERATURE = 140;
+	public final static int DATATYPE_JDQSTATE = 141;
+	public final static int JDQ_Control = 142;
+	//----------------写---------------------------------
+	public final static int DATATYPE_TEMPERATURE_WARM = -1;
+	public final static int DATATYPE_TEMPERATURE_COLD = -2;
+	public final static int DATATYPE_SURPLUS_POWER= -3;
+	public final static int DATATYPE_SURPLUS_TIME= -4;
 	public static int convertTypeStr2TypeId(String type) {
 		if ("remainTimeLong".equals(type)) {
 			return DATATYPE_REMAININGTIMELONG;
@@ -67,6 +70,9 @@ public class LcTypeConvert{
 		if("temperature_warm".equals(type)){
 			return DATATYPE_TEMPERATURE_WARM;
 		}
+		if("temperature_cold".equals(type)){
+			return DATATYPE_TEMPERATURE_COLD;
+		}
 		if("surplus_power".equals(type)){
 			return DATATYPE_SURPLUS_POWER;
 		}
@@ -87,7 +93,7 @@ public class LcTypeConvert{
 			case DATATYPE_TEMPERATURE_WARM:
 				return temperature(val, modbusAddr,(byte)01);
 			//温度 0 关机 22-30 则控制
-			case DATATYPE_TEMPERATURE:
+			case DATATYPE_TEMPERATURE_COLD:
 				return temperature(val, modbusAddr,(byte)03);
 			//继电器状态	
 			case DATATYPE_JDQSTATE:
@@ -202,6 +208,7 @@ public class LcTypeConvert{
 			bs[i] = tmp[i];
 		bs[9] = crc[1];
 		bs[10] = crc[0];
+		logger.info("制冷控制：{}",Public.byte2hex(bs));
 		return bs;
 	}
 	public static Object convertByteBuf2TypeValue(String type, ByteBuf in) {
