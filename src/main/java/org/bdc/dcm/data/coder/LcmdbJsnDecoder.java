@@ -13,13 +13,13 @@ import java.util.Map.Entry;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DatasDecoder;
-import org.bdc.dcm.data.coder.lc.util.LcComonUtils;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
 import org.bdc.dcm.vo.e.DataPackType;
+import org.bdc.dcm.vo.e.Datalevel;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,8 +152,12 @@ public class LcmdbJsnDecoder implements DatasDecoder<String> {
 				if(logger.isDebugEnabled())
 					logger.debug("mac:{},开关状态:{},温度调节:{},模式 cool:{}",mac,powerStatus,temperature,temperatureCtr);
 				
-				DataPack dataPack = LcComonUtils.getInitDataPack(mac);
+				DataPack dataPack = new DataPack();
+				dataPack.setToMac(mac);
+				dataPack.setOnlineStatus(1);
+				dataPack.setDatalevel(Datalevel.NORMAL);
 				dataPack.setDataPackType(DataPackType.Cmd);
+				
 				Map<String, Object> data = new HashMap<>();
 				boolean sendOk = false;
 				if(powerStatus == 0) {

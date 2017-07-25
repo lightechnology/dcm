@@ -41,9 +41,7 @@ public class DataHttpEncoder implements DataEncoder<HttpContent> {
 			if (DataPackType.HeartBeat == msg.getDataPackType())
 				path = "";
 			if (null != cast) {
-				URI uri = new URI("http://" + remoteAddress.getHostString()
-						+ ":" + remoteAddress.getPort()
-						+ path);
+				URI uri = new URI("http://" + remoteAddress.getHostString()+ ":" + remoteAddress.getPort()+ (path==null?"/":path));
 				return httpMessageFactory.makeHttpMessage(cast, uri);
 			}
 		} catch (URISyntaxException e) {
@@ -54,5 +52,4 @@ public class DataHttpEncoder implements DataEncoder<HttpContent> {
 		}
 		return null;
 	}
-
 }

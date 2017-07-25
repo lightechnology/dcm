@@ -19,7 +19,8 @@ public class LcmdbJsn1Encoder implements DataEncoder<String>  {
 	}
 	@Override
 	public String package2Data(ChannelHandlerContext ctx, DataPack msg) {
-		return "cp=1";
+		logger.info("##################mac:{},tomac:{},包类型：{},data:{}",msg.getMac(),msg.getToMac(),msg.getDataPackType().name(),msg.getData());
+		return "?cp=1";
 	}
 
 }
