@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bdc.dcm.conf.ComConf;
-import org.bdc.dcm.data.coder.intf.DataDecoder;
 import org.bdc.dcm.data.coder.intf.DatasDecoder;
 import org.bdc.dcm.vo.DataPack;
 import org.slf4j.Logger;

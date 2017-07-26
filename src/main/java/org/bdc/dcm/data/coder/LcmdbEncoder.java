@@ -14,6 +14,10 @@ import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.netty.lc.LcTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
+import org.bdc.dcm.vo.e.DataPackType;
+import org.bdc.dcm.vo.e.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
@@ -21,6 +25,8 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 	
 	private final DataTabConf dataTabConf;
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public LcmdbEncoder() {
 		this.dataTabConf = IntfConf.getDataTabConf();
 	}
@@ -43,8 +49,13 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		
 		Iterator<String> iterator = data.keySet().iterator();
 		
+		DataPackType dataPackType = msg.getDataPackType();
 		//取值
-		String indentity = msg.getMac();
+		String indentity = "";
+		if(dataPackType.equals(DataPackType.Cmd)) 
+			indentity = msg.getToMac(); 
+		else if(dataPackType.equals(DataPackType.Info)) 
+			indentity = msg.getMac();
 		
 		byte[] indentityBytes = Public.hexString2bytes(indentity);
 	
@@ -64,9 +75,9 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 			if(!optional.isPresent()) break;
 			//dataConf name=[form,value]
 			@SuppressWarnings("unchecked")
-			List<Object> list = (List<Object>)data.get(reqKey);
+			List<Object> list = (List<Object>) data.get(reqKey);
 			//第几路设置
-			reg = intToByte4(Integer.valueOf(reqKey));
+			//reg = intToByte4(Integer.valueOf(reqKey));
 			//依据不同dataTab 发送不同的命令 
 			DataTab tab = optional.get();
 			LcTypeConvert.convertTypeStr2TypeId(tab.getForm());
@@ -77,7 +88,7 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 		}
 		//找不到对应的控制命令解析器
 		if(modbusPack == null ) {
-			return null;
+			return src;
 		};
 		
 		byte[] macBytes = Public.hexString2bytes(mac);

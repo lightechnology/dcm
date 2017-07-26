@@ -16,15 +16,15 @@ public class CmdDecoder_0CH implements CommandTypeCtr{
 	@Override
 	public DataPack mapTo(CommLcParam param) {
 		ByteBuf in = param.getPack();
-		DataPack dataPack = null;
+		DataPack dataPack = LcComonUtils.getInitDataPack("");
 		int len = 8;
 		if(in.readableBytes() == len){//验证通过
 			byte[] by = new byte[len];
 			in.readBytes(by);
 			String mac = Public.byte2hex(by);
 			dataPack = LcComonUtils.getInitDataPack(mac);
-			dataPack.setData(new HashMap<>());
 		}
+		dataPack.setData(new HashMap<>());
 		return dataPack;
 	}
 

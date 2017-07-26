@@ -3,7 +3,6 @@ package org.bdc.dcm.netty.coder;
 import java.util.List;
 import java.util.Set;
 
-import org.bdc.dcm.data.coder.http.DataHttpDecoder;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
 import org.bdc.dcm.data.coder.intf.DatasDecoder;
 import org.bdc.dcm.data.log.intf.Coder4Log;

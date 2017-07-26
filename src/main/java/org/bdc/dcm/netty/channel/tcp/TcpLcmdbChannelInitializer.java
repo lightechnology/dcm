@@ -7,7 +7,6 @@ import org.bdc.dcm.netty.channel.AbstractChannelInitializer;
 import org.bdc.dcm.netty.coder.tcp.TcpLcmdbDecoder;
 import org.bdc.dcm.netty.coder.tcp.TcpLcmdbEncoder;
 import org.bdc.dcm.netty.framer.LcmdbFrameDecoder;
-import org.bdc.dcm.netty.handler.DataHandler;
 import org.bdc.dcm.netty.handler.LcmdbDataHandler;
 
 public class TcpLcmdbChannelInitializer extends AbstractChannelInitializer<SocketChannel> {

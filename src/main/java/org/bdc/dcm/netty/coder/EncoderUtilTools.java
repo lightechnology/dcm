@@ -41,7 +41,12 @@ public class EncoderUtilTools<I> {
 		long start1 = 0L, end1 = 0L, start2 = 0L, end2 = 0L, end3 = 0L, end4 = 0L;
 		if (messageSendingFilter(msg)) {
 			start1 = System.currentTimeMillis();
-			I cast = encoder.package2Data(ctx, msg);
+			I cast = null;
+			try {
+				cast = encoder.package2Data(ctx, msg);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 			end1 = System.currentTimeMillis();
 			if (null != cast) {
 				start2 = System.currentTimeMillis();

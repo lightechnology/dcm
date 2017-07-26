@@ -209,7 +209,6 @@ public class LcTypeConvert{
 			bs[i] = tmp[i];
 		bs[9] = crc[1];
 		bs[10] = crc[0];
-		logger.info("制冷控制：{}",Public.byte2hex(bs));
 		return bs;
 	}
 	public static Object convertByteBuf2TypeValue(String type, ByteBuf in) {

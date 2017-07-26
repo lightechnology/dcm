@@ -159,15 +159,22 @@ public class LcmdbJsnDecoder implements DatasDecoder<String> {
 				dataPack.setDataPackType(DataPackType.Cmd);
 				
 				Map<String, Object> data = new HashMap<>();
+				List<Object> list = new ArrayList<>();
 				boolean sendOk = false;
 				if(powerStatus == 0) {
-					data.put(DATATYPE_TEMPERATURE_COLD+"", 0);
+					list.add("");
+					list.add(0);
+					data.put(DATATYPE_TEMPERATURE_COLD+"", list);
 					sendOk = true;
 				}else if(temperatureCtr == DATATYPE_TEMPERATURE_COLD) {
-					data.put(DATATYPE_TEMPERATURE_COLD+"", temperature);
+					list.add("");
+					list.add(temperature);
+					data.put(DATATYPE_TEMPERATURE_COLD+"", list);
 					sendOk = true;
 				}else if(temperatureCtr == DATATYPE_TEMPERATURE_WARM) {
-					data.put(DATATYPE_TEMPERATURE_WARM+"", temperature);
+					list.add("");
+					list.add(temperature);
+					data.put(DATATYPE_TEMPERATURE_WARM+"", list);
 					sendOk = true;
 				}
 				if(sendOk) {

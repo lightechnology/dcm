@@ -1,5 +1,6 @@
 package org.bdc.dcm.data.coder.lc.decoder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,12 @@ import org.bdc.dcm.data.coder.lc.CommandTypeCtr;
 import org.bdc.dcm.data.coder.lc.util.LcComonUtils;
 import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
 import org.bdc.dcm.intf.DataTabConf;
+import org.bdc.dcm.netty.TcpClient;
+import org.bdc.dcm.netty.lc.LcTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
@@ -25,6 +30,8 @@ import io.netty.buffer.ByteBuf;
  */
 public class CmdDecoder_17H implements CommandTypeCtr {
 	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	private static final int macLen = 8;
 	
 	private final DataTabConf dataTabConf;
@@ -35,13 +42,19 @@ public class CmdDecoder_17H implements CommandTypeCtr {
 	
 	@Override
 	public DataPack mapTo(CommLcParam param) {
+		DataPack dataPack;
 		List<DataTab> dataTabList = dataTabConf.getDataTabConf("Lc");
 		
 		ByteBuf in = param.getPack();
 		
+		byte[] s = new byte[in.readableBytes()];
+		in.getBytes(0, s);
+		logger.info("mapTo:{}",Public.byte2hex(s));
+		
 		byte[] mac = new byte[macLen];
 		in.readBytes(mac);
-		
+		dataPack = LcComonUtils.getInitDataPack(Public.byte2hex(mac));
+		dataPack.setData(new HashMap<>());
 		//拿掉 序号
 		in.readByte();
 		
@@ -60,20 +73,38 @@ public class CmdDecoder_17H implements CommandTypeCtr {
 		in.readBytes(modebus);
 		in.resetReaderIndex();
 		//------------------modebus 数据+crc------------------------------------------------------
-		in.readBytes(3);//偏移 地址 + 功能码 + 长度标识
-		ByteBuf modbusDataBuf = in.readBytes(modbusDataLen + 2);
-	
-		DataPack datePack = LcComonUtils.getInitDataPack(Public.byte2hex(mac) + " " +Public.byte2hex_ex(modbusHeader[0]));
-		Map<String, Object> data = new HashMap<String, Object>();
-		for(int i=128;i<(modbusDataLen/2 + 128);i++){
-			List<Object> val = LcComonUtils.decodeValue(i, modbusDataBuf, dataTabList);
-			Object o = val.get(1);
-			if(o != null)
-				data.put(i + "", val);
-		}
+		in.readByte();//地址
+		byte funcode = in.readByte();
+		if(funcode == (byte)0x03) {
+			in.readByte();//长度
+			ByteBuf modbusDataBuf = in.readBytes(modbusDataLen + 2);
 		
-		datePack.setData(data);
-		return datePack;
+			dataPack = LcComonUtils.getInitDataPack(Public.byte2hex(mac) + " " +Public.byte2hex_ex(modbusHeader[0]));
+			Map<String, Object> data = new HashMap<String, Object>();
+			for(int i=128;i<(modbusDataLen/2 + 128);i++){
+				List<Object> val = LcComonUtils.decodeValue(i, modbusDataBuf, dataTabList);
+				Object o = val.get(1);
+				if(o != null)
+					data.put(i + "", val);
+			}
+			
+			dataPack.setData(data);
+			return dataPack;
+		}else if(funcode == (byte)0x05) {
+			int i = in.readInt();
+			Map<String, Object> data = new HashMap<>();
+			List<Object> list = new ArrayList<>();
+			list.add("");
+			list.add(i>0);
+			data.put(LcTypeConvert.DATATYPE_JDQSTATE+"", list);
+			dataPack.setData(data);
+			in.readShort();//读完
+			return dataPack;
+		}else {
+			byte[] bs = new byte[in.readableBytes()];
+			in.readBytes(bs);
+		}
+		return dataPack;
 	}
 
 }

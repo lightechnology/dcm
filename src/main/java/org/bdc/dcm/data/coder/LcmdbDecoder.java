@@ -32,7 +32,7 @@ public class LcmdbDecoder implements DataDecoder<ByteBuf> {
 		msg.readBytes(headerBytes);
 		byte typeByte = msg.readByte();
 		//捕获数据包长度 不包行crc校验和
-		int packLen = msg.readByte() & 0xff - 1;
+		int packLen = (msg.readByte() & 0xff) - 1;
 		
 		//读包命令
 		byte commandByte = msg.readByte();
