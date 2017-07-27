@@ -8,7 +8,7 @@ import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 
-
+import static org.bdc.dcm.data.coder.utils.CommUtils.*;
 public class LcmdbTypeConvert implements TypeConvert{
 
 	private static Logger logger = LoggerFactory.getLogger(LcmdbTypeConvert.class);
@@ -324,22 +324,10 @@ public class LcmdbTypeConvert implements TypeConvert{
 				return dataByte[1] == 0x01;
 				
 			default:
+				data = new byte[in.readableBytes()];
+				in.readBytes(data);
 				return null;
 		}
 	}
-	public static String byteToBit(byte b) {  
-        return ""  
-                + (byte) ((b >> 7) & 0x1) + (byte) ((b >> 6) & 0x1)  
-                + (byte) ((b >> 5) & 0x1) + (byte) ((b >> 4) & 0x1)  
-                + (byte) ((b >> 3) & 0x1) + (byte) ((b >> 2) & 0x1)  
-                + (byte) ((b >> 1) & 0x1) + (byte) ((b >> 0) & 0x1);  
-    } 
-	public static void reverse(byte[] bs){
-		byte tmp ;
-		for(int i=0;i<bs.length/2;i++){
-			tmp = bs[i];
-			bs[i] = bs[bs.length - 1 -i];
-			bs[bs.length - 1 - i] = tmp;
-		}
-	}
+	
 }

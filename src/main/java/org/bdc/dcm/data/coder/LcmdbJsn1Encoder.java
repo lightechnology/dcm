@@ -3,7 +3,6 @@ package org.bdc.dcm.data.coder;
 import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
 
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.HashMap;

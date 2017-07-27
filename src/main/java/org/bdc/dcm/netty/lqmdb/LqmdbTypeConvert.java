@@ -37,7 +37,7 @@ public class LqmdbTypeConvert implements TypeConvert{
 			default:
 				byte[] data = new byte[in.readableBytes()];
 				in.readBytes(data);
-				return Public.byte2hex(data);
+				return null;
 		}
 	}
 }

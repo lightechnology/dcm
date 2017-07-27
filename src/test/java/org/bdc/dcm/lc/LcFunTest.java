@@ -1,15 +1,17 @@
 package org.bdc.dcm.lc;
 
+import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bdc.dcm.netty.lc.LcTypeConvert;
+import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.bdc.dcm.netty.lc.LcTypeConvert.*;
+
 import com.util.tools.Public;
 
 import io.netty.channel.ChannelHandlerContext;
