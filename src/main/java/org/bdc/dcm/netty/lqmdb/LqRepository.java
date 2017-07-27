@@ -1,10 +1,8 @@
-package org.bdc.dcm.netty.lq;
+package org.bdc.dcm.netty.lqmdb;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.bdc.dcm.netty.lq.config.InitPack;
 
 public class LqRepository {
 

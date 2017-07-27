@@ -1,11 +1,11 @@
-package org.bdc.dcm.netty.lc;
+package org.bdc.dcm.netty.lcmdb;
 
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class LcLoopCheckStateThread implements Runnable{
+public class LcmdbLoopCheckStateThread implements Runnable{
 	
 	private String mac;
 	
@@ -13,7 +13,7 @@ public class LcLoopCheckStateThread implements Runnable{
 	
 	private ChannelHandlerContext ctx;
 	
-	public LcLoopCheckStateThread() {
+	public LcmdbLoopCheckStateThread() {
 		super();
 		this.isRun = false;
 	}

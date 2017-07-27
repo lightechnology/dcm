@@ -1,8 +1,7 @@
 package org.bdc.dcm.netty.handler;
 
-import org.bdc.dcm.lc.LcFunTest;
 import org.bdc.dcm.netty.NettyBoot;
-import org.bdc.dcm.netty.lc.LcLoopCheckStateThread;
+import org.bdc.dcm.netty.lcmdb.LcmdbLoopCheckStateThread;
 import org.bdc.dcm.vo.DataPack;
 
 
@@ -11,7 +10,7 @@ import io.netty.channel.ChannelPromise;
 
 public class LcmdbDataHandler  extends DataHandler {
 
-	private LcLoopCheckStateThread loopThread = new LcLoopCheckStateThread();
+	private LcmdbLoopCheckStateThread loopThread = new LcmdbLoopCheckStateThread();
  
 	public LcmdbDataHandler(NettyBoot nettyBoot) {
 		super(nettyBoot);
@@ -25,7 +24,6 @@ public class LcmdbDataHandler  extends DataHandler {
 			loopThread.setMac(msg.getMac());
 			new Thread(loopThread).start();
 		}else{//第二笔数据来
-			logger.info("{}",msg);
 			//TODO --------测试代码
 			//LcFunTest.go(ctx, msg);
 		}

@@ -5,8 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
-import org.bdc.dcm.data.coder.lc.CommandTypeCtr;
-import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
+import org.bdc.dcm.data.coder.lcmdb.CommandTypeCtr;
+import org.bdc.dcm.data.coder.lcmdb.vo.CommLcParam;
 import org.bdc.dcm.intf.DataTabConf;
 import org.bdc.dcm.vo.DataPack;
 
@@ -41,7 +41,7 @@ public class LcmdbDecoder implements DataDecoder<ByteBuf> {
 		msg.readByte();//最后一位 crc 和 保证 读完
 		//----------------动态编码加载区-------------------------------------------
 		String command = Public.byte2hex_ex(commandByte);
-		String classPath = "org.bdc.dcm.data.coder.lc.decoder.CmdDecoder_"+command+"H";
+		String classPath = "org.bdc.dcm.data.coder.lcmdb.decoder.CmdDecoder_"+command+"H";
 		try {
 			Class<?> ctrClazz = Class.forName(classPath);
 			CommandTypeCtr ctr = (CommandTypeCtr) ctrClazz.newInstance();

@@ -1,5 +1,6 @@
-package org.bdc.dcm.netty.lc;
+package org.bdc.dcm.netty.lcmdb;
 
+import org.bdc.dcm.data.coder.intf.TypeConvert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,10 +9,15 @@ import com.util.tools.Public;
 import io.netty.buffer.ByteBuf;
 
 
-public class LcTypeConvert{
+public class LcmdbTypeConvert implements TypeConvert{
 
-	private static Logger logger = LoggerFactory.getLogger(LcTypeConvert.class);
+	private static Logger logger = LoggerFactory.getLogger(LcmdbTypeConvert.class);
+
+	private final static LcmdbTypeConvert convert = new LcmdbTypeConvert();
 	
+	
+	
+	public final static int DATATYPE_NOFOUND = -999;
 	//----------------读---------------------------------
 	public final static int DATATYPE_REMAININGTIMELONG = 128;
 	public final static int DATATYPE_REMAININGELECTRICITY = 130;
@@ -26,11 +32,19 @@ public class LcTypeConvert{
 	public final static int DATATYPE_JDQSTATE = 141;
 	public final static int JDQ_Control = 142;
 	//----------------写---------------------------------
-	public final static int DATATYPE_DEFAULTFAIL = -1;
-	public final static int DATATYPE_TEMPERATURE_WARM = -2;
-	public final static int DATATYPE_TEMPERATURE_COLD = -3;
-	public final static int DATATYPE_SURPLUS_POWER= -4;
-	public final static int DATATYPE_SURPLUS_TIME= -5;
+	public final static int DATATYPE_TEMPERATURE_WARM = -1;
+	public final static int DATATYPE_TEMPERATURE_COLD = -2;
+	public final static int DATATYPE_SURPLUS_POWER= -3;
+	public final static int DATATYPE_SURPLUS_TIME= -4;
+	
+	private LcmdbTypeConvert() {}
+	
+	public static LcmdbTypeConvert getConvert() {
+		return convert;
+	}
+
+
+
 	public static int convertTypeStr2TypeId(String type) {
 		if ("remainTimeLong".equals(type)) {
 			return DATATYPE_REMAININGTIMELONG;
@@ -80,10 +94,10 @@ public class LcTypeConvert{
 		if("surplus_time".equals(type)){
 			return DATATYPE_SURPLUS_TIME;
 		}
-		return -1;
+		return DATATYPE_NOFOUND;
 	}
 	//不包括地址
-	public static byte[] outModbusBytesByType(String type, Object val,byte modbusAddr){
+	public static byte[] encoder(String type, Object val,byte modbusAddr){
 		byte[] bs = null,tmp,crc;
 		boolean isOpen;
 		switch (convertTypeStr2TypeId(type)) {
@@ -211,7 +225,7 @@ public class LcTypeConvert{
 		bs[10] = crc[0];
 		return bs;
 	}
-	public static Object convertByteBuf2TypeValue(String type, ByteBuf in) {
+	public Object decode(String type, ByteBuf in) {
 		byte[] data;
 		byte[] dataByte;
 		in.markReaderIndex();

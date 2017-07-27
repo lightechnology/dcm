@@ -1,5 +1,7 @@
 package org.bdc.dcm.data.coder;
 
+import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import freemarker.template.Template;
 import io.netty.channel.ChannelHandlerContext;
-import static org.bdc.dcm.netty.lc.LcTypeConvert.*;
 public class LcmdbJsn1Encoder implements DataEncoder<String>  {
 
 	final static Logger logger = LoggerFactory.getLogger(LcmdbJsn1Encoder.class);
@@ -39,7 +40,7 @@ public class LcmdbJsn1Encoder implements DataEncoder<String>  {
 				StringWriter stringWriter = new StringWriter();
 				BufferedWriter writer = new BufferedWriter(stringWriter);
 				Map<String, Object> dataModel = new HashMap<String, Object>();
-				dataModel.put("power_status", 1);
+				dataModel.put("powerStatus", ((boolean)((List<Object>)data.get(DATATYPE_JDQSTATE+"")).get(1))?1:0);
 				dataModel.put("senseTemperature", ((List<Object>)data.get(DATATYPE_TEMPERATURE+"")).get(1));
 				dataModel.put("senseVoltage", ((List<Object>)data.get(DATATYPE_U+"")).get(1));
 				dataModel.put("senseElectricity", ((List<Object>)data.get(DATATYPE_I+"")).get(1));

@@ -9,15 +9,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.bdc.dcm.netty.NettyBoot;
-import org.bdc.dcm.netty.lq.LqFun;
-import org.bdc.dcm.netty.lq.LqRepository;
-import org.bdc.dcm.netty.lq.config.InitPack;
+import org.bdc.dcm.netty.lqmdb.InitPack;
+import org.bdc.dcm.netty.lqmdb.LqFun;
+import org.bdc.dcm.netty.lqmdb.LqRepository;
 import org.bdc.dcm.vo.DataPack;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 
-public class LqDataHandler extends DataHandler {
+public class LqmdbDataHandler extends DataHandler {
 
 	private static Set<ChannelHandlerContext> channelHandlerContexts = Collections.synchronizedSet(new HashSet<>());
 	
@@ -52,7 +52,7 @@ public class LqDataHandler extends DataHandler {
 		}, 1000,3000);// 两分钟后启动任务
 	}
 	
-	public LqDataHandler(NettyBoot nettyBoot) {
+	public LqmdbDataHandler(NettyBoot nettyBoot) {
 		super(nettyBoot); 
 	}
 

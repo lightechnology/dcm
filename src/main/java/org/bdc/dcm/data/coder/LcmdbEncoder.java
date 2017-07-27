@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataEncoder;
 import org.bdc.dcm.intf.DataTabConf;
-import org.bdc.dcm.netty.lc.LcTypeConvert;
+import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.e.DataPackType;
@@ -41,7 +41,7 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 	@Override
 	public ByteBuf package2Data(ChannelHandlerContext ctx, DataPack msg) {
 	  
-		List<DataTab> dataTabs = IntfConf.getDataTabConf().getDataTabConf("Lc");
+		List<DataTab> dataTabs = IntfConf.getDataTabConf().getDataTabConf(DataType.Lcmdb.name());
 		
 		ByteBuf src = ctx.alloc().buffer();
 		
@@ -80,9 +80,9 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 			//reg = intToByte4(Integer.valueOf(reqKey));
 			//依据不同dataTab 发送不同的命令 
 			DataTab tab = optional.get();
-			LcTypeConvert.convertTypeStr2TypeId(tab.getForm());
+			//LcmdbTypeConvert.convertTypeStr2TypeId(tab.getForm());
 			//依据字段类型得到输出的指令的modbus完整包
-			modbusPack = LcTypeConvert.outModbusBytesByType(tab.getForm(),list.get(1),modbusAddr);
+			modbusPack = LcmdbTypeConvert.encoder(tab.getForm(),list.get(1),modbusAddr);
 			//只取 第一个 
 			break;
 		}

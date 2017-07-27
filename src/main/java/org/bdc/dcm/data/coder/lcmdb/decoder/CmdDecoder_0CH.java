@@ -1,10 +1,10 @@
-package org.bdc.dcm.data.coder.lc.decoder;
+package org.bdc.dcm.data.coder.lcmdb.decoder;
 
 import java.util.HashMap;
 
-import org.bdc.dcm.data.coder.lc.CommandTypeCtr;
-import org.bdc.dcm.data.coder.lc.util.LcComonUtils;
-import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
+import org.bdc.dcm.data.coder.lcmdb.CommandTypeCtr;
+import org.bdc.dcm.data.coder.lcmdb.utils.LcComonUtils;
+import org.bdc.dcm.data.coder.lcmdb.vo.CommLcParam;
 import org.bdc.dcm.vo.DataPack;
 
 import com.util.tools.Public;

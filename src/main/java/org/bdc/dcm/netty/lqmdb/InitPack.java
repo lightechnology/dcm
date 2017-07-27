@@ -1,4 +1,4 @@
-package org.bdc.dcm.netty.lq.config;
+package org.bdc.dcm.netty.lqmdb;
 
 import java.util.Arrays;
 

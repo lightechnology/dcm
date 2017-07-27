@@ -1,9 +1,9 @@
-package org.bdc.dcm.data.coder.lc.util;
+package org.bdc.dcm.data.coder.lcmdb.utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bdc.dcm.netty.lc.LcTypeConvert;
+import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.e.DataPackType;
@@ -55,13 +55,12 @@ public class LcComonUtils {
 			DataTab dataTab = dataTabList.get(i);
 			try {
 				if (id == dataTab.getId()) {
-					return makeMapValue(dataTab.getName(),LcTypeConvert.convertByteBuf2TypeValue(dataTab.getForm(), value));
+					return makeMapValue(dataTab.getName(),LcmdbTypeConvert.getConvert().decode(dataTab.getForm(), value));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		//return makeMapValue("", Public.byte2hex(value));
 		return makeMapValue("", null);
 	}
 

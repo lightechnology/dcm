@@ -42,8 +42,6 @@ public class LqFrameDecoder extends ByteToMessageDecoder {
 				byte[] head = new byte[macLen+modBusHeadLen];
 				in.readBytes(head);
 				int contentLen = head[head.length - 1 ] & 0xff;
-				if(logger.isDebugEnabled())
-					logger.debug("读取的位偏移 :{},内容长度：{},当前可读字节长度：{}",head.length,contentLen,in.readableBytes());
 				in.resetReaderIndex();
 				byte[] macbytes = new byte[macLen];
 				int packLen = modBusHeadLen+contentLen+crcLen;

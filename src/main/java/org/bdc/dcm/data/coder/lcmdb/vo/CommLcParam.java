@@ -1,4 +1,4 @@
-package org.bdc.dcm.data.coder.lc.vo;
+package org.bdc.dcm.data.coder.lcmdb.vo;
 
 import io.netty.buffer.ByteBuf;
 

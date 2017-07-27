@@ -1,4 +1,4 @@
-package org.bdc.dcm.netty.lq;
+package org.bdc.dcm.netty.lqmdb;
 
 import java.util.ArrayList;
 import java.util.HashMap;

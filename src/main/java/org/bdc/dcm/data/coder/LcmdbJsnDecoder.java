@@ -1,5 +1,7 @@
 package org.bdc.dcm.data.coder;
 
+import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -18,8 +20,6 @@ import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
-import org.bdc.dcm.vo.e.DataPackType;
-import org.bdc.dcm.vo.e.Datalevel;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.util.tools.Public;
 
 import io.netty.channel.ChannelHandlerContext;
-import static org.bdc.dcm.netty.lc.LcTypeConvert.*;
+import static org.bdc.dcm.data.coder.utils.CommUtils.*;
 public class LcmdbJsnDecoder implements DatasDecoder<String> {
 
 	final static Logger logger = LoggerFactory.getLogger(LcmdbJsnDecoder.class);
@@ -128,53 +128,45 @@ public class LcmdbJsnDecoder implements DatasDecoder<String> {
 			for(int i=0;i<macList.size();i++) {
 				String mac = macList.get(i);
 				// 开关状态 on-开 off-关
-				int powerStatus = DATATYPE_DEFAULTFAIL;
+				int powerStatus = 0;
 				if(json.containsKey("power_status")) {
 					String status = json.get("power_status")+"";
 					switch(status) {
-						case "off":powerStatus = 0;
-						case "on":powerStatus = 1;
+						case "on":powerStatus = 1;break;
+						default:powerStatus = 0;break;
 					}
 				}
 				// 温度调节 带℃单位
-				int temperature = DATATYPE_DEFAULTFAIL;
+				int temperature = DATATYPE_NOFOUND;
 				if(json.containsKey("setting_temperature"))
 					temperature = Integer.valueOf(json.get("setting_temperature")+"");
 				// 模式 cool-制冷 warm-制暖
-				int temperatureCtr = DATATYPE_DEFAULTFAIL;
+				int temperatureCtr = DATATYPE_NOFOUND;
 				if(json.containsKey("setting_mode")) {
 					String mode = json.get("setting_mode")+"";
 					switch(mode) {
-						case "cool":temperatureCtr = DATATYPE_TEMPERATURE_COLD;
-						case "warm":temperatureCtr = DATATYPE_TEMPERATURE_WARM;
+						case "warm":temperatureCtr = DATATYPE_TEMPERATURE_WARM;break;
+						case "cool":
+						default:temperatureCtr = DATATYPE_TEMPERATURE_COLD;break;
 					}
 				}
 				if(logger.isDebugEnabled())
 					logger.debug("mac:{},开关状态:{},温度调节:{},模式 cool:{}",mac,powerStatus,temperature,temperatureCtr);
 				
-				DataPack dataPack = new DataPack();
-				dataPack.setToMac(mac);
-				dataPack.setOnlineStatus(1);
-				dataPack.setDatalevel(Datalevel.NORMAL);
-				dataPack.setDataPackType(DataPackType.Cmd);
+				DataPack dataPack = getInitCmdDataPack(mac);
 				
 				Map<String, Object> data = new HashMap<>();
 				List<Object> list = new ArrayList<>();
 				boolean sendOk = false;
+				//传错命令直接关闭
 				if(powerStatus == 0) {
-					list.add("");
-					list.add(0);
-					data.put(DATATYPE_TEMPERATURE_COLD+"", list);
+					data.put(DATATYPE_TEMPERATURE_COLD+"", makeMapValue("", 0));
 					sendOk = true;
 				}else if(temperatureCtr == DATATYPE_TEMPERATURE_COLD) {
-					list.add("");
-					list.add(temperature);
-					data.put(DATATYPE_TEMPERATURE_COLD+"", list);
+					data.put(DATATYPE_TEMPERATURE_COLD+"", makeMapValue("",temperature));
 					sendOk = true;
 				}else if(temperatureCtr == DATATYPE_TEMPERATURE_WARM) {
-					list.add("");
-					list.add(temperature);
-					data.put(DATATYPE_TEMPERATURE_WARM+"", list);
+					data.put(DATATYPE_TEMPERATURE_WARM+"", makeMapValue("",temperature));
 					sendOk = true;
 				}
 				if(sendOk) {

@@ -16,7 +16,7 @@ import com.util.tools.Public;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class LqEncoder implements DataEncoder<ByteBuf>  {
+public class LqmdbEncoder implements DataEncoder<ByteBuf>  {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
