@@ -1,4 +1,4 @@
-package org.bdc.dcm.netty.lcmdb;
+package org.bdc.dcm.netty.lqmdb;
 
 import java.util.Optional;
 
@@ -12,19 +12,16 @@ import com.util.tools.Public;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-public class LcmdbLoopCheckStateThread implements Runnable{
-	
-	private String mac;
-	
+public class LqcmdbLoopCheckStateThread implements Runnable {
+
 	private boolean isRun;
 	
 	private ChannelHandlerContext ctx;
 	
-	public LcmdbLoopCheckStateThread() {
+	public LqcmdbLoopCheckStateThread() {
 		super();
 		this.isRun = false;
 	}
-
 	public boolean isRun() {
 		return isRun;
 	}
@@ -32,15 +29,6 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 	public void setRun(boolean isRun) {
 		this.isRun = isRun;
 	}
-
-	public String getMac() {
-		return mac;
-	}
-
-	public void setMac(String mac) {
-		this.mac = mac;
-	}
-
 	public ChannelHandlerContext getCtx() {
 		return ctx;
 	}
@@ -48,25 +36,19 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 	public void setCtx(ChannelHandlerContext ctx) {
 		this.ctx = ctx;
 	}
-	
 	@Override
 	public void run() {
 		this.isRun = true;
 		try {
-			Optional<Server> optional = IntfConf.getServerConf().getServerConf().stream().filter(item->{return item.getDataType().equals(DataType.Lcmdb) && item.getServerType().equals(ServerType.TCP_SERVER);}).findFirst();
+			Optional<Server> optional = IntfConf.getServerConf().getServerConf().stream().filter(item->{return item.getDataType().equals(DataType.Lqmdb) && item.getServerType().equals(ServerType.TCP_SERVER);}).findFirst();
 			if(!optional.isPresent()) { isRun = false;return;}
 			Server server = optional.get();
 			while(this.isRun){
 				for(byte i=1;i<21 && this.isRun;i++){
-					//头部----------------------------------------------------------------
-					int sum=0;
-					byte[] cmd = Public.hexString2bytes("FE A5 01 12 16 "+ mac +" 00 ");
-					for(int j=2;j<cmd.length;j++){
-						sum+=(cmd[j] & 0xff);
-					}
 					//modbus-------------------------------------------------------------
-					byte[] modbus = Public.hexString2bytes(Public.byte2hex_ex(i)+" 03 00 80 00 0F");
+					byte[] modbus = Public.hexString2bytes(Public.byte2hex_ex(i)+" 03 00 03 00 0C B4 4B");
 					byte[] crc16 = Public.crc16_A001(modbus);
+					int sum=0;
 					
 					for(int j=0;j<modbus.length;j++){
 						sum+=(modbus[j] & 0xff);
@@ -76,20 +58,17 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 					}
 					byte crcSumByte = ((byte) (sum & 0xff));
 					ByteBuf bu = ctx.alloc().buffer();
-					bu.writeBytes(cmd);
 					bu.writeBytes(modbus);
 					bu.writeByte(crc16[1]);
 					bu.writeByte(crc16[0]);
-					//检验和----------------------------------------------------------------
 					bu.writeByte(crcSumByte);
 					ctx.channel().writeAndFlush(bu);
 					Thread.sleep(server.getLoopInitSendingDataInterval()*1000);
 				}
 			}
-		} catch (Exception e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 }

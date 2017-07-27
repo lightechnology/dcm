@@ -25,7 +25,6 @@ public class LcmdbDataHandler  extends DataHandler {
 			new Thread(loopThread).start();
 		}else{//第二笔数据来
 			//TODO --------测试代码
-			//LcFunTest.go(ctx, msg);
 		}
 	}
 	
