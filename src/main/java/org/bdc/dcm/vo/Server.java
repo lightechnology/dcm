@@ -25,7 +25,6 @@ public class Server implements Serializable {
 	private DataType dataType = null;
 	private String selfMac = null;
 	private String initSendingData = null;
-	private Integer loopInitSendingDataInterval = 0;
 	private Integer delaySendingTime = 0;
 	private Set<String> filterMacs = null;
 	private Integer keepAlive = 0;
@@ -94,14 +93,6 @@ public class Server implements Serializable {
 
 	public void setInitSendingData(String initSendingData) {
 		this.initSendingData = initSendingData;
-	}
-
-	public Integer getLoopInitSendingDataInterval() {
-		return loopInitSendingDataInterval;
-	}
-
-	public void setLoopInitSendingDataInterval(Integer loopInitSendingDataInterval) {
-		this.loopInitSendingDataInterval = loopInitSendingDataInterval;
 	}
 
 	public Integer getDelaySendingTime() {

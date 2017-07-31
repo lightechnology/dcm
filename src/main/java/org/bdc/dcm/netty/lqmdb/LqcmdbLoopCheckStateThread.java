@@ -63,7 +63,7 @@ public class LqcmdbLoopCheckStateThread implements Runnable {
 					bu.writeByte(crc16[0]);
 					bu.writeByte(crcSumByte);
 					ctx.channel().writeAndFlush(bu);
-					Thread.sleep(server.getLoopInitSendingDataInterval()*1000);
+					Thread.sleep(server.getDelaySendingTime()*1000);
 				}
 			}
 		}catch(Exception e) {

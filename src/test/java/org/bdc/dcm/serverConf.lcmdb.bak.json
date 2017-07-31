@@ -10,7 +10,6 @@
       "clientPort": 0,
       "initSendingData": "",
       "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 0,
       "selfMac": "",
       "dataLevel": 1,
       "filterMacs": ["0000000000000000"]
@@ -23,8 +22,7 @@
       "serverPort": 6001,
       "clientPort": 0,
       "initSendingData": "FE A5 00 01 0C 0D",
-      "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 5,
+      "delaySendingTime": 5,
       "selfMac": "",
       "dataLevel": 0,
       "filterMacs": ["0000000000000000"]
@@ -37,7 +35,6 @@
       "clientPort": 0,
       "initSendingData": "",
       "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 0,
       "selfMac": "",
       "dataLevel": 0,
       "filterMacs": ["0000000000000000"]
@@ -50,7 +47,6 @@
       "clientPort": 0,
       "initSendingData": "00000000",
       "delaySendingTime": 3000,
-      "loopInitSendingDataInterval": 10000,
       "selfMac": "00000000",
       "dataLevel": 1,
       "filterMacs": ["0000000000000000"]

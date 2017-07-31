@@ -66,7 +66,6 @@ public class ExampleService implements DataTabConf, ServerConf {
                 server.setClientPort(Public.objToInt(serverMap.get("clientPort")));
                 server.setInitSendingData(Public.objToStr(serverMap.get("initSendingData")));
                 server.setDelaySendingTime(Public.objToInt(serverMap.get("delaySendingTime")));
-                server.setLoopInitSendingDataInterval(Public.objToInt(serverMap.get("loopInitSendingDataInterval")));
                 server.setSelfMac(Public.objToStr(serverMap.get("selfMac")));
                 List<String> l = (List<String>) serverMap.get("filterMacs");
                 Set<String> filterMacs = new HashSet<String>();
