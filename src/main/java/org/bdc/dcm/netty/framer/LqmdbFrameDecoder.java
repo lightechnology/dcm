@@ -16,7 +16,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  * @author Administrator
  *
  */
-public class LqFrameDecoder extends ByteToMessageDecoder {
+public class LqmdbFrameDecoder extends ByteToMessageDecoder {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
