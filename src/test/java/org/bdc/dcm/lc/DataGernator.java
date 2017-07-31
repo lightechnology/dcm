@@ -1,5 +1,8 @@
 package org.bdc.dcm.lc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
@@ -7,6 +10,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 
 public class DataGernator {
 	
+	private  static Logger logger = LoggerFactory.getLogger(DataGernator.class);
 	public static String writeMacPack(String mac) {
 		String fix = "FF A5 FF 09 0C ";
 		int sum = 0;
@@ -14,7 +18,9 @@ public class DataGernator {
 		for(byte b:bs) {
 			sum=(sum+b)&0xff;
 		}
-		return fix + Public.byte2hex_ex(Public.int2Bytes(sum, 1)[0]);
+		
+		String result = fix + mac +" "+ Public.byte2hex_ex(Public.int2Bytes(sum, 1)[0]);
+		return result;
 	}
 	/**
 	 * 

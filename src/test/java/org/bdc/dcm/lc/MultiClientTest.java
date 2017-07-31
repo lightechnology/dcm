@@ -30,14 +30,11 @@ class ClientThread implements Runnable{
 
 	public static final String serverInitPack = "fe a5 00 01 0c 0d";
 	
-	
-	
-	
 	public String mac;
-	public int addr;
+	public String addr;
 	public String ip;
 	public int port;
-	public ClientThread(String ip,int port ,String mac, int addr) {
+	public ClientThread(String ip,int port ,String mac, String addr) {
 		super();
 		this.ip = ip;
 		this.port = port;
@@ -77,8 +74,6 @@ class ClientThread implements Runnable{
 						}
 					});
                 	pipline.addLast(new SimpleChannelInboundHandler<ByteBuf>() {
-                    	private boolean first = false;
-                    	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 						@Override
 						protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
@@ -90,16 +85,11 @@ class ClientThread implements Runnable{
 								byte[] macBs = Public.hexString2bytes(DataGernator.writeMacPack(mac));
 								out.writeBytes(macBs);
 								ctx.writeAndFlush(out);
+							}else {//第二个包开始
+								byte[] macBs = Public.hexString2bytes(DataGernator.writePackInfo(mac, addr));
+								out.writeBytes(macBs);
+								ctx.writeAndFlush(out);
 							}
-//							ByteBuf out = ctx.alloc().buffer();
-//							if(!first) {
-//								first = true;
-//								out.writeBytes(Public.hexString2bytes("FE A5 FF 09 0C "+mac));
-//								ctx.writeAndFlush(out);
-//							}else {
-//								out.writeBytes(Public.hexString2bytes(DataGernator.write(mac,addr+"")));
-//								ctx.writeAndFlush(out);
-//							}
 						}
                     	
 					});
@@ -120,16 +110,22 @@ class ClientThread implements Runnable{
 }
 public class MultiClientTest {
 
-	@Test
+	
 	public  void startUp() {
 		for(int i=1;i<2;i++) {
-			new Thread(new ClientThread("192.168.0.63",6001,"00 12 4B 00 0A DC 89 5"+i, i)).start();
+			String addr = "";
+			if(i<10) {
+				addr = "0"+i;
+			}else {
+				addr = i+"";
+			}
+			new Thread(new ClientThread("192.168.0.63",6001,"00 12 4B 00 0A DC 89 5"+i, addr)).start();
 		}
 		while(true);
 	}
-
 	@Test
-	public void equal() {
-		System.out.println(1<1);
+	public  void startOneUp() {
+		new ClientThread("192.168.0.63",6001,"00 12 4B 00 0A DC 89 50", "01").run();
+		
 	}
 }
