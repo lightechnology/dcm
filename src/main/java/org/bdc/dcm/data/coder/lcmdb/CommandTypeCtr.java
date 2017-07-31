@@ -1,7 +1,7 @@
-package org.bdc.dcm.data.coder.lc;
+package org.bdc.dcm.data.coder.lcmdb;
 
+import org.bdc.dcm.data.coder.lcmdb.vo.CommLcParam;
 import org.bdc.dcm.vo.DataPack;
-import org.bdc.dcm.data.coder.lc.vo.CommLcParam;
 
 /**
  * 	只处理 command 以后的数据 不包含command 不包含 校验和 </br>

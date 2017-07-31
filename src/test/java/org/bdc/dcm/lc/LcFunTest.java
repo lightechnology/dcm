@@ -1,11 +1,13 @@
 package org.bdc.dcm.lc;
 
+import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bdc.dcm.netty.lc.LcTypeConvert;
+import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ public class LcFunTest {
 	 *	</table>
 	 * 
 	 */
-	private static void commCtr(ChannelHandlerContext ctx, DataPack msg,Object val,String order){
+	private static void commCtr(ChannelHandlerContext ctx, DataPack msg,Object val,int type){
 		String mac = msg.getMac();
 		byte[] macBytes = Public.hexString2bytes(mac);
 		logger.info("messageReceived:{}",mac);
@@ -53,7 +55,7 @@ public class LcFunTest {
 			List<Object> list = new ArrayList<>();
 			list.add("");
 			list.add(val);
-			data.put(order, list);
+			data.put(type+"", list);
 			msg.setData(data);
 			ctx.writeAndFlush(msg);
 		}
@@ -67,63 +69,63 @@ public class LcFunTest {
 			@Override
 			public void run() {
 				try {
-					commCtr(ctx,msg,new byte[]{(byte)0xff,(byte)0xff},LcTypeConvert.JDQ_Control+"");
-					Thread.sleep(10000);
-					commCtr(ctx,msg,3,LcTypeConvert.DATATYPE_SURPLUS_POWER+"");
-					Thread.sleep(10000);
-					commCtr(ctx,msg,3,LcTypeConvert.DATATYPE_SURPLUS_TIME+"");
-					
-					
-					Thread.sleep(10000);
-					
-					commCtr(ctx,msg,false,"11");
-					Thread.sleep(10000);
-					commCtr(ctx,msg,true,"11");
-					Thread.sleep(10000);
-					commCtr(ctx,msg,new byte[]{0,0},"12");
-					Thread.sleep(10000);
-					commCtr(ctx,msg,new byte[]{1,0},"12");
-					Thread.sleep(10000);
+//					commCtr(ctx,msg,new byte[]{(byte)0xff,(byte)0xff},JDQ_Control);
+//					Thread.sleep(10000);
+//					commCtr(ctx,msg,3,DATATYPE_SURPLUS_POWER);
+//					Thread.sleep(10000);
+//					commCtr(ctx,msg,3,DATATYPE_SURPLUS_TIME);
+//					
+//					
+//					Thread.sleep(10000);
+//					
+//					commCtr(ctx,msg,false,DATATYPE_JDQSTATE);
+//					Thread.sleep(10000);
+//					commCtr(ctx,msg,true,DATATYPE_JDQSTATE);
+//					Thread.sleep(10000);
+//					commCtr(ctx,msg,new byte[]{0,0},JDQ_Control);
+//					Thread.sleep(10000);
+//					commCtr(ctx,msg,new byte[]{1,0},JDQ_Control);
+//					Thread.sleep(10000);
 					//--------------制冷----------------------
-					commCtr(ctx,msg,0,"10");
+					commCtr(ctx,msg,0,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,22,"10");
+					commCtr(ctx,msg,22,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,23,"10");
+					commCtr(ctx,msg,23,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,24,"10");
+					commCtr(ctx,msg,24,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,25,"10");
+					commCtr(ctx,msg,25,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,26,"10");
+					commCtr(ctx,msg,26,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,27,"10");
+					commCtr(ctx,msg,27,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,28,"10");
+					commCtr(ctx,msg,28,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,29,"10");
+					commCtr(ctx,msg,29,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,30,"10");
+					commCtr(ctx,msg,30,DATATYPE_TEMPERATURE_COLD);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,0,"10");
+					commCtr(ctx,msg,0,DATATYPE_TEMPERATURE_COLD);
 					//--------------制热----------------------
-					commCtr(ctx,msg,16,"13");
+					commCtr(ctx,msg,16,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,17,"13");
+					commCtr(ctx,msg,17,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,18,"13");
+					commCtr(ctx,msg,18,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,19,"13");
+					commCtr(ctx,msg,19,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,20,"13");
+					commCtr(ctx,msg,20,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,21,"13");
+					commCtr(ctx,msg,21,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,22,"13");
+					commCtr(ctx,msg,22,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,23,"13");
+					commCtr(ctx,msg,23,DATATYPE_TEMPERATURE_WARM);
 					Thread.sleep(10000);
-					commCtr(ctx,msg,24,"13");
+					commCtr(ctx,msg,24,DATATYPE_TEMPERATURE_WARM);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

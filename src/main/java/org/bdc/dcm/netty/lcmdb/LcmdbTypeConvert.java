@@ -1,5 +1,6 @@
-package org.bdc.dcm.netty.lc;
+package org.bdc.dcm.netty.lcmdb;
 
+import org.bdc.dcm.data.coder.intf.TypeConvert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,26 +8,43 @@ import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 
+import static org.bdc.dcm.data.coder.utils.CommUtils.*;
+public class LcmdbTypeConvert implements TypeConvert{
 
-public class LcTypeConvert{
+	private static Logger logger = LoggerFactory.getLogger(LcmdbTypeConvert.class);
 
-	private static Logger logger = LoggerFactory.getLogger(LcTypeConvert.class);
+	private final static LcmdbTypeConvert convert = new LcmdbTypeConvert();
 	
-	public final static int DATATYPE_REMAININGTIMELONG = 1;
-	public final static int DATATYPE_REMAININGELECTRICITY = 2;
-	public final static int DATATYPE_TOTALTIME = 3;
-	public final static int DATATYPE_TOTALACTIVEPOWER = 4;
-	public final static int DATATYPE_U = 5;
-	public final static int DATATYPE_I = 6;
-	public final static int DATATYPE_P = 7;
-	public final static int DATATYPE_COS$ = 8;
-	public final static int DATATYPE_JDQTIAOZA = 9;
-	public final static int DATATYPE_TEMPERATURE = 10;
-	public final static int DATATYPE_JDQSTATE = 11;
-	public final static int JDQ_Control = 12;
-	public final static int DATATYPE_TEMPERATURE_WARM = 13;
-	public final static int DATATYPE_SURPLUS_POWER= 14;
-	public final static int DATATYPE_SURPLUS_TIME= 15;
+	
+	
+	public final static int DATATYPE_NOFOUND = -999;
+	//----------------读---------------------------------
+	public final static int DATATYPE_REMAININGTIMELONG = 128;
+	public final static int DATATYPE_REMAININGELECTRICITY = 130;
+	public final static int DATATYPE_TOTALTIME = 132;
+	public final static int DATATYPE_TOTALACTIVEPOWER = 134;
+	public final static int DATATYPE_U = 135;
+	public final static int DATATYPE_I = 136;
+	public final static int DATATYPE_P = 137;
+	public final static int DATATYPE_COS$ = 138;
+	public final static int DATATYPE_JDQTIAOZA = 139;
+	public final static int DATATYPE_TEMPERATURE = 140;
+	public final static int DATATYPE_JDQSTATE = 141;
+	public final static int JDQ_Control = 142;
+	//----------------写---------------------------------
+	public final static int DATATYPE_TEMPERATURE_WARM = -1;
+	public final static int DATATYPE_TEMPERATURE_COLD = -2;
+	public final static int DATATYPE_SURPLUS_POWER= -3;
+	public final static int DATATYPE_SURPLUS_TIME= -4;
+	
+	private LcmdbTypeConvert() {}
+	
+	public static LcmdbTypeConvert getConvert() {
+		return convert;
+	}
+
+
+
 	public static int convertTypeStr2TypeId(String type) {
 		if ("remainTimeLong".equals(type)) {
 			return DATATYPE_REMAININGTIMELONG;
@@ -67,16 +85,19 @@ public class LcTypeConvert{
 		if("temperature_warm".equals(type)){
 			return DATATYPE_TEMPERATURE_WARM;
 		}
+		if("temperature_cold".equals(type)){
+			return DATATYPE_TEMPERATURE_COLD;
+		}
 		if("surplus_power".equals(type)){
 			return DATATYPE_SURPLUS_POWER;
 		}
 		if("surplus_time".equals(type)){
 			return DATATYPE_SURPLUS_TIME;
 		}
-		return -1;
+		return DATATYPE_NOFOUND;
 	}
 	//不包括地址
-	public static byte[] outModbusBytesByType(String type, Object val,byte modbusAddr){
+	public static byte[] encoder(String type, Object val,byte modbusAddr){
 		byte[] bs = null,tmp,crc;
 		boolean isOpen;
 		switch (convertTypeStr2TypeId(type)) {
@@ -87,7 +108,7 @@ public class LcTypeConvert{
 			case DATATYPE_TEMPERATURE_WARM:
 				return temperature(val, modbusAddr,(byte)01);
 			//温度 0 关机 22-30 则控制
-			case DATATYPE_TEMPERATURE:
+			case DATATYPE_TEMPERATURE_COLD:
 				return temperature(val, modbusAddr,(byte)03);
 			//继电器状态	
 			case DATATYPE_JDQSTATE:
@@ -204,7 +225,7 @@ public class LcTypeConvert{
 		bs[10] = crc[0];
 		return bs;
 	}
-	public static Object convertByteBuf2TypeValue(String type, ByteBuf in) {
+	public Object decode(String type, ByteBuf in) {
 		byte[] data;
 		byte[] dataByte;
 		in.markReaderIndex();
@@ -303,22 +324,10 @@ public class LcTypeConvert{
 				return dataByte[1] == 0x01;
 				
 			default:
+				data = new byte[in.readableBytes()];
+				in.readBytes(data);
 				return null;
 		}
 	}
-	public static String byteToBit(byte b) {  
-        return ""  
-                + (byte) ((b >> 7) & 0x1) + (byte) ((b >> 6) & 0x1)  
-                + (byte) ((b >> 5) & 0x1) + (byte) ((b >> 4) & 0x1)  
-                + (byte) ((b >> 3) & 0x1) + (byte) ((b >> 2) & 0x1)  
-                + (byte) ((b >> 1) & 0x1) + (byte) ((b >> 0) & 0x1);  
-    } 
-	public static void reverse(byte[] bs){
-		byte tmp ;
-		for(int i=0;i<bs.length/2;i++){
-			tmp = bs[i];
-			bs[i] = bs[bs.length - 1 -i];
-			bs[bs.length - 1 - i] = tmp;
-		}
-	}
+	
 }

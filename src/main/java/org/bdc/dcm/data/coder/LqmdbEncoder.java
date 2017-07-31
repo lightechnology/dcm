@@ -15,8 +15,8 @@ import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-public class LqEncoder implements DataEncoder<ByteBuf>  {
+import static org.bdc.dcm.data.coder.utils.CommUtils.*;
+public class LqmdbEncoder implements DataEncoder<ByteBuf>  {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -94,12 +94,5 @@ public class LqEncoder implements DataEncoder<ByteBuf>  {
 		src.writeByte(crc16[0]);//crc
 		return src;
 	}
-	public static byte[] intToByte4(int i) {    
-        byte[] targets = new byte[4];    
-        targets[3] = (byte) (i & 0xFF);    
-        targets[2] = (byte) (i >> 8 & 0xFF);    
-        targets[1] = (byte) (i >> 16 & 0xFF);    
-        targets[0] = (byte) (i >> 24 & 0xFF);    
-        return targets;    
-    }  
+	
 }

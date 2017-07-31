@@ -9,7 +9,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.util.tools.Public;
 
 public class LcmdbFrameDecoder extends ByteToMessageDecoder {
 
@@ -26,6 +25,7 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             if ((byte) 0xFE == in.readByte() && (byte) 0xA5 == in.readByte()) {
             	byte type = in.readByte();
             	int packLen = in.readByte() & 0xff;
+            	if(in.readableBytes() < packLen) break;//防止长度溢出
             	byte[] data = new byte[packLen];
             	in.readBytes(data);
             	byte crcSum = in.readByte();
@@ -44,11 +44,10 @@ public class LcmdbFrameDecoder extends ByteToMessageDecoder {
             		frame.markReaderIndex();
             		frame.readBytes(frameBytes);
             		//防止单独设置时 返回的数据
-        			if(packLen == 45 || packLen == 9){//只解轮训状态的包
-	            		logger.info("解码包：frame:{}",Public.byte2hex(frameBytes));
+        			//if(packLen == 45 || packLen == 9){//只解轮训状态的包	            		
 	            		frame.resetReaderIndex();
 	            		out.add(frame);
-        			}
+        			//}
             	}  
             }else{
             	in.resetReaderIndex();

@@ -17,8 +17,6 @@ import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.Server;
-import org.bdc.dcm.vo.e.DataPackType;
-import org.bdc.dcm.vo.e.Datalevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,21 +60,26 @@ public class JmjsnDecoder implements DataDecoder<String> {
 		if ("".equals(key)) return null;
 		if (!verifyParamter(jsonStr, verifyCode, key)) return null;
 		try {
-			Map<String, Object> json = Public.str2Map(jsonStr);
-			String mac = Public.objToStr(json.get("device"));
-			int kind = Public.objToInt(json.get("kind"));
-			if (!"".equals(mac) && 0 < kind) {
-				//Map<Integer, DataTab> dataTabMap = getDataTabConf(kind);
-				DataPack dataPack = new DataPack();
-				dataPack.setMac(mac);
-				dataPack.setOnlineStatus(1);
-				dataPack.setDatalevel(Datalevel.NORMAL);
-				dataPack.setDataPackType(DataPackType.Info);
-				/*Iterator<Entry<String, Object>> ite = json.entrySet().iterator();
-				while (ite.hasNext()) {
-					Entry<String, Object> entry = ite.next();
-				}*/
-			}
+			//ObjectMapper objectMapper = new ObjectMapper();
+			//objectMapper.readValue(jsonStr, valueType);
+			//jsArray.
+			//json.get("mac");
+			
+			
+//			String mac = Public.objToStr(json.get("device"));
+//			int kind = Public.objToInt(json.get("kind"));
+//			if (!"".equals(mac) && 0 < kind) {
+//				//Map<Integer, DataTab> dataTabMap = getDataTabConf(kind);
+//				DataPack dataPack = new DataPack();
+//				dataPack.setMac(mac);
+//				dataPack.setOnlineStatus(1);
+//				dataPack.setDatalevel(Datalevel.NORMAL);
+//				dataPack.setDataPackType(DataPackType.Info);
+//				/*Iterator<Entry<String, Object>> ite = json.entrySet().iterator();
+//				while (ite.hasNext()) {
+//					Entry<String, Object> entry = ite.next();
+//				}*/
+//			}
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error(e.getMessage(), e);
@@ -129,5 +132,4 @@ public class JmjsnDecoder implements DataDecoder<String> {
 			return null;
 		return dataTabMap;
 	}
-	
 }
