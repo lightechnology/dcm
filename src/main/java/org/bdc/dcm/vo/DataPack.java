@@ -41,7 +41,7 @@ public class DataPack implements Serializable {
 	private Map<String, Object> data;
 	// 上下有变化的数据
 	private Map<String, Object> differentData;
-	// 数据源接口信息
+	// 数据接口信息
 	private SocketAddress socketAddress;
 	// 数据有效标识
 	private Datalevel datalevel;
