@@ -1,15 +1,16 @@
 package org.bdc.dcm.netty.handler.intfImpl;
 
-import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import org.bdc.dcm.netty.handler.DataHandler;
 import org.bdc.dcm.netty.handler.intf.WriteTaskIntf;
@@ -17,7 +18,6 @@ import org.bdc.dcm.netty.handler.utils.LockUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.print.resources.serviceui;
 
 /**
  * 随着队列的增多 当到达一个量级之后 必须新增一个线程去处理 防止阻塞
@@ -26,13 +26,15 @@ import sun.print.resources.serviceui;
  */
 public class WriteQueueManage{
 	
+	private static  AtomicInteger threadNum = new AtomicInteger(0);
+	
 	private static Logger logger = LoggerFactory.getLogger(WriteQueueManage.class);
 	
 	//防止操作的时候需要遍历
 	private static Map<String,WriteThread> wMap = new Hashtable<>();
 	
 	static{
-		WriteThread thread = new WriteThread();
+		WriteThread thread = new WriteThread(threadNum.getAndDecrement()+"");
 		thread.notDel = true;
 		execute(thread);
 	}
@@ -42,17 +44,25 @@ public class WriteQueueManage{
 	public static WriteQueueManage Instance(){
 		return writeQueueManage;
 	}
+	public long monitor(){
+		long sum = 0;
+		List<Integer> is = wMap.values().stream().map(item->item.size()).collect(Collectors.toList());
+		for(Integer i:is){
+			sum+=i;
+		}
+		return sum;
+	}
 	public void remove(String key){
 		wMap.remove(key);
 	}
 	public int size(){
 		return wMap.size();
 	}
-	public void addTask(WriteTaskIntf write) {
+	public synchronized void addTask(WriteTaskIntf write) {
 		Optional<WriteThread> optional = wMap.values().stream().filter(item->item.size() < 300).findFirst();
 		WriteThread writeThread = null;
 		if(!optional.isPresent()){
-			writeThread = new WriteThread();
+			writeThread = new WriteThread(threadNum.getAndDecrement()+"");
 			execute(writeThread);
 		}else
 			writeThread = optional.get();
@@ -61,9 +71,9 @@ public class WriteQueueManage{
 	}
 
 	private static void execute(WriteThread writeThread) {
-		wMap.put(writeThread.id, writeThread);
+		wMap.put(writeThread.getId(), writeThread);
 		DataHandler.CACHED_THREAD_POOL.execute(writeThread);
-		logger.error("~~~添加一个新的写线程~~~：{}",writeThread.id);
+		logger.error("~~~添加一个新的写线程~~~：{}",writeThread.getId());
 	}
 }
 /**
@@ -81,20 +91,23 @@ class WriteThread implements Runnable{
 	private Lock lock;
 	private Condition condition;
 	private boolean isRun ;
-	public String id;
+	private String id;
 	public boolean notDel;
 	
-	public WriteThread(){
-		this.id = UUID.randomUUID().toString();
+	public WriteThread(String id){
 		this.lock = new ReentrantLock();
 		this.condition = lock.newCondition();
 		isRun = true;
+		this.id = id;
 	}
 	public void addTask(WriteTaskIntf write) {
 		queue.offer(write);//先加任务 再唤醒
 		LockUtils.sign(lock, condition);
 	}
 
+	public String getId() {
+		return id;
+	}
 	public int size() {
 		return queue.size();
 	}
@@ -107,9 +120,12 @@ class WriteThread implements Runnable{
 				if(queue.isEmpty() && !notDel){
 					isRun = false;
 				}else{
-					int size = WriteQueueManage.Instance().size();
-					if(notDel)
-						logger.error("当前管理共多少个写线程：{},当前写队列个数:{}",size,queue.size(),isRun);
+					WriteQueueManage manage = WriteQueueManage.Instance();
+					int size = manage.size();
+					if(notDel){
+						logger.error("当前管理共多少个写线程：{},共写任务：{},当前写队列个数:{}",size,manage.monitor(),queue.size(),isRun);
+						
+					}
 				}
 			}
 			while(isRun && !queue.isEmpty()){

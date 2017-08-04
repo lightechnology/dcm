@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +88,6 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         //monitor = new Monitor();
         //CACHED_THREAD_POOL.execute(monitor);
         //CACHED_THREAD_POOL.execute(this);
-        logger.error("hello");
     }
 
     @Override
@@ -140,6 +138,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     }
 
     @Override
+    @Deprecated
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         super.close(ctx, promise);
     }

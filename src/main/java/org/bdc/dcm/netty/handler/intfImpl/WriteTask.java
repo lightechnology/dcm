@@ -19,6 +19,7 @@ public class WriteTask implements WriteTaskIntf {
 
 	@Override
 	public void invoke() throws Exception {
-		ctx.writeAndFlush(msg, promise);
+		if(!ctx.isRemoved())
+			ctx.writeAndFlush(msg, promise);
 	}
 }
