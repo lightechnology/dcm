@@ -21,16 +21,18 @@ public class LqmdbDataHandler extends DataHandler {
 		super.messageReceived(ctx, msg);
 		if(!loopThread.isRun()){
 			loopThread.setCtx(ctx);
-			new Thread(loopThread).start();
+			CACHED_THREAD_POOL.execute(loopThread);
 		}else{//第二笔数据来
 			//TODO --------测试代码
 		}
 	}
-	
+
 	@Override
-	public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-		super.close(ctx, promise);
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		loopThread.setRun(false);
+		loopThread = null;
+		super.channelInactive(ctx);
 	}
+
 	
 }

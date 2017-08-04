@@ -3,13 +3,15 @@ package org.bdc.dcm.netty.handler;
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.lcmdb.LcmdbLoopCheckStateThread;
 import org.bdc.dcm.vo.DataPack;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 
 public class LcmdbDataHandler  extends DataHandler {
 
+	private Logger logger = LoggerFactory.getLogger(LcmdbDataHandler.class);
+	
 	private LcmdbLoopCheckStateThread loopThread = new LcmdbLoopCheckStateThread();
  
 	public LcmdbDataHandler(NettyBoot nettyBoot) {
@@ -20,23 +22,21 @@ public class LcmdbDataHandler  extends DataHandler {
 	protected void messageReceived(ChannelHandlerContext ctx, DataPack msg) throws Exception {
 		super.messageReceived(ctx, msg);
 		if(!loopThread.isRun()){
+			logger.error("服务器接收成功第一笔数据");
 			loopThread.setCtx(ctx);
 			loopThread.setMac(msg.getMac());
-			new Thread(loopThread).start();
+			CACHED_THREAD_POOL.execute(loopThread);
 		}else{//第二笔数据来
-			//TODO --------测试代码
+			
 		}
-	}
-	
-	@Override
-	public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-		super.close(ctx, promise);
-		loopThread.setRun(false);
 	}
 
 	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		super.channelActive(ctx);
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		loopThread.setRun(false);
+		loopThread = null;
+		super.channelInactive(ctx);
+		
 	}
 
 }

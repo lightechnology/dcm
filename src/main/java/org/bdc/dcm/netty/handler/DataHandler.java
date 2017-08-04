@@ -5,6 +5,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -13,6 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.channel.ChannelManager;
+import org.bdc.dcm.netty.handler.intfImpl.WriteQueueManage;
+import org.bdc.dcm.netty.handler.intfImpl.WriteTask;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataPackType;
 import org.slf4j.Logger;
@@ -39,8 +43,10 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
 
     final static Logger logger = LoggerFactory.getLogger(DataHandler.class);
     
-    public static final ExecutorService CACHED_THREAD_POOL = Executors.newCachedThreadPool();
-
+    public static final ExecutorService CACHED_THREAD_POOL = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+            10L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>());
+    
     private NettyBoot nettyBoot;
     private ChannelManager channelManager;
     private InitSdata initSdata;
@@ -53,9 +59,9 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     private Lock lock;
     private Condition condition1;
     private Condition condition2;
-    private Queue<Info> infoQueue;
+    private Queue<Info> queue;
     private AtomicInteger deep;
-
+   
     public DataHandler(NettyBoot nettyBoot) {
         this.nettyBoot = nettyBoot;
         this.channelManager = ChannelManager.getInstance();
@@ -64,7 +70,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         this.lock = new ReentrantLock();
         this.condition1 = lock.newCondition();
         this.condition2 = lock.newCondition();
-        this.infoQueue = new ConcurrentLinkedQueue<Info>();
+        this.queue = new ConcurrentLinkedQueue<Info>();
         this.deep = new AtomicInteger(0);
     }
 
@@ -80,9 +86,10 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             initSdata = new InitSdata(ctx, initSendingData);
             CACHED_THREAD_POOL.execute(initSdata);
         }
-        monitor = new Monitor();
-        CACHED_THREAD_POOL.execute(monitor);
+        //monitor = new Monitor();
+        //CACHED_THREAD_POOL.execute(monitor);
         //CACHED_THREAD_POOL.execute(this);
+        logger.error("hello");
     }
 
     @Override
@@ -92,38 +99,6 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         if (logger.isInfoEnabled()) {
             logger.info("remoteAddress: {} disconnected", ctx.channel().remoteAddress());
         }
-    }
-
-    @Override
-    protected void messageReceived(ChannelHandlerContext ctx, DataPack msg) throws Exception {
-        if (null != initSdata) {
-            initSdata.stop();
-            initSdata = null;
-            pollWrite(msg);
-            if (null != w4prList && 0 < w4prList.size()) {
-                pollReading = new PollReading(ctx);
-                CACHED_THREAD_POOL.execute(pollReading);
-            }
-        } else {
-            signal();
-            Long cur = System.currentTimeMillis();
-            channelManager.setMaxInCost(cur - msg.getTimestamp());
-            msg.setTimestamp(cur);
-            channelManager.messagePublish(ctx, msg);
-        }
-    }
-
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-       // if (msg instanceof DataPack) {
-       //     offer(ctx, msg);
-       // } else {
-            super.write(ctx, msg, promise);
-       // }
-    }
-
-    @Override
-    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         run = false;
         if (null != initSdata) {
             initSdata.stop();
@@ -137,6 +112,35 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             pollReading.stop();
             pollReading = null;
         }
+        logger.error("say byte");
+    }
+
+    @Override
+    protected void messageReceived(ChannelHandlerContext ctx, DataPack msg) throws Exception {
+        if (null != initSdata) {
+            initSdata.stop();
+            initSdata = null;
+            pollWrite(msg);
+            if (null != w4prList && 0 < w4prList.size()) {
+                pollReading = new PollReading(ctx);
+                CACHED_THREAD_POOL.execute(pollReading);
+            }
+        } else {//内容分发
+            signal();
+            Long cur = System.currentTimeMillis();
+            channelManager.setMaxInCost(cur - msg.getTimestamp());
+            msg.setTimestamp(cur);
+            channelManager.messagePublish(ctx, msg);
+        }
+    }
+
+    @Override
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+       WriteQueueManage.Instance().addTask(new WriteTask(ctx, msg, promise)); 
+    }
+
+    @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         super.close(ctx, promise);
     }
 
@@ -205,7 +209,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     
     public void offer(final ChannelHandlerContext ctx, final Object msg) {
         Info info = new Info(ctx, msg);
-        infoQueue.offer(info);
+        queue.offer(info);
         deep.getAndIncrement();
         try {
             lock.lock();
@@ -227,7 +231,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     @Override
     public void run() {
         while (run) {
-            while (infoQueue.isEmpty()) {
+            while (queue.isEmpty()) {
                 try {
                     lock.lock();
                     condition1.await();
@@ -237,8 +241,8 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
                     lock.unlock();
                 }
             }
-            while (!infoQueue.isEmpty()) {
-                Info info = infoQueue.poll();
+            while (!queue.isEmpty()) {
+                Info info = queue.poll();
                 deep.getAndDecrement();
                 ChannelHandlerContext ctx = info.ctx;
                 Object msg = info.msg;
@@ -355,7 +359,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         }
 
     }
-    
+  
     class Info {
 
         public final ChannelHandlerContext ctx;

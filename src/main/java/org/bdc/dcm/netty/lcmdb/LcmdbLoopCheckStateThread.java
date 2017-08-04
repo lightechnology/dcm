@@ -6,6 +6,8 @@ import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.vo.Server;
 import org.bdc.dcm.vo.e.DataType;
 import org.bdc.dcm.vo.e.ServerType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
@@ -19,6 +21,8 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 	private boolean isRun;
 	
 	private ChannelHandlerContext ctx;
+	
+	private final static Logger logger = LoggerFactory.getLogger(LcmdbLoopCheckStateThread.class);
 	
 	public LcmdbLoopCheckStateThread() {
 		super();
@@ -89,7 +93,6 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 }
