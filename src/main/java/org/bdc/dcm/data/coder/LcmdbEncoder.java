@@ -105,7 +105,6 @@ public class LcmdbEncoder implements DataEncoder<ByteBuf> {
 
 		//crc校验和
 		src.writeByte((byte)(sum & 0xff));
-		logger.error("编码成功 ");
 		return src;
 	}
 	

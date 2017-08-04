@@ -36,7 +36,6 @@ public class LcmdbDecoder implements DataDecoder<ByteBuf> {
 		//----------------动态编码加载区-------------------------------------------
 		String command = Public.byte2hex_ex(commandByte);
 		String classPath = "org.bdc.dcm.data.coder.lcmdb.decoder.CmdDecoder_"+command+"H";
-		logger.error("解码成功");
 		try {
 			Class<?> ctrClazz = Class.forName(classPath);
 			CommandTypeCtr ctr = (CommandTypeCtr) ctrClazz.newInstance();
