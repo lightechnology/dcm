@@ -2,6 +2,7 @@ package org.bdc.dcm.lc;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -149,10 +150,15 @@ public class MultiClientTest {
 	public static AtomicInteger successNum = new AtomicInteger(0);
 	@Test
 	public  void startUp() {
-		for(int i=0,j=60;i<700;i++,j++) {
-			new Thread(new ClientThread("192.168.0.63",6004,"00 12 4B 00 "+Public.byte2hex(Public.int2Bytes(j, 4)))).start();
-		}
 		try {
+			List<Thread> ts = new ArrayList<>();
+			for(int i=0,j=1201;i<200;i++,j++) {
+				ts.add(new Thread(new ClientThread("192.168.0.63",6001,"00 12 4B 00 "+Public.byte2hex(Public.int2Bytes(j, 4)))));
+			}
+			for(Thread t:ts) {
+				Thread.sleep(10);
+				t.start();
+			}
 			Thread.sleep(1000*20*60);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

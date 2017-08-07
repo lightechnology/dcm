@@ -20,19 +20,22 @@ public class EchoClient {
     static final int PORT = Integer.parseInt(System.getProperty("port", "8007"));
     static final int SIZE = Integer.parseInt(System.getProperty("size", "10"));
     static AtomicInteger curOnline = new AtomicInteger(0);
+    
     public static void main(String[] args) throws Exception {
-    	for(int i=0;i<10;i++) {
-         new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					client();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+    	for(int i=0;i<500;i++) {
+	         new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						client();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		}).start();
+			}).start();
+	        if(i==0)
+	        	 Thread.sleep(1000);
     	}
     }
 
@@ -59,7 +62,7 @@ public class EchoClient {
 
 				@Override
 				public void operationComplete(Future<Void> future) throws Exception {
-					System.out.println("成功:"+curOnline.getAndDecrement());
+					System.out.println("成功:"+curOnline.getAndIncrement());
 				}
 			}).sync();
 
