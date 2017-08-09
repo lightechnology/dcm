@@ -11,7 +11,7 @@
       "initSendingData": "",
       "delaySendingTime": 0,
       "selfMac": "",
-      "dataLevel": 0,
+      "dataLevel": 1,
       "filterMacs": ["0000000000000000"]
     },
     {
