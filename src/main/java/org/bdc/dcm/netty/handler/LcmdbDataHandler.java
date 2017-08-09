@@ -22,7 +22,6 @@ public class LcmdbDataHandler  extends DataHandler {
 	protected void messageReceived(ChannelHandlerContext ctx, DataPack msg) throws Exception {
 		super.messageReceived(ctx, msg);
 		if(!loopThread.isRun()){
-			logger.error("服务器接收成功第一笔数据");
 			loopThread.setCtx(ctx);
 			loopThread.setMac(msg.getMac());
 			CACHED_THREAD_POOL.execute(loopThread);

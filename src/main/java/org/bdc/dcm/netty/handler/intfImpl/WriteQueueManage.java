@@ -33,13 +33,15 @@ public class WriteQueueManage{
 	//防止操作的时候需要遍历
 	private static Map<String,WriteThread> wMap = new Hashtable<>();
 	
+	private static WriteQueueManage writeQueueManage = new WriteQueueManage();
+	
+	private WriteQueueManage(){};
+	
 	static{
-		WriteThread thread = new WriteThread(threadNum.getAndDecrement()+"");
+		WriteThread thread = new WriteThread(threadNum.getAndIncrement()+"");
 		thread.notDel = true;
 		execute(thread);
 	}
-	
-	private static WriteQueueManage writeQueueManage = new WriteQueueManage();
 	
 	public static WriteQueueManage Instance(){
 		return writeQueueManage;
@@ -58,7 +60,8 @@ public class WriteQueueManage{
 	public int size(){
 		return wMap.size();
 	}
-	public synchronized void addTask(WriteTaskIntf write) {
+	public void addTask(WriteTaskIntf write) {
+		
 		Optional<WriteThread> optional = wMap.values().stream().filter(item->item.size() < 300).findFirst();
 		WriteThread writeThread = null;
 		if(!optional.isPresent()){
@@ -68,12 +71,13 @@ public class WriteQueueManage{
 			writeThread = optional.get();
 		
 		writeThread.addTask(write);
+		
 	}
 
 	private static void execute(WriteThread writeThread) {
 		wMap.put(writeThread.getId(), writeThread);
 		DataHandler.CACHED_THREAD_POOL.execute(writeThread);
-		logger.error("~~~添加一个新的写线程~~~：{}",writeThread.getId());
+		//logger.error("~~~添加一个新的写线程~~~：{}",writeThread.getId());
 	}
 }
 /**
@@ -124,7 +128,6 @@ class WriteThread implements Runnable{
 					int size = manage.size();
 					if(notDel){
 						logger.error("当前管理共多少个写线程：{},共写任务：{},当前写队列个数:{}",size,manage.monitor(),queue.size(),isRun);
-						
 					}
 				}
 			}

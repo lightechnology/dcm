@@ -7,7 +7,7 @@ public interface HyChannelGroupIntf<Indentity> extends ChannelGroup {
 
 	public boolean add(Channel channel, Indentity indentity);
 	
-	public boolean removeChannel(Indentity o);
+	public boolean removeByIndentity(Indentity o);
 
 	public Channel findByIndetity(Indentity indentity);
 }

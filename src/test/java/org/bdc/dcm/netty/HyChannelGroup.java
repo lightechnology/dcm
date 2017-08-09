@@ -25,6 +25,12 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 
+/**
+ * 不处理一个网关 多个设备的删除问题
+ * @author Administrator
+ *
+ * @param <Indentity>
+ */
 public class HyChannelGroup<Indentity> extends AbstractSet<Channel> implements HyChannelGroupIntf<Indentity> {
 
 	private static final AtomicInteger nextId = new AtomicInteger();
@@ -124,7 +130,7 @@ public class HyChannelGroup<Indentity> extends AbstractSet<Channel> implements H
        throw new AbstractMethodError();
     }
     @Override
-    public boolean removeChannel(Indentity o) {
+    public boolean removeByIndentity(Indentity o) {
         Channel c = null;
        
         c = nonServerChannels.remove(o);
