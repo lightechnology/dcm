@@ -60,8 +60,23 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     private Condition condition2;
     private Queue<Info> queue;
     private AtomicInteger deep;
-   
-    public DataHandler(NettyBoot nettyBoot) {
+    private SafeDataHandlerIntf handler ;
+    
+    public DataHandler(NettyBoot nettyBoot,SafeDataHandlerIntf handler) {
+        this.nettyBoot = nettyBoot;
+        this.channelManager = ChannelManager.getInstance();
+
+        this.run = true;
+        this.lock = new ReentrantLock();
+        this.condition1 = lock.newCondition();
+        this.condition2 = lock.newCondition();
+        this.queue = new ConcurrentLinkedQueue<Info>();
+        this.deep = new AtomicInteger(0);
+        this.handler = handler;
+    }
+
+    
+	public DataHandler(NettyBoot nettyBoot) {
         this.nettyBoot = nettyBoot;
         this.channelManager = ChannelManager.getInstance();
 
@@ -89,6 +104,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         monitor = new Monitor();
         CACHED_THREAD_POOL.execute(monitor);
         //CACHED_THREAD_POOL.execute(this);
+        handler.channelActive(ctx);
     }
 
     @Override
@@ -112,6 +128,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             pollReading = null;
         }
         logger.error("say byte");
+        handler.channelInactive(ctx);
     }
 
     @Override
@@ -130,13 +147,15 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             channelManager.setMaxInCost(cur - msg.getTimestamp());
             msg.setTimestamp(cur);
             channelManager.messagePublish(ctx, msg);
+            handler.messageReceived(ctx,msg);
         }
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
        //WriteQueueManage.Instance().addTask(new WriteTask(ctx, msg, promise)); 
-    	super.write(ctx, msg, promise);
+    	//super.write(ctx, msg, promise);
+    	handler.write(ctx,msg);
     }
 
     @Override

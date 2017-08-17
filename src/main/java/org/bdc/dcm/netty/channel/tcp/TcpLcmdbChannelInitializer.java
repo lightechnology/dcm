@@ -3,11 +3,11 @@ package org.bdc.dcm.netty.channel.tcp;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 
+import org.bdc.dcm.data.handler.LcmdbDataHandler;
 import org.bdc.dcm.netty.channel.AbstractChannelInitializer;
 import org.bdc.dcm.netty.coder.tcp.TcpLcmdbDecoder;
 import org.bdc.dcm.netty.coder.tcp.TcpLcmdbEncoder;
 import org.bdc.dcm.netty.framer.LcmdbFrameDecoder;
-import org.bdc.dcm.netty.handler.LcmdbDataHandler;
 
 public class TcpLcmdbChannelInitializer extends AbstractChannelInitializer<SocketChannel> {
 

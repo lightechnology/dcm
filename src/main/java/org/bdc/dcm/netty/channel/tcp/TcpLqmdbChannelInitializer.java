@@ -1,10 +1,10 @@
 package org.bdc.dcm.netty.channel.tcp;
 
+import org.bdc.dcm.data.handler.LqmdbDataHandler;
 import org.bdc.dcm.netty.channel.AbstractChannelInitializer;
 import org.bdc.dcm.netty.coder.tcp.TcpLqmdbDecoder;
 import org.bdc.dcm.netty.coder.tcp.TcpLqmdbEncoder;
 import org.bdc.dcm.netty.framer.LqmdbFrameDecoder;
-import org.bdc.dcm.netty.handler.LqmdbDataHandler;
 
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

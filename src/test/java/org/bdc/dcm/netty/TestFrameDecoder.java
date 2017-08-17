@@ -13,7 +13,7 @@ public class TestFrameDecoder extends ByteToMessageDecoder{
 	
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		while(in.isReadable() && in.readableBytes() == packLen ){
+		while(in.isReadable() && in.readableBytes() >= packLen ){
 			byte[] dst = new byte[packLen];
 			in.readBytes(dst);
 			ByteBuf buf = in.alloc().buffer(dst.length);

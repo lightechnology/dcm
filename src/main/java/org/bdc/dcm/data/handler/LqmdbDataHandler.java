@@ -1,17 +1,18 @@
-package org.bdc.dcm.netty.handler;
+package org.bdc.dcm.data.handler;
 
-import org.bdc.dcm.data.convert.ygdqmdb.YgdqmdbCheckStateThread;
+import org.bdc.dcm.data.convert.lqmdb.LqcmdbLoopCheckStateThread;
 import org.bdc.dcm.netty.NettyBoot;
+import org.bdc.dcm.netty.handler.DataHandler;
 import org.bdc.dcm.vo.DataPack;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public class YgdqmdbDataHandler  extends DataHandler {
-
-	private YgdqmdbCheckStateThread loopThread = new YgdqmdbCheckStateThread();
+public class LqmdbDataHandler extends DataHandler {
 	
-	public YgdqmdbDataHandler(NettyBoot nettyBoot) {
-		super(nettyBoot);
+	private LqcmdbLoopCheckStateThread loopThread = new LqcmdbLoopCheckStateThread();
+	
+	public LqmdbDataHandler(NettyBoot nettyBoot) {
+		super(nettyBoot); 
 	}
 
 	@Override
@@ -32,4 +33,6 @@ public class YgdqmdbDataHandler  extends DataHandler {
 		loopThread = null;
 		super.channelInactive(ctx);
 	}
+
+	
 }

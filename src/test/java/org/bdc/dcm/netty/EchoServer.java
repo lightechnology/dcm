@@ -48,7 +48,7 @@ public final class EchoServer {
             b.group(bossGroup, workerGroup)
 	            .channel(NioServerSocketChannel.class)
 				.option(ChannelOption.SO_BACKLOG, 128)
-	            .option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024)
+	            .option(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 256 * 1024)
 	            .option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 8 * 1024)
 	            .childOption(ChannelOption.SO_KEEPALIVE, true)
 	            .childHandler(new TestChannelInitializer());

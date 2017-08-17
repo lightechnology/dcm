@@ -1,9 +1,5 @@
 package org.bdc.dcm.netty;
 
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
@@ -16,6 +12,7 @@ import io.netty.channel.Channel;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -89,7 +86,6 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-		
 		boolean isReceiveClient = false;
 		long startTime = System.currentTimeMillis();
 		Iterator<Channel> iterator = channelGroup.iterator();
@@ -97,7 +93,8 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 		long runTime = System.currentTimeMillis() - startTime;
 		while(iterator.hasNext()){
 			Channel channel = iterator.next();
-			channel.writeAndFlush(outMessageBuf(msg));
+			if(channel.isWritable())
+				channel.writeAndFlush(outMessageBuf(msg));
 			if(channel.id().asLongText().equals(ctx.channel().id().asLongText())){
 				isReceiveClient = true;
 			}
@@ -108,12 +105,12 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			logger.error("最大运行时间:{},接收信息客户端个数：{}",maxRunTime,channelGroup.size());
 		}
 		
-		
-		if(!isReceiveClient)
-			ctx.writeAndFlush(outMessageBuf(msg));
+		Channel channel = ctx.channel();
+		if(!isReceiveClient && channel.isWritable())
+			channel.writeAndFlush(outMessageBuf(msg));
 		
 		msg.clear();
-		
+		System.out.println(ctx);
 	}
 	
 	private ByteBuf outInitBuf() {
@@ -129,6 +126,12 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 		ByteBuf buf = msg.alloc().buffer(bs.length);
 		buf.writeBytes(bs);
 		return buf;
+	}
+
+	@Override
+	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+		super.write(ctx, msg, promise);
+		logger.error("1111");
 	}
 
 }
