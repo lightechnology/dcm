@@ -1,4 +1,4 @@
-package org.bdc.dcm.netty.lqmdb;
+package org.bdc.dcm.data.convert.lqmdb;
 
 import org.bdc.dcm.data.coder.intf.TypeConvert;
 

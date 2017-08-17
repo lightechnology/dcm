@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataEncoder;
-import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
+import org.bdc.dcm.data.convert.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
 import org.bdc.dcm.vo.e.DataPackType;

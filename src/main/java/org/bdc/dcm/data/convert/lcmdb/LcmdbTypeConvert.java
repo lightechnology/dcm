@@ -1,4 +1,4 @@
-package org.bdc.dcm.netty.lcmdb;
+package org.bdc.dcm.data.convert.lcmdb;
 
 import org.bdc.dcm.data.coder.intf.TypeConvert;
 import org.slf4j.Logger;

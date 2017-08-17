@@ -11,6 +11,7 @@ public class TestChannelInitializer extends ChannelInitializer<SocketChannel> {
     	 ChannelPipeline piple = ch.pipeline();
     	 piple.addLast(new TestFrameDecoder());
     	 piple.addLast(new EchoServerHandler());
+    	 
      }
      
 }

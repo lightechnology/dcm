@@ -84,9 +84,10 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         if (null != initSendingData && 0 < initSendingData.length()) {
             initSdata = new InitSdata(ctx, initSendingData);
             CACHED_THREAD_POOL.execute(initSdata);
+            //ctx.executor().execute(initSdata);
         }
-        //monitor = new Monitor();
-        //CACHED_THREAD_POOL.execute(monitor);
+        monitor = new Monitor();
+        CACHED_THREAD_POOL.execute(monitor);
         //CACHED_THREAD_POOL.execute(this);
     }
 
@@ -134,7 +135,8 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-       WriteQueueManage.Instance().addTask(new WriteTask(ctx, msg, promise)); 
+       //WriteQueueManage.Instance().addTask(new WriteTask(ctx, msg, promise)); 
+    	super.write(ctx, msg, promise);
     }
 
     @Override

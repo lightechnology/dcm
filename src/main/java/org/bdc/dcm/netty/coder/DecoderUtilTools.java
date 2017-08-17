@@ -45,7 +45,8 @@ public class DecoderUtilTools<I> {
 		
 		if(decoder instanceof DatasDecoder) {
 			List<DataPack> dataPacks = ((DatasDecoder<I>) decoder).datas2Package(ctx, msg);
-			for(int i=0;i<dataPacks.size();i++) {
+			int size = dataPacks.size();
+			for(int i=0;i<size;i++) {
 				long start1 = 0L, end1 = 0L, start2 = 0L, end2 = 0L, end3 = 0L;
 				start1 = System.currentTimeMillis();
 				DataPack dataPack = dataPacks.get(i);

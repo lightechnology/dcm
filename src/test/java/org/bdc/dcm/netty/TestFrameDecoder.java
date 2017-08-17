@@ -1,5 +1,6 @@
 package org.bdc.dcm.netty;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
@@ -18,6 +19,8 @@ public class TestFrameDecoder extends ByteToMessageDecoder{
 			ByteBuf buf = in.alloc().buffer(dst.length);
 			buf.writeBytes(dst);
 			out.add(buf);
+			
+			dst = null;
 		}
 		
 	}

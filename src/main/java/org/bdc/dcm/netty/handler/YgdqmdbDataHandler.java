@@ -1,7 +1,7 @@
 package org.bdc.dcm.netty.handler;
 
+import org.bdc.dcm.data.convert.ygdqmdb.YgdqmdbCheckStateThread;
 import org.bdc.dcm.netty.NettyBoot;
-import org.bdc.dcm.netty.ygdqmdb.YgdqmdbCheckStateThread;
 import org.bdc.dcm.vo.DataPack;
 
 import io.netty.channel.ChannelHandlerContext;

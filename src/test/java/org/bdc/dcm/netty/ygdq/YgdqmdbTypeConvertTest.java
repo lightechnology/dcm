@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import org.bdc.dcm.netty.ygdqmdb.YgdqmdbTypeConvert;
+import org.bdc.dcm.data.convert.ygdqmdb.YgdqmdbTypeConvert;
 import org.junit.Test;
 
 import com.util.tools.Public;

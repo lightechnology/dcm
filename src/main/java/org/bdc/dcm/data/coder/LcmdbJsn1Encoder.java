@@ -1,6 +1,6 @@
 package org.bdc.dcm.data.coder;
 
-import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+import static org.bdc.dcm.data.convert.lcmdb.LcmdbTypeConvert.*;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;

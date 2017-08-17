@@ -3,6 +3,12 @@ package org.bdc.dcm.data.coder.intf;
 import io.netty.buffer.ByteBuf;
 
 public interface TypeConvert {
+	
+	/**
+	 * 全系统支持的字段类型
+	 * @author Administrator
+	 *
+	 */
 	public enum CommType{
 		/**
 		 * 电量显示选择
@@ -197,6 +203,18 @@ public interface TypeConvert {
 		  * 变送参数比
 		  */
 		 transmitParamRatio,
+		 /**
+		  * 电压
+		  */
+		 U,
+		 /**
+		  * 电流
+		  */
+		 I,
+		 /**
+		  * 功率
+		  */
+		 P,
 		/**
 		 * 无法找到
 		 */

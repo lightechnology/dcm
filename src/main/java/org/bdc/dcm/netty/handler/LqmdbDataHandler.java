@@ -1,7 +1,7 @@
 package org.bdc.dcm.netty.handler;
 
+import org.bdc.dcm.data.convert.lqmdb.LqcmdbLoopCheckStateThread;
 import org.bdc.dcm.netty.NettyBoot;
-import org.bdc.dcm.netty.lqmdb.LqcmdbLoopCheckStateThread;
 import org.bdc.dcm.vo.DataPack;
 
 import io.netty.channel.ChannelHandlerContext;

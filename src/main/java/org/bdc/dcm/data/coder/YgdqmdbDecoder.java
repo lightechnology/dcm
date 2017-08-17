@@ -4,8 +4,8 @@ import static org.bdc.dcm.data.coder.utils.CommUtils.modbusParse;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
+import org.bdc.dcm.data.convert.ygdqmdb.YgdqmdbTypeConvert;
 import org.bdc.dcm.intf.DataTabConf;
-import org.bdc.dcm.netty.ygdqmdb.YgdqmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataType;
 import org.slf4j.Logger;
