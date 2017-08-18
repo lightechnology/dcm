@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.bdc.dcm.conf.IntfConf;
+import org.bdc.dcm.netty.ChannelHandlerContextDecorator;
 import org.bdc.dcm.vo.Server;
 import org.bdc.dcm.vo.e.DataType;
 import org.bdc.dcm.vo.e.ServerType;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class LcmdbLoopCheckStateThread implements Runnable{
 	
@@ -32,12 +32,12 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 	}
 
 	public void addLoopInfo(LcmdbLoopInfo lcmdbLoopInfo){
-		String channelId = lcmdbLoopInfo.getCtx().channel().id().asLongText();
+		String channelId = lcmdbLoopInfo.getCtx().id();
 		if(!loopInfoMap.containsKey(channelId))
 			loopInfoMap.put(channelId, lcmdbLoopInfo);
 	}
-	public void removeLoopInfo(ChannelHandlerContext ctx){
-		loopInfoMap.remove(ctx.channel().id().asLongText());
+	public void removeLoopInfo(ChannelHandlerContextDecorator ctx){
+		loopInfoMap.remove(ctx.id());
 		if(loopInfoMap.isEmpty())
 			isRun.set(false);
 	}
@@ -63,7 +63,7 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 					for(int cNum = 0; cNum < lcmdbLoopInfos.size() && this.isRun.get(); cNum++){
 						LcmdbLoopInfo info = lcmdbLoopInfos.get(cNum);
 						String mac = info.getMac();
-						ChannelHandlerContext ctx = info.getCtx();
+						ChannelHandlerContextDecorator ctx = info.getCtx();
 						if(ctx.isRemoved()) break;
 						//头部----------------------------------------------------------------
 						int sum=0;
@@ -89,7 +89,7 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 						bu.writeByte(crc16[0]);
 						//检验和----------------------------------------------------------------
 						bu.writeByte(crcSumByte);
-						ctx.channel().writeAndFlush(bu);
+						ctx.writeAndFlush(bu);
 					}
 					Thread.sleep(server.getDelaySendingTime()*1000);
 				}

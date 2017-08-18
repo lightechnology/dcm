@@ -2,7 +2,6 @@ package org.bdc.dcm.data.convert.gb_dlt645_2007;
 
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

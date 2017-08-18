@@ -1,25 +1,18 @@
 package org.bdc.dcm.data.convert.lcmdb;
 
-import io.netty.channel.ChannelHandlerContext;
+import org.bdc.dcm.netty.ChannelHandlerContextDecorator;
+
 
 public class LcmdbLoopInfo {
 
-	private ChannelHandlerContext ctx;
+	private ChannelHandlerContextDecorator ctx;
 	
 	private String mac;
 
-	public LcmdbLoopInfo(ChannelHandlerContext ctx, String mac) {
+	public LcmdbLoopInfo(ChannelHandlerContextDecorator ctx, String mac) {
 		super();
 		this.ctx = ctx;
 		this.mac = mac;
-	}
-
-	public ChannelHandlerContext getCtx() {
-		return ctx;
-	}
-
-	public void setCtx(ChannelHandlerContext ctx) {
-		this.ctx = ctx;
 	}
 
 	public String getMac() {
@@ -28,6 +21,10 @@ public class LcmdbLoopInfo {
 
 	public void setMac(String mac) {
 		this.mac = mac;
+	}
+
+	public ChannelHandlerContextDecorator getCtx() {
+		return ctx;
 	}
 	
 	

@@ -6,11 +6,13 @@ import io.netty.channel.ChannelHandlerContext;
 
 public interface SafeDataHandlerIntf {
 
-	public void write(ChannelHandlerContext ctx, Object msg);
-
+	/**
+	 * 通道状态发生变化 
+	 * @param ctx
+	 */
 	public void channelActive(ChannelHandlerContext ctx);
 
-	public void channelInactive(ChannelHandlerContext ctx);
-
 	public void messageReceived(ChannelHandlerContext ctx, DataPack msg);
+
+	public void channelInactive(ChannelHandlerContext ctx);
 }

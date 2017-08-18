@@ -14,8 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.channel.ChannelManager;
-import org.bdc.dcm.netty.handler.intfImpl.WriteQueueManage;
-import org.bdc.dcm.netty.handler.intfImpl.WriteTask;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataPackType;
 import org.slf4j.Logger;
@@ -25,6 +23,7 @@ import com.util.tools.ComParam;
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,7 +40,9 @@ import io.netty.handler.timeout.IdleStateEvent;
 public class DataHandler extends SimpleChannelInboundHandler<DataPack> implements Runnable {
 
     final static Logger logger = LoggerFactory.getLogger(DataHandler.class);
-    
+    /**
+     * 无限容量线程池 降低保持时间 改良版 无限容量线程池
+     */
     public static final ExecutorService CACHED_THREAD_POOL = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
             10L, TimeUnit.SECONDS,
             new SynchronousQueue<Runnable>());
@@ -63,19 +64,10 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     private SafeDataHandlerIntf handler ;
     
     public DataHandler(NettyBoot nettyBoot,SafeDataHandlerIntf handler) {
-        this.nettyBoot = nettyBoot;
-        this.channelManager = ChannelManager.getInstance();
-
-        this.run = true;
-        this.lock = new ReentrantLock();
-        this.condition1 = lock.newCondition();
-        this.condition2 = lock.newCondition();
-        this.queue = new ConcurrentLinkedQueue<Info>();
-        this.deep = new AtomicInteger(0);
+    	this(nettyBoot);
         this.handler = handler;
     }
-
-    
+ 
 	public DataHandler(NettyBoot nettyBoot) {
         this.nettyBoot = nettyBoot;
         this.channelManager = ChannelManager.getInstance();
@@ -86,6 +78,20 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         this.condition2 = lock.newCondition();
         this.queue = new ConcurrentLinkedQueue<Info>();
         this.deep = new AtomicInteger(0);
+        this.handler = new SafeDataHandlerIntf() {
+			@Override
+			public void messageReceived(ChannelHandlerContext ctx, DataPack msg) {
+				
+			}
+			@Override
+			public void channelInactive(ChannelHandlerContext ctx) {
+				
+			}
+			@Override
+			public void channelActive(ChannelHandlerContext ctx) {
+				
+			}
+		};
     }
 
     @Override
@@ -99,7 +105,6 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
         if (null != initSendingData && 0 < initSendingData.length()) {
             initSdata = new InitSdata(ctx, initSendingData);
             CACHED_THREAD_POOL.execute(initSdata);
-            //ctx.executor().execute(initSdata);
         }
         monitor = new Monitor();
         CACHED_THREAD_POOL.execute(monitor);
@@ -127,7 +132,6 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             pollReading.stop();
             pollReading = null;
         }
-        logger.error("say byte");
         handler.channelInactive(ctx);
     }
 
@@ -147,15 +151,14 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             channelManager.setMaxInCost(cur - msg.getTimestamp());
             msg.setTimestamp(cur);
             channelManager.messagePublish(ctx, msg);
-            handler.messageReceived(ctx,msg);
         }
+        handler.messageReceived(ctx,msg);
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
        //WriteQueueManage.Instance().addTask(new WriteTask(ctx, msg, promise)); 
-    	//super.write(ctx, msg, promise);
-    	handler.write(ctx,msg);
+    	super.write(ctx, msg, promise);
     }
 
     @Override
@@ -222,6 +225,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
                             ctx.channel().remoteAddress());
                 }
             }
+            
             // 发送心跳
             ctx.writeAndFlush(buildHeartBeatMessage(ctx));
         }
@@ -309,9 +313,10 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
                 byte[] data = Public.hexString2bytes(initSendingData);
                 ByteBuf src = ctx.alloc().buffer(data.length);
                 src.writeBytes(data);
+                Channel channel = ctx.channel();
                 // 这里在判断一次，细粒度执行
                 if (run)
-                    ctx.writeAndFlush(src);
+                	ctx.writeAndFlush(src);
                 else
                     break;
                 Public.sleepWithOutInterrupted(ComParam.ONESEC * dst);
