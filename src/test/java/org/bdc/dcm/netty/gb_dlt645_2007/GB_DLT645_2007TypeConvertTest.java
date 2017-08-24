@@ -26,7 +26,7 @@ public class GB_DLT645_2007TypeConvertTest {
 	
 	@Test
 	public void test() {
-		GB_DLT645_2007TypeConvert convert = new GB_DLT645_2007TypeConvert();
+		GB_DLT645_2007TypeConvert convert = GB_DLT645_2007TypeConvert.getConvert();
 		ByteBuf in = UnpooledByteBufAllocator.DEFAULT.buffer(10);
 		
 		byte[] bb = new byte[8];

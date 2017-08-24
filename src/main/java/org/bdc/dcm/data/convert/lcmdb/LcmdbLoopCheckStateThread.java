@@ -58,7 +58,6 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 			Server server = optional.get();
 			while(this.isRun.get()){
 				List<LcmdbLoopInfo> lcmdbLoopInfos = loopInfoMap.values().stream().collect(Collectors.toList());
-				logger.info("------lcmdbLoopInfos-----：{}",lcmdbLoopInfos.size());
 				for(byte i=1;i<21 && this.isRun.get();i++){
 					for(int cNum = 0; cNum < lcmdbLoopInfos.size() && this.isRun.get(); cNum++){
 						LcmdbLoopInfo info = lcmdbLoopInfos.get(cNum);

@@ -16,22 +16,6 @@ public class LcmdbDataHandler extends DataHandlerDecorator {
 	
 	private static LcmdbLoopCheckStateThread loopThread = new LcmdbLoopCheckStateThread();
 
-//	@Override
-//	protected void messageReceived(ChannelHandlerContext ctx, DataPack msg) throws Exception {
-//		super.messageReceived(ctx, msg);
-//		if(!loopThread.isRun())
-//			CACHED_THREAD_POOL.execute(loopThread);
-//		
-//		loopThread.addLoopInfo(new LcmdbLoopInfo(ctx, msg.getMac()));
-//	}
-//
-//	@Override
-//	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-//		loopThread.removeLoopInfo(ctx);
-//		super.channelInactive(ctx);
-//		
-//	}
-
 	@Override
 	public void messageReceived(ChannelHandlerContextDecorator ctx, DataPack msg) {
 		if(!loopThread.isRun())

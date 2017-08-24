@@ -8,11 +8,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -94,7 +96,7 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 		while(iterator.hasNext()){
 			Channel channel = iterator.next();
 			if(channel.isWritable())
-				channel.writeAndFlush(outMessageBuf(msg));
+				channel.writeAndFlush(outMessageBuf(msg),channel.voidPromise());
 			if(channel.id().asLongText().equals(ctx.channel().id().asLongText())){
 				isReceiveClient = true;
 			}
@@ -107,10 +109,9 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 		
 		Channel channel = ctx.channel();
 		if(!isReceiveClient && channel.isWritable())
-			channel.writeAndFlush(outMessageBuf(msg));
+			channel.writeAndFlush(outMessageBuf(msg),channel.voidPromise());
 		
 		msg.clear();
-		System.out.println(ctx);
 	}
 	
 	private ByteBuf outInitBuf() {
@@ -131,7 +132,6 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<ByteBuf> {
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		super.write(ctx, msg, promise);
-		logger.error("1111");
 	}
 
 }
