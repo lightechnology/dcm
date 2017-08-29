@@ -1,5 +1,7 @@
 package org.bdc.dcm.netty;
 
+import java.net.SocketAddress;
+
 import org.bdc.dcm.netty.handler.intf.HyChannelHandlerContextIntf;
 import org.bdc.dcm.netty.piple.HyChannelPiple;
 
@@ -19,6 +21,12 @@ public class ChannelHandlerContextDecorator implements HyChannelHandlerContextIn
 	
 	private HyChannelPiple piple;
 	
+	public SocketAddress localAddress(){
+		return ctx.channel().localAddress();
+	}
+	public SocketAddress remoteAddress(){
+		return ctx.channel().remoteAddress();
+	}
 	public String id(){
 		return ctx.channel().id().asLongText();
 	}
@@ -54,7 +62,6 @@ public class ChannelHandlerContextDecorator implements HyChannelHandlerContextIn
 	 */
 	public ChannelFuture writeAndFlush(Object msg){
 		Channel channel = ctx.channel();
-		System.err.println(channel.isActive());
 		if(channel.isWritable())
 			return channel.writeAndFlush(msg);
 		else

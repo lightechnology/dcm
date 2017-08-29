@@ -1,15 +1,15 @@
-package org.bdc.dcm.data.convert.lcmdb;
+package org.bdc.dcm.vo;
 
 import org.bdc.dcm.netty.ChannelHandlerContextDecorator;
 
 
-public class LcmdbLoopInfo {
+public class LoopInfo {
 
 	private ChannelHandlerContextDecorator ctx;
 	
 	private String mac;
 
-	public LcmdbLoopInfo(ChannelHandlerContextDecorator ctx, String mac) {
+	public LoopInfo(ChannelHandlerContextDecorator ctx, String mac) {
 		super();
 		this.ctx = ctx;
 		this.mac = mac;

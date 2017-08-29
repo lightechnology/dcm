@@ -34,7 +34,7 @@ public abstract class DataHandlerDecorator implements SafeDataHandlerIntf{
 	 */
 	public abstract void messageReceived(ChannelHandlerContextDecorator ctx, DataPack msg);
 	
-	public abstract void channelActive(ChannelHandlerContextDecorator channelHandlerContextDecorator);
+	public abstract void channelActive(ChannelHandlerContextDecorator ctx);
 	
-	public abstract void channelInactive(ChannelHandlerContextDecorator channelHandlerContextDecorator);
+	public abstract void channelInactive(ChannelHandlerContextDecorator ctx);
 }

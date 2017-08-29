@@ -1,5 +1,9 @@
 package org.bdc.dcm.data.coder.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -24,6 +28,110 @@ public class CommUtils {
 	public enum ModusResp{
 		address,funcode,len
 	}
+
+	
+	/**
+	 * 反序 (calcType)33H
+	 * 源数组上改动 返回值也是原数组转后
+	 * @param bs
+	 * @param calcType 计算方法 0.+,1.-
+	 * @return
+	 */
+	public static byte[] GB_2007DataTrans(byte[] bs,int calcType){
+		for(int i=0;i<bs.length;i++){
+			switch(calcType){
+				case 0:bs[i] +=(byte)0x33;break;
+				case 1:bs[i] -=(byte)0x33;break;
+			}
+		}
+		reverse(bs);
+		return bs;
+	}
+	/**
+	 * 反序 (calcType)33H
+	 * 源数组上改动 返回值也是原数组转后
+	 * @param hexStrIndentity
+	 * @param calcType 计算方法 0.+,1.-
+	 * @return
+	 */
+	public static String GB_2007DataTrans(String hexStrIndentity,int calcType){
+		return Public.byte2hex(GB_2007DataTrans(Public.hexString2bytes(hexStrIndentity),calcType));
+	}
+	
+	/**
+	 * 为num 加小数点 成字符串
+	 * @param num 数字型字符串
+	 * @param index
+	 * @return
+	 */
+	public static String addPoint(String numStr,int index){
+		String result = "";
+		for(int i=0;i<numStr.length();i++){
+			if(i==index)
+				result+=".";
+			result+=numStr.charAt(i);
+				
+		}
+		return result;
+	}
+	/**
+	 * 
+	 * @param bs
+	 * @param startIndex
+	 * @param endIndex 不包行这个末端下标的值
+	 * @return
+	 */
+	public static int checkSum(byte[] bs ,int startIndex,int endIndex){
+		int sum = 0;
+		for(int i=startIndex;i<endIndex;i++){
+			sum=(sum + bs[i])&0xff;
+		}
+		return sum;
+	}
+	
+	/**
+	 * 16进制数据 填充进 bytes
+	 * @param hex
+	 * @param src 
+	 * @param startIndex bytes 开始填充地址
+	 * @return 填充完成后的下一个数组下标
+	 */
+	public static int hexStrToBytes(String hex,byte[] src,int startIndex){
+		byte[] bs = Public.hexString2bytes(hex);
+		int i = 0;
+		for(;i<bs.length;i++)
+			src[startIndex+i] = bs[i];
+		return startIndex+i+1;
+	}
+
+	/**
+	 * 依据输入流得到json 
+	 * @param in
+	 * @return
+	 */
+	public static String getJsonStr(InputStream in) {
+        StringBuilder stringBuilder = new StringBuilder();
+        InputStreamReader isr = null;
+        try {
+        	isr = new InputStreamReader(in);
+			BufferedReader bf = new BufferedReader(isr);
+            String line;
+            while ((line = bf.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+        	if(isr != null)
+				try {
+					isr.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+     
+        return stringBuilder.toString();
+    }
 	
 	public static List<Object> makeMapValue(String name, Object value) {
 		List<Object> vl = new ArrayList<Object>();
@@ -37,6 +145,7 @@ public class CommUtils {
 		dataPack.setOnlineStatus(1);
 		dataPack.setDatalevel(Datalevel.NORMAL);
 		dataPack.setDataPackType(DataPackType.Info);
+		dataPack.setData(new HashMap<>());
 		return dataPack;
 	}
 	public static DataPack getInitCmdDataPack(String toMac) {
@@ -45,6 +154,7 @@ public class CommUtils {
 		dataPack.setOnlineStatus(1);
 		dataPack.setDatalevel(Datalevel.NORMAL);
 		dataPack.setDataPackType(DataPackType.Cmd);
+		dataPack.setData(new HashMap<>());
 		return dataPack;
 	}
 	public static String gernatorIndetity(byte[] macBytes,byte address){
@@ -109,6 +219,10 @@ public class CommUtils {
                 + (byte) ((b >> 3) & 0x1) + (byte) ((b >> 2) & 0x1)  
                 + (byte) ((b >> 1) & 0x1) + (byte) ((b >> 0) & 0x1);  
     } 
+	/**
+	 * 源数组上改动 返回值也是原数组转后
+	 * @param bs
+	 */
 	public static void reverse(byte[] bs){
 		byte tmp ;
 		for(int i=0;i<bs.length/2;i++){

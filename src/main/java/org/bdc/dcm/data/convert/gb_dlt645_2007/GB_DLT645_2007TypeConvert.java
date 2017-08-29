@@ -16,9 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.bdc.dcm.data.coder.intf.TypeConvert;
 import org.bdc.dcm.data.coder.utils.CommUtils;
-import org.bdc.dcm.data.convert.ConfigUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,10 @@ import org.slf4j.LoggerFactory;
 import com.util.tools.Public;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.UnpooledByteBufAllocator;
 
+import static org.bdc.dcm.netty.framer.Gb_dlt645_2007FrameDecoder.ZJZD_MAC_LEN;;
 public class GB_DLT645_2007TypeConvert {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,20 +53,22 @@ public class GB_DLT645_2007TypeConvert {
 	 */
 	@SuppressWarnings("unchecked")
 	private static Map<String,Integer> sysFieldToMapConvertField(List<Field> fields, String jsonPath){
-		JSONObject json = Public.str2Json(ConfigUtils.getJsonStr(GB_DLT645_2007TypeConvert.class.getClassLoader().getResourceAsStream(jsonPath)));
+		//配置文件json信息
+		JSONObject json = Public.str2Json(CommUtils.getJsonStr(GB_DLT645_2007TypeConvert.class.getClassLoader().getResourceAsStream(jsonPath)));
 		Map<String,Integer> map = new HashMap<>();
+		//配置文件所有第一级key
 		Set<String> keys = json.keySet();
 		Iterator<String> iterator = keys.iterator();
 		StringBuffer sb = new StringBuffer();
 		while(iterator.hasNext()){
 			String key = iterator.next();
-			String val = ConfigUtils.reverse((String) json.get(key),2);
+			String val = CommUtils.GB_2007DataTrans((String) json.get(key),0);
 			//减少内存
 			sb.delete(0,sb.length());   
 			int index = -1;
 			for(int i=0;i<fields.size();i++){
 				Field f = fields.get(i);
-				if(f !=null & f.hexStrIndentity.equals(val)){
+				if(f !=null & f.getHexStrIndentity().equals(val)){
 					index = i;
 					f.sysFieldType = key;
 				}
@@ -82,7 +85,7 @@ public class GB_DLT645_2007TypeConvert {
 	 */
 	@SuppressWarnings("unchecked")
 	private static List<Field> fieldDecoderByJsonFile(String jsonPath){
-		JSONObject json = Public.str2Json(ConfigUtils.getJsonStr(GB_DLT645_2007TypeConvert.class.getClassLoader().getResourceAsStream(jsonPath)));
+		JSONObject json = Public.str2Json(CommUtils.getJsonStr(GB_DLT645_2007TypeConvert.class.getClassLoader().getResourceAsStream(jsonPath)));
 		Iterator<String> iterator = json.keySet().iterator();
 		List<Field> fields = new ArrayList<>();
 		while(iterator.hasNext()){
@@ -110,12 +113,12 @@ public class GB_DLT645_2007TypeConvert {
 	 * 统一编码入口
 	 * @param type
 	 * @param val
-	 * @param modbusAddr
+	 * @param gbAddr
 	 * @return
 	 * @throws IllegalAccessException 
 	 */
-	public byte[] encoder(String type, Object val,byte[] addr) throws IllegalAccessException{
-		return applyData(type, val, addr);
+	public byte[] encoder(String type, Object val,byte[] gbAddr) throws IllegalAccessException{
+		return applyData(type, val, gbAddr);
 	}
 	
 	/**
@@ -137,19 +140,18 @@ public class GB_DLT645_2007TypeConvert {
 	}
 	
 	/**
-	 * 通过已知的国标字段,反向地址解码
+	 * 通过解析数据流中的地址解码
 	 * @param reverseFieldAddr
 	 * @param in
 	 * @return
 	 */
-	public Map<String,Object> decodeByReverseFieldAddr(final String reverseFieldAddr,ByteBuf in){
+	public Map<String,Object> decodeByDataStreamAddr(final String reverseFieldAddr,ByteBuf in){
 		Map<String,Object> outMap = new HashMap<>();
 		StringBuffer result = new StringBuffer();
-		final String addr = reverseFieldAddr.replaceAll(" ", "");
 		Field field = null;
 		try {
 			//找到字段
-			Optional<Field> optional = fields.stream().filter(item->item.hexStrIndentity.equals(addr)).findFirst();
+			Optional<Field> optional = fields.stream().filter(item->item.getHexStrIndentity().equals(reverseFieldAddr)).findFirst();
 			if(optional.isPresent()){
 				field = optional.get();
 				decodeByField(in, result, field );
@@ -166,58 +168,86 @@ public class GB_DLT645_2007TypeConvert {
 	 * 请求读电能表数据,只做读命令解析
 	 * @param type
 	 * @param val
-	 * @param addr 4字节
+	 * @param addr 4字节数据标识
 	 * @return
 	 * @throws IllegalAccessException
 	 */
 	private byte[] applyData(String type, Object val,byte[] addr) throws IllegalAccessException{
-		byte[] out = new byte[0];
+		
 		if(val != null){
 			logger.error("输入参数 【2】 不进行处理,值：",val);
 		}
-		if(addr.length != 4)
-			throw new IllegalAccessException("请输入4字节地址");
+		if(addr.length != ZJZD_MAC_LEN)
+			throw new IllegalAccessException("请输入【"+ZJZD_MAC_LEN+"】个字节地址");
 		Integer filedOrder = sysFieldMapToConvertFieldIndex.get(type);
 		if(filedOrder == null)
 			return new byte[0];
 		Field field = fields.get(filedOrder);
-		out[0] = (byte)0x68;
-		System.arraycopy(addr, 0, out, 1, 6);
-		out[7] = (byte)0x68;
-		out[8] = (byte)0x11;
-		out[9] = (byte)0x04;
-		ConfigUtils.hexStrToBytes(field.hexStrIndentity, out,10);
-		out[14] = Public.int2Bytes(ConfigUtils.checkSum(out, 1, 14), 1)[0];
-		out[15] = (byte)0x16;
+		ByteBuf buf = UnpooledByteBufAllocator.DEFAULT.buffer();
+		buf.writeByte((byte)0xfe);
+		buf.writeByte((byte)0xfe);
+		buf.writeByte((byte)0xfe);
+		buf.writeByte((byte)0xfe);
+		buf.writeByte((byte)0x68);
+		buf.writeBytes(addr);
+		buf.writeByte((byte)0x68);
+		buf.writeByte((byte)0x11);
+		buf.writeByte((byte)0x04);
+		byte[] src = Public.hexString2bytes(field.getHexStrIndentity());
+		buf.writeBytes(src);
+		
+		byte[] out = new byte[buf.readableBytes()];
+		buf.getBytes(4, out);
+		buf.writeByte(Public.int2Bytes(CommUtils.checkSum(out, 0, 14), 1)[0]);
+		
+		buf.writeByte((byte)0x16);
+		out = new byte[buf.readableBytes()];
+		buf.readBytes(out);
 		return out;
 	}
 	private void decodeByField(ByteBuf in, StringBuffer result, Field field) throws ParseException {
 		List<Attr> attrs = field.attrs;
-		for(int i=0;i<attrs.size();i++){
+		int max = attrs.size();
+		for(int i=0;i<max;i++){
 			Attr attr = attrs.get(i);
 			byte[] data = new byte[attr.len];
-			
 			in.readBytes(data);
+			
+			CommUtils.GB_2007DataTrans(data, 1);
+			
 			//时间格式化
 			if(attr.type.equals(AttrType.t)){
 				String dateStr = "";
 				for(int j=0;j<data.length;j++){
 					byte b = data[j];
 					if( b < 10)
-						dateStr+=("0"+data[j]);
+						dateStr+=("0"+b);
 					else
-						dateStr+=(data[j]&0xff);
+						dateStr+=(b&0xff);
 				}
 				SimpleDateFormat sdf= ((SimpleDateFormat)attr.format);
 				Date date = sdf.parse(dateStr);
 				result.append(new SimpleDateFormat(attr.unit).format(date));
 			}else{//数字格式化
-				if(attr.pointIndex == -1){
-					result.append(Public.bytes2Int(data)+"");
-				}else{
-					String num = ConfigUtils.addPoint(Public.bytes2Int(data), attr.pointIndex);
-					result.append(((DecimalFormat)attr.format).parse(num));
+				StringBuffer sb = new StringBuffer();
+				for(byte b:data){
+					sb.append(Public.byte2hex_ex(b));
 				}
+				if(attr.pointIndex == -1){
+					result.append(sb);
+				}else{
+					String numStr = sb.toString();
+					String num = CommUtils.addPoint(numStr, attr.pointIndex);
+					String numberStr = "";
+					try{//可能返回的不是数字 是abcdef 其实就是可能存在 FF FF 说明表不支持
+						DecimalFormat format = ((DecimalFormat)attr.format);
+						numberStr = format.format(format.parse(num));
+					}catch(Exception e){
+						
+					}
+					result.append(numberStr);
+				}
+				result.append(" ").append(attr.unit);
 			}
 			if(i < attrs.size() - 1)
 				result.append(",");
@@ -296,9 +326,9 @@ class Field{
 	public String sysFieldType;
 	
 	/**
-	 * 已经被反序
+	 * 已经被反序 而且加 33H
 	 */
-	public String hexStrIndentity;
+	private String hexStrIndentity;
 	
 	/**
 	 * 字段总长度
@@ -308,13 +338,13 @@ class Field{
 	public List<Attr> attrs = new ArrayList<>();
 	/**
 	 * 
-	 * @param hexStrIndentity 正序进 反序出
+	 * @param hexStrIndentity 正序进 反序出+33H
 	 * @param len
 	 * @param attrs
 	 */
 	public Field(String hexStrIndentity, int len,List<Attr> attrs) {
 		super();
-		this.hexStrIndentity = ConfigUtils.reverse(hexStrIndentity,2);
+		this.hexStrIndentity = CommUtils.GB_2007DataTrans(hexStrIndentity,0);
 		this.attrs = attrs;
 		this.len = len;
 		
@@ -329,6 +359,13 @@ class Field{
 		}
 		this.name = sb.toString();
 		System.err.println(this);
+	}
+	/**
+	 * 已经被反序 而且加 33H
+	 * @return
+	 */
+	public String getHexStrIndentity() {
+		return hexStrIndentity;
 	}
 
 	@Override

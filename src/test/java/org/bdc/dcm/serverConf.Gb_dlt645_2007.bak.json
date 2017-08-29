@@ -21,8 +21,8 @@
       "host": "192.168.0.63",
       "serverPort": 8000,
       "clientPort": 0,
-      "initSendingData": " 68 AA AA AA AA AA AA 68 13 00 DF 16",
-      "delaySendingTime": 5,
+      "initSendingData": "",
+      "delaySendingTime": 0,
       "selfMac": "",
       "dataLevel": 0,
       "filterMacs": ["0000000000000000"]

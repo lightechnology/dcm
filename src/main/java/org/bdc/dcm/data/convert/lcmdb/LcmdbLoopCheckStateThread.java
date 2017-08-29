@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.netty.ChannelHandlerContextDecorator;
+import org.bdc.dcm.vo.LoopInfo;
 import org.bdc.dcm.vo.Server;
 import org.bdc.dcm.vo.e.DataType;
 import org.bdc.dcm.vo.e.ServerType;
@@ -21,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 
 public class LcmdbLoopCheckStateThread implements Runnable{
 	
-	private Map<String,LcmdbLoopInfo>  loopInfoMap = new ConcurrentHashMap<>();
+	private Map<String,LoopInfo>  loopInfoMap = new ConcurrentHashMap<>();
 	
 	private AtomicBoolean isRun = new AtomicBoolean(false);
 	
@@ -31,7 +32,7 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 		super();
 	}
 
-	public void addLoopInfo(LcmdbLoopInfo lcmdbLoopInfo){
+	public void addLoopInfo(LoopInfo lcmdbLoopInfo){
 		String channelId = lcmdbLoopInfo.getCtx().id();
 		if(!loopInfoMap.containsKey(channelId))
 			loopInfoMap.put(channelId, lcmdbLoopInfo);
@@ -57,10 +58,10 @@ public class LcmdbLoopCheckStateThread implements Runnable{
 			if(!optional.isPresent()) { isRun.set(false);return;}
 			Server server = optional.get();
 			while(this.isRun.get()){
-				List<LcmdbLoopInfo> lcmdbLoopInfos = loopInfoMap.values().stream().collect(Collectors.toList());
+				List<LoopInfo> lcmdbLoopInfos = loopInfoMap.values().stream().collect(Collectors.toList());
 				for(byte i=1;i<21 && this.isRun.get();i++){
 					for(int cNum = 0; cNum < lcmdbLoopInfos.size() && this.isRun.get(); cNum++){
-						LcmdbLoopInfo info = lcmdbLoopInfos.get(cNum);
+						LoopInfo info = lcmdbLoopInfos.get(cNum);
 						String mac = info.getMac();
 						ChannelHandlerContextDecorator ctx = info.getCtx();
 						if(ctx.isRemoved()) break;

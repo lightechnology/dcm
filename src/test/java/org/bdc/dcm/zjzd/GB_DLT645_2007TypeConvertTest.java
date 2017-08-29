@@ -1,8 +1,5 @@
-package org.bdc.dcm.netty.gb_dlt645_2007;
+package org.bdc.dcm.zjzd;
 
-import static org.junit.Assert.*;
-
-import org.bdc.dcm.data.coder.utils.CommUtils;
 import org.bdc.dcm.data.convert.gb_dlt645_2007.GB_DLT645_2007TypeConvert;
 import org.junit.Test;
 
@@ -27,20 +24,9 @@ public class GB_DLT645_2007TypeConvertTest {
 	@Test
 	public void test() {
 		GB_DLT645_2007TypeConvert convert = GB_DLT645_2007TypeConvert.getConvert();
-		ByteBuf in = UnpooledByteBufAllocator.DEFAULT.buffer(10);
-		
-		byte[] bb = new byte[8];
-		byte[] bs = new byte[]{(byte)0x94,0x00,0x00};
-		for(int i=0;i<bs.length;i++){
-			bb[i] = bs[i];
-		}
-		//yy年MM月dd日HH时mm分
-		bb[3] = (byte)0x11;
-		bb[4] = (byte)0x08;
-		bb[5] = (byte)0x0f;
-		bb[6] = (byte)0x11;
-		bb[7] = (byte)0x11;
-		in.writeBytes(bb);
+		ByteBuf in = UnpooledByteBufAllocator.DEFAULT.buffer(2);
+		byte[] bs = Public.hexString2bytes("c6 54");
+		in.writeBytes(bs);
 		System.out.println("最终结果为："+convert.decode("a", in ));
 	}
 }
