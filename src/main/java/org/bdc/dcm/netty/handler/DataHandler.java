@@ -14,8 +14,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.bdc.dcm.netty.NettyBoot;
 import org.bdc.dcm.netty.channel.ChannelManager;
+import org.bdc.dcm.netty.handler.schedule.RestartSchedule;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataPackType;
+import org.bdc.dcm.vo.e.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +95,17 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
 			}
 		};
     }
-
+	/**
+	 * 客户端重连机制
+	 * @param ctx
+	 */
+	private void clientRestartTask(ChannelHandlerContext ctx){
+		ServerType serverType = nettyBoot.getServer().getServerType();
+        //断线重连
+        if(serverType.name().toLowerCase().indexOf("client") > -1){
+        	ctx.channel().eventLoop().schedule(new RestartSchedule(ctx), 10, TimeUnit.SECONDS);
+        }
+	}
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -115,6 +127,7 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+        
         channelManager.rmvChannel(ctx);
         if (logger.isInfoEnabled()) {
             logger.info("remoteAddress: {} disconnected", ctx.channel().remoteAddress());
@@ -133,6 +146,8 @@ public class DataHandler extends SimpleChannelInboundHandler<DataPack> implement
             pollReading = null;
         }
         handler.channelInactive(ctx);
+        
+        clientRestartTask(ctx);
     }
 
     @Override
