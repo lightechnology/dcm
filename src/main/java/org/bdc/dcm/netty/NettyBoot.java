@@ -14,7 +14,7 @@ import com.util.tools.Public;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 
-public class NettyBoot implements Runnable {
+public abstract class NettyBoot implements Runnable {
 
 	final static Logger logger = LoggerFactory.getLogger(NettyBoot.class);
 
@@ -63,8 +63,11 @@ public class NettyBoot implements Runnable {
 		finaled();
 	}
 	
-	public void task() throws Exception{
-	}
+	/**
+	 * @author lzh 显式调用
+	 * @throws Exception
+	 */
+	public abstract void task() throws Exception;
 
 	public Server getServer() {
 		return server;
