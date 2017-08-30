@@ -37,7 +37,6 @@ public class HttpContent4Log implements Coder4Log<HttpContent> {
 	            logger.info(tab, dataPack.getSocketAddress(), dataStr, dataPack.toString());
 			}
 			// 这里缓存数据
-			// TODO Auto-generated method stub
 		} catch (UnsupportedEncodingException e) {
 			if (logger.isErrorEnabled()) {
 			    logger.error(e.getMessage(), e);

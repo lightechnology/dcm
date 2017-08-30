@@ -63,6 +63,7 @@ public class ServerManager implements Runnable {
 	@Override
 	public void run() {
 		while (run.get()) {
+			System.out.println();
 			List<Server> removeServerConfList = new ArrayList<Server>();
 			List<Server> addServerConfList = new ArrayList<Server>();
 			getServerConfList(removeServerConfList, addServerConfList);
@@ -148,7 +149,8 @@ public class ServerManager implements Runnable {
 	 * @param server
 	 */
 	public void removeServer(Server server) {
-		//通过server即可定位服务对象进行停止并消除，当然这个类必须能管理创建的服务对象
+		//通过server即可定位服务对象进行停止并消除，当然这个类必须能管理创建的服务对象 TODO 这里 get不到nettyBoot
+		logger.warn("存在吗？：{}",nettyBootMap.containsKey(server));
 		NettyBoot nettyBoot = nettyBootMap.get(server);
 		if (null != nettyBoot) {
 			nettyBootMap.remove(server);
@@ -171,10 +173,12 @@ public class ServerManager implements Runnable {
 		assert (null != addServerConfList && null != removeServerConfList);
 		addServerConfList.clear();
 		removeServerConfList.clear();
-		List<Server> serverConfList = serverConf.getServerConf();
+		List<Server> serverConfList = serverConf.newestServerList();
 		if (null == serverConfList) return;
 		if (null != lastTimeServerConfList) {
+			//上一次服务配置 与 本次服务配置 比较 上一次服务配置 不在本次服务配置的 归类于 删除服务项
 			equalsServerList(lastTimeServerConfList, serverConfList, removeServerConfList);
+			//本次服务配置 与 本次服务配置 比较 本次服务配置 不在上一次次服务配置的 归类于 增加项
 			equalsServerList(serverConfList, lastTimeServerConfList, addServerConfList);
 		} else
 			addServerConfList.addAll(serverConfList);

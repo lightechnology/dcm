@@ -34,7 +34,6 @@ public class DatagramPacket4Log implements Coder4Log<DatagramPacket> {
             logger.info(tab, dataPack.getSocketAddress(), dataStr, dataPack.toString());
 		}
 		// 这里缓存数据
-		// TODO Auto-generated method stub
 		return dataStr;
 	}
 

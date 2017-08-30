@@ -23,7 +23,6 @@ public class LqmdbDataHandler extends DataHandler {
 			loopThread.setCtx(ctx);
 			CACHED_THREAD_POOL.execute(loopThread);
 		}else{//第二笔数据来
-			//TODO --------测试代码
 		}
 	}
 

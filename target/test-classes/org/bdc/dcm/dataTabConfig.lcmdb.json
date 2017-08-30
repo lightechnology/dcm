@@ -2,67 +2,67 @@
   "dataTabConf": [
   	{
       "id": -1,
-      "name": "åˆ¶çƒ­æ§åˆ¶",
+      "name": "ÖÆÈÈ¿ØÖÆ",
       "form": "remainTimeLong",
       "units": "",
       "dataLevel": 0
     },{
       "id": -2,
-      "name": "åˆ¶å†·æ§åˆ¶",
+      "name": "ÖÆÀä¿ØÖÆ",
       "form": "temperature_cold",
       "units": "",
       "dataLevel": 0
     },{
       "id": -3,
-      "name": "å‰©ä½™ç”µé‡",
+      "name": "Ê£ÓàµçÁ¿",
       "form": "surplus_power",
       "units": "",
       "dataLevel": 0
     },{
       "id": -4,
-      "name": "å‰©ä½™æ—¶é—´",
+      "name": "Ê£ÓàÊ±¼ä",
       "form": "surplus_time",
       "units": "",
       "dataLevel": 0
     },{
       "id": 128,
-      "name": "å‰©ä½™ç”¨ç”µæ—¶é—´",
+      "name": "Ê£ÓàÓÃµçÊ±¼ä",
       "form": "remainTimeLong",
       "units": "",
       "dataLevel": 0
     },{
       "id": 130,
-      "name": "å‰©ä½™ç”µé‡",
+      "name": "Ê£ÓàµçÁ¿",
       "form": "remainELectricity",
       "units": "",
       "dataLevel": 0
     },{
       "id": 132,
-      "name": "æ€»ç”¨ç”µæ—¶é—´",
+      "name": "×ÜÓÃµçÊ±¼ä",
       "form": "totalTime",
       "units": "",
       "dataLevel": 0
     },{
       "id": 134,
-      "name": "æ€»æœ‰åŠŸç”µèƒ½",
+      "name": "×ÜÓĞ¹¦µçÄÜ",
       "form": "totalActivePower",
       "units": "",
       "dataLevel": 0
     },{
       "id": 135,
-      "name": "ç”µå‹",
+      "name": "µçÑ¹",
       "form": "u",
       "units": "",
       "dataLevel": 0
     },{
       "id": 136,
-      "name": "ç”µæµ",
+      "name": "µçÁ÷",
       "form": "i",
       "units": "",
       "dataLevel": 0
     },{
       "id": 137,
-      "name": "åŠŸç‡",
+      "name": "¹¦ÂÊ",
       "form": "p",
       "units": "",
       "dataLevel": 0
@@ -74,25 +74,25 @@
       "dataLevel": 0
     },{
       "id": 139,
-      "name": "ç”µå‚æ•°é—¸çŠ¶æ€ä½",
+      "name": "µç²ÎÊıÕ¢×´Ì¬Î»",
       "form": "JQD_TiaoZa",
       "units": "",
       "dataLevel": 0
     },{
       "id": 140,
-      "name": "æ¸©åº¦",
+      "name": "ÎÂ¶È",
       "form": "temperature",
       "units": "",
       "dataLevel": 0
     },{
       "id": 141,
-      "name": "ç»§ç”µå™¨çŠ¶æ€",
+      "name": "¼ÌµçÆ÷×´Ì¬",
       "form": "JDQ_state",
       "units": "",
       "dataLevel": 0
     },{
       "id": 142,
-      "name": "çŠ¶æ€",
+      "name": "×´Ì¬",
       "form": "JDQ_control",
       "units": "",
       "dataLevel": 0

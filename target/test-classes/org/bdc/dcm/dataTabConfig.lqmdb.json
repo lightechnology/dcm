@@ -1,0 +1,77 @@
+{
+  "dataTabConf": [
+ 	{
+      "id": 3,
+      "name": "第1路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 5,
+      "name": "第2路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 7,
+      "name": "第3路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 9,
+      "name": "第4路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 11,
+      "name": "第5路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 13,
+      "name": "第6路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 15,
+      "name": "第7路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 17,
+      "name": "第8路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 19,
+      "name": "第9路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 21,
+      "name": "第10路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 22,
+      "name": "第11路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 24,
+      "name": "第12路",
+      "form": "2byteToBoolean",
+      "units": "",
+      "dataLevel": 0
+    }
+  ]
+}
