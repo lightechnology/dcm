@@ -15,7 +15,7 @@ public class HyChannelPiple {
 	public HyChannelPiple(ChannelPipeline pipeline) {
 		this.pipeline = pipeline;
 	}
-	public void atLast(String name,ChannelHandler handler){
+	public void atLast(String name, ChannelHandler handler){
 		pipeline.addLast(name, handler);
 	}
 }
