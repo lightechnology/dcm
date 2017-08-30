@@ -7,6 +7,8 @@ import org.bdc.dcm.data.coder.intf.DataDecoder;
 import org.bdc.dcm.data.coder.lcmdb.CommandTypeCtr;
 import org.bdc.dcm.data.coder.lcmdb.vo.CommLcParam;
 import org.bdc.dcm.vo.DataPack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.util.tools.Public;
 
@@ -14,7 +16,7 @@ import com.util.tools.Public;
 public class LcmdbDecoder implements DataDecoder<ByteBuf> {
 	
 	private int headerLen = 2;
-	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	// 通过DataTypeConf接口获取解码规则
 	@Override
 	public DataPack data2Package(ChannelHandlerContext ctx, ByteBuf msg) {

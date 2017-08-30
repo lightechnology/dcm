@@ -3,8 +3,8 @@ package org.bdc.dcm.data.coder;
 
 import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataDecoder;
+import org.bdc.dcm.data.convert.lqmdb.LqmdbTypeConvert;
 import org.bdc.dcm.intf.DataTabConf;
-import org.bdc.dcm.netty.lqmdb.LqmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.e.DataType;
 import org.slf4j.Logger;

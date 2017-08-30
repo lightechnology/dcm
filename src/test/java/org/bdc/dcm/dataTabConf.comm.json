@@ -1,0 +1,311 @@
+{
+  "dataTabConf": [
+  	{
+      "id": 0,
+      "name": "电量显示",
+      "form": "eleShow",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 1,
+      "name": "地址",
+      "form": "addr",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 2,
+      "name": "波特率",
+      "form": "buad",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 3,
+      "name": "电压范围",
+      "form": "uScope",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 4,
+      "name": "电流范围",
+      "form": "iScope",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 5,
+      "name": "网络类型",
+      "form": "net",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 6,
+      "name": "电压倍数",
+      "form": "vTimes",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 7,
+      "name": "电流倍数",
+      "form": "iTimes",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 8,
+      "name": "状态",
+      "form": "hold",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 9,
+      "name": "A相电压",
+      "form": "U_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 10,
+      "name": "B相电压",
+      "form": "U_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 11,
+      "name": "C相电压",
+      "form": "U_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 12,
+      "name": "A相电流",
+      "form": "I_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 13,
+      "name": "B相电流",
+      "form": "I_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 14,
+      "name": "C相电流",
+      "form": "I_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 15,
+      "name": "平均电流",
+      "form": "average_I_abc",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 16,
+      "name": "总有功功率",
+      "form": "allActivePower",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 17,
+      "name": "总无功功率",
+      "form": "allReactivPower",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 18,
+      "name": "总功率因数",
+      "form": "allPowerFactor",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 19,
+      "name": "频率",
+      "form": "hz",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 20,
+      "name": "正向有功电能 一次侧",
+      "form": "forwardActiveElectricEnergy_1",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 21,
+      "name": "负向有功电能 一次侧",
+      "form": "negativeActiveElectricEnergy_1",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 22,
+      "name": "正向无功电能 一次侧",
+      "form": "forwardReactiveElectricEnergy_1",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 23,
+      "name": "负向无功电能 一次侧",
+      "form": "negativeReactiveElectricalEnergy_1",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 24,
+      "name": "A相有功功率",
+      "form": "P_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 25,
+      "name": "B相有功功率",
+      "form": "P_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 26,
+      "name": "C相有功功率",
+      "form": "P_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 27,
+      "name": "A相无功功率",
+      "form": "Q_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 28,
+      "name": "B相无功功率",
+      "form": "Q_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 29,
+      "name": "C相无功功率",
+      "form": "Q_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 30,
+      "name": "A相视在功率",
+      "form": "apparent_P_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 31,
+      "name": "B相视在功率",
+      "form": "apparent_P_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 32,
+      "name": "C相视在功率",
+      "form": "apparent_P_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 33,
+      "name": "总视在功率",
+      "form": "allApparent",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 34,
+      "name": "A相功率因数",
+      "form": "powerFactor_A",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 35,
+      "name": "B相功率因数",
+      "form": "powerFactor_B",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 36,
+      "name": "C相功率因数",
+      "form": "powerFactor_C",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 37,
+      "name": "AB线电压",
+      "form": "U_AB",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 38,
+      "name": "BC线电压",
+      "form": "U_BC",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 39,
+      "name": "CA线电压",
+      "form": " U_CA",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 40,
+      "name": "正向有功电能 二次侧",
+      "form": " forwardActiveElectricEnergy_2",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 41,
+      "name": "负向有功电能 二次侧",
+      "form": " negativeActiveElectricEnergy_2",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 42,
+      "name": "正向无功电能 二次侧",
+      "form": " forwardReactiveElectricEnergy_2",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 43,
+      "name": "负向无功电能 二次侧",
+      "form": " negativeReactiveElectricalEnergy_2",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 44,
+      "name": "上限报警值",
+      "form": " upperLimitAlaram",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id":45,
+      "name": "下限报警值",
+      "form": " lowerLimitAlaram",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 46,
+      "name": "变送方式",
+      "form": "transmissionMode",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 47,
+      "name": "变送参数比",
+      "form": "transmitParamRatio",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 48,
+      "name": "电压",
+      "form": "U",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 49,
+      "name": "电流",
+      "form": "I",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 50,
+      "name": "功率",
+      "form": "P",
+      "units": "",
+      "dataLevel": 0
+    }
+  ]
+}

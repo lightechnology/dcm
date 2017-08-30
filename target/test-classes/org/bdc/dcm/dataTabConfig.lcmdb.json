@@ -1,0 +1,107 @@
+{
+  "dataTabConf": [
+  	{
+      "id": -1,
+      "name": "制热控制",
+      "form": "remainTimeLong",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": -2,
+      "name": "制冷控制",
+      "form": "temperature_cold",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": -3,
+      "name": "剩余电量",
+      "form": "surplus_power",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": -4,
+      "name": "剩余时间",
+      "form": "surplus_time",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 128,
+      "name": "剩余用电时间",
+      "form": "remainTimeLong",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 130,
+      "name": "剩余电量",
+      "form": "remainELectricity",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 132,
+      "name": "总用电时间",
+      "form": "totalTime",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 134,
+      "name": "总有功电能",
+      "form": "totalActivePower",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 135,
+      "name": "电压",
+      "form": "u",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 136,
+      "name": "电流",
+      "form": "i",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 137,
+      "name": "功率",
+      "form": "p",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 138,
+      "name": "cos$",
+      "form": "cos$",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 139,
+      "name": "电参数闸状态位",
+      "form": "JQD_TiaoZa",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 140,
+      "name": "温度",
+      "form": "temperature",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 141,
+      "name": "继电器状态",
+      "form": "JDQ_state",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 142,
+      "name": "状态",
+      "form": "JDQ_control",
+      "units": "",
+      "dataLevel": 0
+    },{
+      "id": 143,
+      "name": "taddr",
+      "form": "byte",
+      "units": "",
+      "dataLevel": 0
+    }
+  ]
+}

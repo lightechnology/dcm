@@ -13,8 +13,10 @@ import com.util.tools.Public;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
-public class NettyBoot implements Runnable {
+public abstract class NettyBoot implements Runnable {
 
 	final static Logger logger = LoggerFactory.getLogger(NettyBoot.class);
 
@@ -40,9 +42,15 @@ public class NettyBoot implements Runnable {
 	}
 
 	public void shutdown() {
-		run.set(false);
+		run.set(false);;
 		if (null != channelFuture)
-			channelFuture.channel().close();
+			channelFuture.channel().close().addListener(new GenericFutureListener<Future<Void>>() {
+
+				@Override
+				public void operationComplete(Future<Void> future) throws Exception {
+					logger.warn("关闭成功,host:{},port:{}",server.getHost(),server.getClientPort());
+				}
+			});
 	}
 
 	@Override
@@ -63,8 +71,11 @@ public class NettyBoot implements Runnable {
 		finaled();
 	}
 	
-	public void task() throws Exception{
-	}
+	/**
+	 * @author lzh 显式调用
+	 * @throws Exception
+	 */
+	public abstract void task() throws Exception;
 
 	public Server getServer() {
 		return server;

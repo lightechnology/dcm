@@ -8,6 +8,8 @@ import org.bdc.dcm.conf.IntfConf;
 import org.bdc.dcm.data.coder.intf.DataEncoder;
 import org.bdc.dcm.vo.DataPack;
 import org.bdc.dcm.vo.DataTab;
+import org.bdc.dcm.vo.e.DataPackType;
+import org.bdc.dcm.vo.e.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +31,17 @@ public class LqmdbEncoder implements DataEncoder<ByteBuf>  {
 		
 		ByteBuf src = ctx.alloc().buffer(8);
 		
-		List<DataTab> dataTabs = IntfConf.getDataTabConf().getDataTabConf("Lq");
+		List<DataTab> dataTabs = IntfConf.getDataTabConf().getDataTabConf(DataType.Lqmdb.name());
 		
-		byte[] macBytes = Public.hexString2bytes(msg.getMac());
+		
+		DataPackType dataPackType = msg.getDataPackType();
+		String indentity = "";
+		if(dataPackType.equals(DataPackType.Cmd)) 
+			indentity = msg.getToMac(); 
+		else if(dataPackType.equals(DataPackType.Info)) 
+			indentity = msg.getMac();
+		
+		byte[] macBytes = Public.hexString2bytes(indentity);
 		
 		Map<String, Object> data = msg.getData();
 		byte addr = macBytes[macBytes.length - 1];

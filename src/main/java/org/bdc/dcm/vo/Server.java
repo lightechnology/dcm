@@ -25,7 +25,6 @@ public class Server implements Serializable {
 	private DataType dataType = null;
 	private String selfMac = null;
 	private String initSendingData = null;
-	private Integer loopInitSendingDataInterval = 0;
 	private Integer delaySendingTime = 0;
 	private Set<String> filterMacs = null;
 	private Integer keepAlive = 0;
@@ -96,14 +95,6 @@ public class Server implements Serializable {
 		this.initSendingData = initSendingData;
 	}
 
-	public Integer getLoopInitSendingDataInterval() {
-		return loopInitSendingDataInterval;
-	}
-
-	public void setLoopInitSendingDataInterval(Integer loopInitSendingDataInterval) {
-		this.loopInitSendingDataInterval = loopInitSendingDataInterval;
-	}
-
 	public Integer getDelaySendingTime() {
 		return delaySendingTime;
 	}
@@ -164,6 +155,26 @@ public class Server implements Serializable {
 				e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((clientPort == null) ? 0 : clientPort.hashCode());
+		result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
+		result = prime * result + ((delaySendingTime == null) ? 0 : delaySendingTime.hashCode());
+		result = prime * result + ((filterMacs == null) ? 0 : filterMacs.hashCode());
+		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result + ((initSendingData == null) ? 0 : initSendingData.hashCode());
+		result = prime * result + ((keepAlive == null) ? 0 : keepAlive.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + ((sdkUserInfo == null) ? 0 : sdkUserInfo.hashCode());
+		result = prime * result + ((selfMac == null) ? 0 : selfMac.hashCode());
+		result = prime * result + ((serverPort == null) ? 0 : serverPort.hashCode());
+		result = prime * result + ((serverType == null) ? 0 : serverType.hashCode());
+		return result;
 	}
 
 }

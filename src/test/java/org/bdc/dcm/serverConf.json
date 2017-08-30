@@ -10,7 +10,6 @@
       "clientPort": 0,
       "initSendingData": "",
       "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 0,
       "selfMac": "",
       "dataLevel": 1,
       "filterMacs": ["0000000000000000"]
@@ -18,13 +17,12 @@
     {
       "name": "TestTcpServer",
       "serverType": 1,
-      "dataType": 2,
+      "dataType": 9,
       "host": "192.168.0.63",
-      "serverPort": 6001,
+      "serverPort": 8100,
       "clientPort": 0,
-      "initSendingData": "FE A5 00 01 0C 0D",
-      "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 5,
+      "initSendingData": "",
+      "delaySendingTime": 5,
       "selfMac": "",
       "dataLevel": 0,
       "filterMacs": ["0000000000000000"]
@@ -33,13 +31,12 @@
       "serverType": 4,
       "dataType": 7,
       "host": "192.168.0.63",
-      "serverPort": 6002,
+      "serverPort": 6003,
       "clientPort": 0,
       "initSendingData": "",
       "delaySendingTime": 0,
-      "loopInitSendingDataInterval": 0,
       "selfMac": "",
-      "dataLevel": 0,
+      "dataLevel": 1,
       "filterMacs": ["0000000000000000"]
     },{
       "name": "TestUdpConnect",
@@ -50,7 +47,6 @@
       "clientPort": 0,
       "initSendingData": "00000000",
       "delaySendingTime": 3000,
-      "loopInitSendingDataInterval": 10000,
       "selfMac": "00000000",
       "dataLevel": 1,
       "filterMacs": ["0000000000000000"]

@@ -1,13 +1,13 @@
 package org.bdc.dcm.lc;
 
-import static org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert.*;
+import static org.bdc.dcm.data.convert.lcmdb.LcmdbTypeConvert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bdc.dcm.netty.lcmdb.LcmdbTypeConvert;
+import org.bdc.dcm.data.convert.lcmdb.LcmdbTypeConvert;
 import org.bdc.dcm.vo.DataPack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

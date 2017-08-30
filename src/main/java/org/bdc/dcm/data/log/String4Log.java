@@ -23,7 +23,6 @@ public class String4Log implements Coder4Log<String> {
             logger.info(tab, dataPack.getSocketAddress(), msg, dataPack.toString());
 		}
 		// 这里缓存数据
-		// TODO Auto-generated method stub
 		return msg;
 	}
 
