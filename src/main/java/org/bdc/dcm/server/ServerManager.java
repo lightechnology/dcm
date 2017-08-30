@@ -63,7 +63,6 @@ public class ServerManager implements Runnable {
 	@Override
 	public void run() {
 		while (run.get()) {
-			System.out.println();
 			List<Server> removeServerConfList = new ArrayList<Server>();
 			List<Server> addServerConfList = new ArrayList<Server>();
 			getServerConfList(removeServerConfList, addServerConfList);
